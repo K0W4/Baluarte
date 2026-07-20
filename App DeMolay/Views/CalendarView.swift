@@ -1,20 +1,194 @@
 import SwiftUI
 
-struct CalendarView: View {
-    var body: some View {
+public struct CalendarView: View {
+    @State private var viewModel = CalendarViewModel()
+    
+    private let calendar = Calendar.current
+    private let daysInWeek = ["D", "S", "T", "Q", "Q", "S", "S"]
+    
+    public init() {}
+    
+    public var body: some View {
         NavigationStack {
-            ZStack {
-                Theme.backgroundPrimary.ignoresSafeArea()
-                
-                VStack(spacing: Spacing.md) {
-                    Text("Eventos e Reuniões")
-                        .font(Typography.body)
-                        .foregroundColor(Theme.textSecondary)
-                        .multilineTextAlignment(.center)
+            ScrollView {
+                VStack(spacing: Spacing.xl) {
+                    calendarHeader
+                    daysGrid
+                    eventsList
                 }
-                .padding(Spacing.screenEdgePadding)
+                .padding(.vertical, Spacing.lg)
             }
+            .background(Theme.backgroundPrimary)
             .navigationTitle("Calendário")
+            .task {
+                await viewModel.loadEvents()
+            }
+        }
+    }
+    
+    private var calendarHeader: some View {
+        HStack {
+            Button {
+                changeMonth(by: -1)
+            } label: {
+                Image(systemName: "chevron.left")
+                    .font(Typography.title3)
+                    .foregroundColor(.accent)
+            }
+            
+            Spacer()
+            
+            Text(monthYearString(for: viewModel.currentMonth))
+                .font(Typography.title2)
+                .bold()
+                .foregroundColor(Theme.textPrimary)
+            
+            Spacer()
+            
+            Button {
+                changeMonth(by: 1)
+            } label: {
+                Image(systemName: "chevron.right")
+                    .font(Typography.title3)
+                    .foregroundColor(.accent)
+            }
+        }
+        .padding(.horizontal, Spacing.screenEdgePadding)
+    }
+    
+    private var daysGrid: some View {
+        VStack(spacing: Spacing.md) {
+            HStack {
+                ForEach(daysInWeek, id: \.self) { day in
+                    Text(day)
+                        .font(Typography.subheadline)
+                        .bold()
+                        .foregroundColor(Theme.textSecondary)
+                        .frame(maxWidth: .infinity)
+                }
+            }
+            
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: Spacing.md) {
+                ForEach(daysInMonth(), id: \.self) { date in
+                    if let date = date {
+                        DayCell(
+                            date: date,
+                            isSelected: calendar.isDate(date, inSameDayAs: viewModel.selectedDate),
+                            hasEvents: viewModel.hasEvents(for: date)
+                        )
+                        .onTapGesture {
+                            withAnimation {
+                                viewModel.selectedDate = date
+                            }
+                        }
+                    } else {
+                        Color.clear
+                            .aspectRatio(1, contentMode: .fill)
+                    }
+                }
+            }
+        }
+        .padding(Spacing.md)
+        .background(Theme.backgroundSecondary)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.accentColor.opacity(0.5), lineWidth: 1)
+        )
+        .padding(.horizontal, Spacing.screenEdgePadding)
+    }
+    
+    private var eventsList: some View {
+        VStack(alignment: .leading, spacing: Spacing.md) {
+            Text("Eventos do Dia")
+                .font(Typography.title3)
+                .bold()
+                .foregroundColor(Theme.textPrimary)
+                .padding(.horizontal, Spacing.screenEdgePadding)
+            
+            let selectedEvents = viewModel.events(for: viewModel.selectedDate)
+            
+            if selectedEvents.isEmpty {
+                EmptyStateCard(cardType: .event)
+                    .padding(.horizontal, Spacing.screenEdgePadding)
+            } else {
+                ForEach(selectedEvents) { event in
+                    EventCard(event: event)
+                        .padding(.horizontal, Spacing.screenEdgePadding)
+                        .contextMenu {
+                            Button {
+                                Task {
+                                    await viewModel.addToNativeCalendar(event: event)
+                                }
+                            } label: {
+                                Label("Adicionar ao Calendário", systemImage: "calendar.badge.plus")
+                            }
+                        }
+                }
+            }
+        }
+    }
+    
+    private func changeMonth(by value: Int) {
+        if let newMonth = calendar.date(byAdding: .month, value: value, to: viewModel.currentMonth) {
+            viewModel.currentMonth = newMonth
+        }
+    }
+    
+    private func monthYearString(for date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "pt_BR")
+        formatter.dateFormat = "MMMM yyyy"
+        return formatter.string(from: date).capitalized
+    }
+    
+    private func daysInMonth() -> [Date?] {
+        guard let monthInterval = calendar.dateInterval(of: .month, for: viewModel.currentMonth),
+              let monthFirstWeek = calendar.dateInterval(of: .weekOfMonth, for: monthInterval.start),
+              let monthLastWeek = calendar.dateInterval(of: .weekOfMonth, for: monthInterval.end - 1) else {
+            return []
+        }
+        
+        var dates: [Date?] = []
+        var currentDate = monthFirstWeek.start
+        
+        while currentDate < monthLastWeek.end {
+            if calendar.isDate(currentDate, equalTo: viewModel.currentMonth, toGranularity: .month) {
+                dates.append(currentDate)
+            } else {
+                dates.append(nil)
+            }
+            currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate)!
+        }
+        
+        return dates
+    }
+}
+
+private struct DayCell: View {
+    let date: Date
+    let isSelected: Bool
+    let hasEvents: Bool
+    
+    private let calendar = Calendar.current
+    
+    var body: some View {
+        let isToday = calendar.isDateInToday(date)
+        
+        VStack(spacing: 4) {
+            Text("\(calendar.component(.day, from: date))")
+                .font(Typography.body)
+                .bold(isSelected || isToday)
+                .foregroundColor(isSelected ? .white : (isToday ? .accentColor : Theme.textPrimary))
+                .frame(width: 36, height: 36)
+                .background(
+                    Circle()
+                        .fill(isSelected ? Color.accentColor : Color.clear)
+                )
+            
+            Circle()
+                .fill(hasEvents ? Color.accentColor : Color.clear)
+                .frame(width: 6, height: 6)
         }
     }
 }

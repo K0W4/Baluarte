@@ -1,10 +1,3 @@
-//
-//  cardEmptyState.swift
-//  App DeMolay
-//
-//  Created by Gabriel Kowaleski on 15/07/26.
-//
-
 import SwiftUI
 
 enum CardType {
@@ -13,7 +6,7 @@ enum CardType {
     case committee
 }
 
-struct CardEmptyState: View {
+struct EmptyStateCard: View {
     let cardType: CardType
 
     var body: some View {
@@ -100,11 +93,11 @@ struct CardEmptyState: View {
 
 #Preview {
     VStack(alignment: .leading, spacing: Spacing.xl) {
-        CardEmptyState(cardType: .event)
+        EmptyStateCard(cardType: .event)
         
-        CardEmptyState(cardType: .goal)
+        EmptyStateCard(cardType: .goal)
         
-        CardEmptyState(cardType: .committee)
+        EmptyStateCard(cardType: .committee)
     }
     .padding(Spacing.screenEdgePadding)
 }
