@@ -11,7 +11,6 @@ public struct MockEventService: EventServiceProtocol {
     }
     
     public func createEvent(_ event: Event) async throws {
-        // Simula criação na rede
         try await Task.sleep(nanoseconds: 500_000_000)
     }
 }

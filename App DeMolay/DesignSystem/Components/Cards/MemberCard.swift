@@ -9,7 +9,6 @@ public struct MemberCard: View {
     
     public var body: some View {
         HStack(spacing: Spacing.md) {
-            // Avatar Placeholder (Iniciais)
             Circle()
                 .fill(Color.accentColor.opacity(0.1))
                 .frame(width: 50, height: 50)
@@ -31,7 +30,6 @@ public struct MemberCard: View {
                         .foregroundColor(Theme.textSecondary)
                 }
                 
-                // Tags de status / acessos
                 HStack(spacing: 8) {
                     if member.accessLevel == "admin" {
                         tagView(text: "Admin", color: .red)

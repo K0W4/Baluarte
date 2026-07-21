@@ -1,9 +1,4 @@
-//
-//  AppDeMolay.swift
-//  App DeMolay
-//
-//  Created by Gabriel Kowaleski on 14/07/26.
-//
+
 
 import SwiftUI
 

@@ -36,7 +36,6 @@ public final class RosterViewModel {
             let mockChapterId = UUID()
             allMembers = try await memberService.fetchMembers(for: mockChapterId)
             
-            // Mocks de comissões
             let mockCommitteeId1 = UUID()
             let mockCommitteeId2 = UUID()
             committees = [

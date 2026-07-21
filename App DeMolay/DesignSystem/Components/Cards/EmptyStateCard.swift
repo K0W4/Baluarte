@@ -5,6 +5,7 @@ enum CardType {
     case goal
     case committee
     case member
+    case task
 }
 
 struct EmptyStateCard: View {
@@ -47,6 +48,7 @@ struct EmptyStateCard: View {
                             .font(Typography.title3)
                             .bold()
                             .foregroundStyle(Theme.textPrimary)
+                        
                     case .member:
                         Image(systemName: "person.fill.xmark")
                             .font(Typography.title3)
@@ -54,6 +56,17 @@ struct EmptyStateCard: View {
                             .foregroundStyle(Theme.textPrimary)
 
                         Text("Nenhum membro encontrado")
+                            .font(Typography.title3)
+                            .bold()
+                            .foregroundStyle(Theme.textPrimary)
+                        
+                    case .task:
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(Typography.title3)
+                            .bold()
+                            .foregroundStyle(.green)
+
+                        Text("Tudo em dia!")
                             .font(Typography.title3)
                             .bold()
                             .foregroundStyle(Theme.textPrimary)
@@ -79,6 +92,10 @@ struct EmptyStateCard: View {
                     Text("Ajuste os filtros de busca para tentar novamente.")
                         .font(Typography.footnote)
                         .foregroundStyle(Theme.textSecondary)
+                case .task:
+                    Text("Você concluiu todas as suas tarefas. Aproveite o descanso!")
+                        .font(Typography.footnote)
+                        .foregroundStyle(Theme.textSecondary)
                 }
             }
             
@@ -93,6 +110,8 @@ struct EmptyStateCard: View {
                     Text("Criar comissão")
                 case .member:
                     Text("Limpar busca")
+                case .task:
+                    Text("Criar nova tarefa")
                 }
             }
             .buttonStyle(PrimaryButtonStyle())
