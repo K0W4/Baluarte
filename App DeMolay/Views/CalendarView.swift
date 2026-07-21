@@ -108,26 +108,14 @@ public struct CalendarView: View {
     
     private var eventsList: some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
-            HStack(alignment: .center) {
-                Text("Eventos do Dia")
-                    .font(Typography.title3)
-                    .bold()
-                    .foregroundColor(Theme.textPrimary)
-                    .padding(.horizontal, Spacing.screenEdgePadding)
-                
-                
-                Spacer()
-                
-                Button {
-                    
-                } label: {
-                    Image(systemName: "plus")
-                        .font(Typography.title2)
-                        .bold()
-                        .foregroundColor(Theme.accent)
-                }
-                .padding(.horizontal, Spacing.screenEdgePadding)
+            SectionHeaderView(
+                title: "Eventos do Dia",
+                actionLabel: "Adicionar evento",
+                actionHint: "Toca duas vezes para adicionar evento no calendário"
+            ) {
+                // Action
             }
+            .padding(.horizontal, Spacing.screenEdgePadding)
             
             let selectedEvents = viewModel.events(for: viewModel.selectedDate)
             
