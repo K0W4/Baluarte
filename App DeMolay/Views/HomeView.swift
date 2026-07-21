@@ -6,7 +6,7 @@ public struct HomeView: View {
     public var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: Spacing.lg) {
+                VStack(alignment: .leading, spacing: Spacing.xl) {
                     if viewModel.isLoading {
                         ProgressView("Carregando...")
                             .frame(maxWidth: .infinity)
@@ -27,8 +27,11 @@ public struct HomeView: View {
                                         .font(Typography.title2)
                                         .bold()
                                         .foregroundColor(Theme.accent)
+                                        .frame(width: 44, height: 44)
+                                        .contentShape(Rectangle())
                                 }
                                 .accessibilityLabel("Adicionar evento")
+                                .accessibilityHint("Toca duas vezes para criar um novo evento")
                             }
 
                             if viewModel.events.isEmpty {
@@ -62,8 +65,11 @@ public struct HomeView: View {
                                         .font(Typography.title2)
                                         .bold()
                                         .foregroundColor(Theme.accent)
+                                        .frame(width: 44, height: 44)
+                                        .contentShape(Rectangle())
                                 }
                                 .accessibilityLabel("Adicionar meta")
+                                .accessibilityHint("Toca duas vezes para criar uma nova meta")
                             }
                             
                             if viewModel.goals.isEmpty {
@@ -98,8 +104,11 @@ public struct HomeView: View {
                                         .font(Typography.title2)
                                         .bold()
                                         .foregroundColor(Theme.accent)
+                                        .frame(width: 44, height: 44)
+                                        .contentShape(Rectangle())
                                 }
                                 .accessibilityLabel("Adicionar comissão")
+                                .accessibilityHint("Toca duas vezes para criar uma nova comissão")
                                 
                             }
                             if viewModel.committees.isEmpty {

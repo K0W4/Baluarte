@@ -36,7 +36,7 @@ struct ContentView: View {
                 }
                 .tag(Tab.tasks)
         }
-        .tint(.accent)
+        .tint(Theme.accent)
     }
 }
 

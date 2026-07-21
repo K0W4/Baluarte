@@ -4,7 +4,7 @@ public struct CalendarView: View {
     @State private var viewModel = CalendarViewModel()
     
     private let calendar = Calendar.current
-    private let daysInWeek = ["D", "S", "T", "Q", "Q", "S", "S"]
+    private let daysInWeek = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"]
     
     public init() {}
     
@@ -34,8 +34,11 @@ public struct CalendarView: View {
                 Image(systemName: "chevron.left")
                     .font(Typography.title3)
                     .foregroundColor(Theme.textTertiary)
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
             }
             .accessibilityLabel("Mês anterior")
+            .accessibilityHint("Toca duas vezes para retroceder um mês")
             
             Spacer()
             
@@ -52,8 +55,11 @@ public struct CalendarView: View {
                 Image(systemName: "chevron.right")
                     .font(Typography.title3)
                     .foregroundColor(Theme.textTertiary)
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
             }
             .accessibilityLabel("Próximo mês")
+            .accessibilityHint("Toca duas vezes para avançar um mês")
         }
         .padding(.horizontal, Spacing.screenEdgePadding)
     }
@@ -78,6 +84,7 @@ public struct CalendarView: View {
                             isSelected: calendar.isDate(date, inSameDayAs: viewModel.selectedDate),
                             hasEvents: viewModel.hasEvents(for: date)
                         ) {
+                            HapticManager.shared.impact(style: .light)
                             withAnimation {
                                 viewModel.selectedDate = date
                             }
@@ -146,6 +153,7 @@ public struct CalendarView: View {
     }
     
     private func changeMonth(by value: Int) {
+        HapticManager.shared.impact(style: .light)
         if let newMonth = calendar.date(byAdding: .month, value: value, to: viewModel.currentMonth) {
             viewModel.currentMonth = newMonth
         }
@@ -211,6 +219,8 @@ private struct DayCell: View {
                     .fill(hasEvents ? Theme.accent : Color.clear)
                     .frame(width: 6, height: 6)
             }
+            .frame(width: 44, height: 44)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
     }

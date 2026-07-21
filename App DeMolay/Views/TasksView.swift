@@ -14,7 +14,22 @@ public struct TasksView: View {
                             .padding(Spacing.screenEdgePadding)
                     }
                 } else {
-                    List {
+                    VStack(spacing: 0) {
+                        if !viewModel.allTasks.isEmpty {
+                            let completed = viewModel.allTasks.filter { $0.isCompleted }.count
+                            let total = viewModel.allTasks.count
+                            HStack {
+                                Text("\(completed) de \(total) tarefas concluídas")
+                                    .font(Typography.subheadline)
+                                    .foregroundColor(Theme.textSecondary)
+                                    .bold()
+                                Spacer()
+                            }
+                            .padding(.horizontal, Spacing.screenEdgePadding)
+                            .padding(.top, Spacing.md)
+                        }
+                        
+                        List {
                         if !viewModel.generalTasks.isEmpty {
                             Section {
                                 ForEach(viewModel.generalTasks) { task in

@@ -12,4 +12,5 @@ public struct Typography {
     public static let footnote = Font.footnote
     public static let caption1 = Font.caption
     public static let caption2 = Font.caption2
+    public static let numericDisplay = Font.system(size: 28, weight: .bold, design: .rounded)
 }

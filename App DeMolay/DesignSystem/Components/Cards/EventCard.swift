@@ -51,7 +51,7 @@ public struct EventCard: View {
                 .background(Theme.textSecondary)
             
             HStack(alignment: .top, spacing: Spacing.xxs) {
-                Text("Pauta:")
+                Text("Detalhes:")
                     .font(Typography.subheadline)
                     .bold()
                     .foregroundColor(Theme.textPrimary)

@@ -66,7 +66,7 @@ public struct ProgressRingCard: View {
                 
                 VStack(spacing: Spacing.xxs) {
                     Text("\(progressPercentageValue)%")
-                        .font(Typography.title1).bold()
+                        .font(Typography.numericDisplay)
                         .foregroundColor(Theme.textPrimary)
                     
                     Text("\(formattedCurrent)/\(formattedTarget)")

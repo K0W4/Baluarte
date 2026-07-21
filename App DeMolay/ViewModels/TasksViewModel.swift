@@ -48,6 +48,11 @@ public final class TasksViewModel {
                 withAnimation {
                     allTasks[index].isCompleted.toggle()
                 }
+                if allTasks[index].isCompleted {
+                    HapticManager.shared.notification(type: .success)
+                } else {
+                    HapticManager.shared.impact(style: .light)
+                }
             }
             
             try await taskService.toggleTaskCompletion(taskId: task.id, isCompleted: !task.isCompleted)
