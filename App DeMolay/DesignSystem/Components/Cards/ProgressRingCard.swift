@@ -54,7 +54,7 @@ public struct ProgressRingCard: View {
     }
     
     public var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: Spacing.lg) {
             ZStack {
                 Circle()
                     .stroke(baseColor.opacity(0.2), lineWidth: lineWidth)
@@ -64,9 +64,9 @@ public struct ProgressRingCard: View {
                     .stroke(ringGradient, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
                     .rotationEffect(.degrees(-90))
                 
-                VStack(spacing: 4) {
+                VStack(spacing: Spacing.xxs) {
                     Text("\(progressPercentageValue)%")
-                        .font(.system(size: 28, weight: .bold, design: .rounded))
+                        .font(Typography.title1).bold()
                         .foregroundColor(Theme.textPrimary)
                     
                     Text("\(formattedCurrent)/\(formattedTarget)")
@@ -100,7 +100,7 @@ public struct ProgressRingCard: View {
         }
         .padding(Spacing.md)
         .frame(maxWidth: .infinity)
-        .background(Color(UIColor.secondarySystemBackground))
+        .background(Theme.cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .overlay(
             RoundedRectangle(cornerRadius: 16)

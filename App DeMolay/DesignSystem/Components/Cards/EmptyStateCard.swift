@@ -121,7 +121,7 @@ struct EmptyStateCard: View {
         .clipShape(.rect(cornerRadius: 16))
         .overlay(
             RoundedRectangle(cornerRadius: 16)
-                .stroke(.accent, lineWidth: 1)
+                .stroke(Theme.border, lineWidth: 1)
         )
     }
 

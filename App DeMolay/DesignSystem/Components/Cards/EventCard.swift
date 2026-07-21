@@ -40,7 +40,7 @@ public struct EventCard: View {
                 
                 Image(systemName: "chevron.right")
                     .font(Typography.headline)
-                    .foregroundColor(.accent)
+                    .foregroundColor(Theme.textTertiary)
             }
             
             Text(dateString)
@@ -56,7 +56,7 @@ public struct EventCard: View {
                     .bold()
                     .foregroundColor(Theme.textPrimary)
                 
-                Text(event.notes?.isEmpty == false ? event.notes! : "Não informada")
+                Text(event.notes?.isEmpty == false ? (event.notes ?? "") : "Não informada")
                     .font(Typography.subheadline)
                     .foregroundColor(Theme.textSecondary)
                     .lineLimit(1)
@@ -67,7 +67,7 @@ public struct EventCard: View {
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .overlay(
             RoundedRectangle(cornerRadius: 16)
-                .stroke(.accent, lineWidth: 1)
+                .stroke(Theme.border, lineWidth: 1)
         )
     }
 }

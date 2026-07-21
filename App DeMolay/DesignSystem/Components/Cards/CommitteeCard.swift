@@ -25,7 +25,7 @@ public struct CommitteeCard: View {
                 
                 Image(systemName: "chevron.right")
                     .font(Typography.headline)
-                    .foregroundColor(.accent)
+                    .foregroundColor(Theme.textTertiary)
             }
             
             Divider()
@@ -57,7 +57,7 @@ public struct CommitteeCard: View {
                                 if let due = task.dueDate {
                                     Text(dueDateString(from: due))
                                         .font(Typography.caption1)
-                                        .foregroundColor(due < Date() ? .red : Theme.textSecondary)
+                                        .foregroundColor(due < Date() ? Theme.destructive : Theme.textSecondary)
                                 }
                             }
                         }
@@ -67,17 +67,17 @@ public struct CommitteeCard: View {
                         Text("+ \(tasks.count - 3) pendentes")
                             .font(Typography.caption2)
                             .foregroundColor(Theme.textSecondary)
-                            .padding(.top, 4)
+                            .padding(.top, Spacing.xxs)
                     }
                 }
             }
         }
-        .padding(16)
-        .background(Color(UIColor.secondarySystemBackground))
+        .padding(Spacing.md)
+        .background(Theme.cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .overlay(
             RoundedRectangle(cornerRadius: 16)
-                .stroke(.accent)
+                .stroke(Theme.border)
         )
     }
     

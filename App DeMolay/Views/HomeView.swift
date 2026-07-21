@@ -8,7 +8,7 @@ public struct HomeView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: Spacing.lg) {
                     if viewModel.isLoading {
-                        ProgressView()
+                        ProgressView("Carregando...")
                             .frame(maxWidth: .infinity)
                     } else {
                         VStack(alignment: .leading, spacing: Spacing.md) {
@@ -26,8 +26,9 @@ public struct HomeView: View {
                                     Image(systemName: "plus")
                                         .font(Typography.title2)
                                         .bold()
-                                        .foregroundColor(.accent)
+                                        .foregroundColor(Theme.accent)
                                 }
+                                .accessibilityLabel("Adicionar evento")
                             }
 
                             if viewModel.events.isEmpty {
@@ -60,8 +61,9 @@ public struct HomeView: View {
                                     Image(systemName: "plus")
                                         .font(Typography.title2)
                                         .bold()
-                                        .foregroundColor(.accent)
+                                        .foregroundColor(Theme.accent)
                                 }
+                                .accessibilityLabel("Adicionar meta")
                             }
                             
                             if viewModel.goals.isEmpty {
@@ -95,8 +97,9 @@ public struct HomeView: View {
                                     Image(systemName: "plus")
                                         .font(Typography.title2)
                                         .bold()
-                                        .foregroundColor(.accent)
+                                        .foregroundColor(Theme.accent)
                                 }
+                                .accessibilityLabel("Adicionar comissão")
                                 
                             }
                             if viewModel.committees.isEmpty {

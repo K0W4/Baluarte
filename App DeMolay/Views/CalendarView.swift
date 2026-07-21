@@ -33,8 +33,9 @@ public struct CalendarView: View {
             } label: {
                 Image(systemName: "chevron.left")
                     .font(Typography.title3)
-                    .foregroundColor(.accent)
+                    .foregroundColor(Theme.textTertiary)
             }
+            .accessibilityLabel("Mês anterior")
             
             Spacer()
             
@@ -50,8 +51,9 @@ public struct CalendarView: View {
             } label: {
                 Image(systemName: "chevron.right")
                     .font(Typography.title3)
-                    .foregroundColor(.accent)
+                    .foregroundColor(Theme.textTertiary)
             }
+            .accessibilityLabel("Próximo mês")
         }
         .padding(.horizontal, Spacing.screenEdgePadding)
     }
@@ -75,8 +77,7 @@ public struct CalendarView: View {
                             date: date,
                             isSelected: calendar.isDate(date, inSameDayAs: viewModel.selectedDate),
                             hasEvents: viewModel.hasEvents(for: date)
-                        )
-                        .onTapGesture {
+                        ) {
                             withAnimation {
                                 viewModel.selectedDate = date
                             }
@@ -93,7 +94,7 @@ public struct CalendarView: View {
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .overlay(
             RoundedRectangle(cornerRadius: 16)
-                .stroke(Color.accentColor.opacity(0.5), lineWidth: 1)
+                .stroke(Theme.border, lineWidth: 1)
         )
         .padding(.horizontal, Spacing.screenEdgePadding)
     }
@@ -116,7 +117,7 @@ public struct CalendarView: View {
                     Image(systemName: "plus")
                         .font(Typography.title2)
                         .bold()
-                        .foregroundColor(.accent)
+                        .foregroundColor(Theme.accent)
                 }
                 .padding(.horizontal, Spacing.screenEdgePadding)
             }
@@ -173,7 +174,10 @@ public struct CalendarView: View {
             } else {
                 dates.append(nil)
             }
-            currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate)!
+            guard let nextDate = calendar.date(byAdding: .day, value: 1, to: currentDate) else {
+                break
+            }
+            currentDate = nextDate
         }
         
         return dates
@@ -184,27 +188,31 @@ private struct DayCell: View {
     let date: Date
     let isSelected: Bool
     let hasEvents: Bool
+    let onTap: () -> Void
     
     private let calendar = Calendar.current
     
     var body: some View {
-        let isToday = calendar.isDateInToday(date)
-        
-        VStack(spacing: 4) {
-            Text("\(calendar.component(.day, from: date))")
-                .font(Typography.body)
-                .bold(isSelected || isToday)
-                .foregroundColor(isSelected ? .white : (isToday ? .accentColor : Theme.textPrimary))
-                .frame(width: 36, height: 36)
-                .background(
-                    Circle()
-                        .fill(isSelected ? Color.accentColor : Color.clear)
-                )
+        Button(action: onTap) {
+            let isToday = calendar.isDateInToday(date)
             
-            Circle()
-                .fill(hasEvents ? Color.accentColor : Color.clear)
-                .frame(width: 6, height: 6)
+            VStack(spacing: Spacing.xxs) {
+                Text("\(calendar.component(.day, from: date))")
+                    .font(Typography.body)
+                    .bold(isSelected || isToday)
+                    .foregroundColor(isSelected ? Theme.backgroundPrimary : (isToday ? Theme.accent : Theme.textPrimary))
+                    .frame(width: 36, height: 36)
+                    .background(
+                        Circle()
+                            .fill(isSelected ? Theme.accent : Color.clear)
+                    )
+                
+                Circle()
+                    .fill(hasEvents ? Theme.accent : Color.clear)
+                    .frame(width: 6, height: 6)
+            }
         }
+        .buttonStyle(.plain)
     }
 }
 

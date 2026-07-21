@@ -21,13 +21,17 @@ public struct RosterView: View {
                 ScrollView {
                     LazyVStack(spacing: Spacing.md) {
                         
-                        let members = viewModel.filteredMembers
-                        
-                        if members.isEmpty && !viewModel.isLoading {
-                            EmptyStateCard(cardType: .member)
+                        if viewModel.isLoading {
+                            ProgressView("Carregando nominata...")
                         } else {
-                            ForEach(members) { member in
-                                MemberCard(member: member)
+                            let members = viewModel.filteredMembers
+                            
+                            if members.isEmpty {
+                                EmptyStateCard(cardType: .member)
+                            } else {
+                                ForEach(members) { member in
+                                    MemberCard(member: member)
+                                }
                             }
                         }
                     }

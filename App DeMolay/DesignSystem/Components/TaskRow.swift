@@ -15,12 +15,12 @@ public struct TaskRow: View {
                 onToggle()
             } label: {
                 Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
-                    .font(.title2)
+                    .font(Typography.title2)
                     .foregroundColor(task.isCompleted ? .accentColor : Theme.textSecondary)
             }
             .buttonStyle(.plain)
             
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: Spacing.xxs) {
                 Text(task.title)
                     .font(Typography.body)
                     .foregroundColor(Theme.textPrimary)
@@ -34,13 +34,13 @@ public struct TaskRow: View {
                 }
                 
                 if let dueDate = task.dueDate {
-                    HStack(spacing: 4) {
+                    HStack(spacing: Spacing.xxs) {
                         Image(systemName: "calendar")
                         Text(formatDate(dueDate))
                     }
                     .font(Typography.caption2)
                     .foregroundColor(isOverdue(dueDate) && !task.isCompleted ? .red : Theme.textSecondary)
-                    .padding(.top, 2)
+                    .padding(.top, Spacing.xxxs)
                 }
             }
             

@@ -38,7 +38,7 @@ public final class TasksViewModel {
     
     public var committeeTasks: [UUID: [ChapterTask]] {
         let tasksWithCommittee = activeTasks.filter { $0.committeeId != nil }
-        return Dictionary(grouping: tasksWithCommittee, by: { $0.committeeId! })
+        return Dictionary(grouping: tasksWithCommittee, by: { $0.committeeId ?? UUID() })
     }
     
     @MainActor

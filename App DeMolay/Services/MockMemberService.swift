@@ -7,11 +7,11 @@ public final class MockMemberService: MemberServiceProtocol {
         try await Task.sleep(nanoseconds: 800_000_000)
         
         let calendar = Calendar.current
-        let date1 = calendar.date(byAdding: .year, value: -20, to: Date())!
-        let date2 = calendar.date(byAdding: .year, value: -22, to: Date())!
-        let date3 = calendar.date(byAdding: .year, value: -35, to: Date())!
-        let date4 = calendar.date(byAdding: .year, value: -40, to: Date())!
-        let date5 = calendar.date(byAdding: .year, value: -18, to: Date())!
+        let date1 = calendar.date(byAdding: .year, value: -20, to: Date()) ?? Date()
+        let date2 = calendar.date(byAdding: .year, value: -22, to: Date()) ?? Date()
+        let date3 = calendar.date(byAdding: .year, value: -35, to: Date()) ?? Date()
+        let date4 = calendar.date(byAdding: .year, value: -40, to: Date()) ?? Date()
+        let date5 = calendar.date(byAdding: .year, value: -18, to: Date()) ?? Date()
         
         return [
             Member(id: UUID(), chapterId: chapterId, fullName: "Gabriel Kowaleski", role: "Mestre Conselheiro", isActive: true, isSenior: false, isMason: false, accessLevel: "admin", birthdate: date1, cid: "123456", createdAt: Date()),
