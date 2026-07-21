@@ -6,6 +6,10 @@ public struct Member: Codable, Identifiable, Hashable {
     public var fullName: String
     public var role: String?
     public var isActive: Bool
+    public var isSenior: Bool
+    public var isMason: Bool
+    public var accessLevel: String
+    public var birthdate: Date?
     public var cid: String?
     public var createdAt: Date
     
@@ -15,6 +19,10 @@ public struct Member: Codable, Identifiable, Hashable {
         case fullName = "full_name"
         case role
         case isActive = "is_active"
+        case isSenior = "is_senior"
+        case isMason = "is_mason"
+        case accessLevel = "access_level"
+        case birthdate
         case cid
         case createdAt = "created_at"
     }

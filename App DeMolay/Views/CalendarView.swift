@@ -100,11 +100,26 @@ public struct CalendarView: View {
     
     private var eventsList: some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
-            Text("Eventos do Dia")
-                .font(Typography.title3)
-                .bold()
-                .foregroundColor(Theme.textPrimary)
+            HStack(alignment: .center) {
+                Text("Eventos do Dia")
+                    .font(Typography.title3)
+                    .bold()
+                    .foregroundColor(Theme.textPrimary)
+                    .padding(.horizontal, Spacing.screenEdgePadding)
+                
+                
+                Spacer()
+                
+                Button {
+                    
+                } label: {
+                    Image(systemName: "plus")
+                        .font(Typography.title2)
+                        .bold()
+                        .foregroundColor(.accent)
+                }
                 .padding(.horizontal, Spacing.screenEdgePadding)
+            }
             
             let selectedEvents = viewModel.events(for: viewModel.selectedDate)
             

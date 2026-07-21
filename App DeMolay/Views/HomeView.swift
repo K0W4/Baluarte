@@ -118,7 +118,7 @@ public struct HomeView: View {
                 .padding(.horizontal, Spacing.screenEdgePadding)
             }
             .background(Theme.backgroundPrimary)
-            .navigationTitle("Olá, Kowa")
+            .navigationTitle("Olá, Kowa")            
             .task {
                 await viewModel.loadData()
             }

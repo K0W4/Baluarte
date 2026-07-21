@@ -4,6 +4,7 @@ enum CardType {
     case event
     case goal
     case committee
+    case member
 }
 
 struct EmptyStateCard: View {
@@ -46,6 +47,16 @@ struct EmptyStateCard: View {
                             .font(Typography.title3)
                             .bold()
                             .foregroundStyle(Theme.textPrimary)
+                    case .member:
+                        Image(systemName: "person.fill.xmark")
+                            .font(Typography.title3)
+                            .bold()
+                            .foregroundStyle(Theme.textPrimary)
+
+                        Text("Nenhum membro encontrado")
+                            .font(Typography.title3)
+                            .bold()
+                            .foregroundStyle(Theme.textPrimary)
                     }
                 }
                 
@@ -64,6 +75,10 @@ struct EmptyStateCard: View {
                     Text("Crie uma comissão e ela aparecerá aqui.")
                         .font(Typography.footnote)
                         .foregroundStyle(Theme.textSecondary)
+                case .member:
+                    Text("Ajuste os filtros de busca para tentar novamente.")
+                        .font(Typography.footnote)
+                        .foregroundStyle(Theme.textSecondary)
                 }
             }
             
@@ -76,6 +91,8 @@ struct EmptyStateCard: View {
                     Text("Definir meta")
                 case .committee:
                     Text("Criar comissão")
+                case .member:
+                    Text("Limpar busca")
                 }
             }
             .buttonStyle(PrimaryButtonStyle())
