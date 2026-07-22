@@ -7,28 +7,32 @@ public struct HomeView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: Spacing.xl) {
-                    if viewModel.isLoading {
-                        ProgressView("Carregando...")
-                            .frame(maxWidth: .infinity)
-                            .padding(.horizontal, Spacing.screenEdgePadding)
-                    } else {
-                        EventsSection(
-                            events: viewModel.events,
-                            currentUserId: viewModel.currentUserId,
-                            onConfirmAttendance: { eventId in
-                                viewModel.confirmAttendance(eventId: eventId)
-                            }
-                        )
-                        GoalsSection(goals: viewModel.goals)
-                        CommitteesSection(
-                            committees: viewModel.committees,
-                            tasks: viewModel.tasks,
-                            onTaskToggled: { taskId in
-                                viewModel.toggleTaskCompletion(taskId: taskId)
-                            }
-                        )
-                            .padding(.horizontal, Spacing.screenEdgePadding)
-                    }
+                    let displayEvents = viewModel.isLoading ? Event.skeletonList : viewModel.events
+                    let displayGoals = viewModel.isLoading ? Goal.skeletonList : viewModel.goals
+                    let displayCommittees = viewModel.isLoading ? Committee.skeletonList : viewModel.committees
+                    let displayTasks = viewModel.isLoading ? ChapterTask.skeletonList : viewModel.tasks
+                    
+                    EventsSection(
+                        events: displayEvents,
+                        currentUserId: viewModel.currentUserId,
+                        onConfirmAttendance: { eventId in
+                            if !viewModel.isLoading { viewModel.confirmAttendance(eventId: eventId) }
+                        }
+                    )
+                    .skeleton(isLoading: viewModel.isLoading)
+                    
+                    GoalsSection(goals: displayGoals)
+                        .skeleton(isLoading: viewModel.isLoading)
+                        
+                    CommitteesSection(
+                        committees: displayCommittees,
+                        tasks: displayTasks,
+                        onTaskToggled: { taskId in
+                            if !viewModel.isLoading { viewModel.toggleTaskCompletion(taskId: taskId) }
+                        }
+                    )
+                    .skeleton(isLoading: viewModel.isLoading)
+                    .padding(.horizontal, Spacing.screenEdgePadding)
                 }
                 .padding(.top, Spacing.screenEdgePadding)
             }

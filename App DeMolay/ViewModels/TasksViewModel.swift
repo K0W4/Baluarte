@@ -66,6 +66,16 @@ public final class TasksViewModel {
     }
     
     public func committeeName(for id: UUID) -> String {
+        if id == MockTaskService.committee1Id { return "Comissão de Sindicância" }
+        if id == MockTaskService.committee2Id { return "Comissão de Hospitalaria" }
         return "Comissão Específica"
+    }
+    
+    @MainActor
+    public func deleteTask(task: ChapterTask) async {
+        withAnimation {
+            allTasks.removeAll { $0.id == task.id }
+        }
+        // Chamaria o service.deleteTask(taskId: task.id) aqui na implementação real
     }
 }

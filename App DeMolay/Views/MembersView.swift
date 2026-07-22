@@ -20,24 +20,22 @@ public struct MembersView: View {
                 
                 ScrollView {
                     LazyVStack(spacing: Spacing.md) {
-                        if viewModel.isLoading {
-                            ProgressView("Carregando membros...")
+                        let members = viewModel.isLoading ? Member.skeletonList : viewModel.filteredMembers
+                        
+                        HStack {
+                            Text("\(members.count) membros")
+                                .font(Typography.subheadline)
+                                .foregroundColor(Theme.textSecondary)
+                                .skeleton(isLoading: viewModel.isLoading)
+                            Spacer()
+                        }
+                        
+                        if members.isEmpty && !viewModel.isLoading {
+                            EmptyStateCard(cardType: .member)
                         } else {
-                            let members = viewModel.filteredMembers
-                            
-                            HStack {
-                                Text("\(members.count) membros")
-                                    .font(Typography.subheadline)
-                                    .foregroundColor(Theme.textSecondary)
-                                Spacer()
-                            }
-                            
-                            if members.isEmpty {
-                                EmptyStateCard(cardType: .member)
-                            } else {
-                                ForEach(members) { member in
-                                    MemberCard(member: member)
-                                }
+                            ForEach(members) { member in
+                                MemberCard(member: member)
+                                    .skeleton(isLoading: viewModel.isLoading)
                             }
                         }
                     }

@@ -130,9 +130,9 @@ public struct CalendarView: View {
             }
             .padding(.horizontal, Spacing.screenEdgePadding)
             
-            let selectedEvents = viewModel.events(for: viewModel.selectedDate)
+            let selectedEvents = viewModel.isLoading ? Event.skeletonList : viewModel.events(for: viewModel.selectedDate)
             
-            if selectedEvents.isEmpty {
+            if selectedEvents.isEmpty && !viewModel.isLoading {
                 EmptyStateCard(cardType: .event)
                     .padding(.horizontal, Spacing.screenEdgePadding)
             } else {
@@ -140,9 +140,10 @@ public struct CalendarView: View {
                     EventCard(event: event) {
                         HapticManager.shared.impact(style: .medium)
                         withAnimation {
-                            viewModel.confirmAttendance(eventId: event.id)
+                            if !viewModel.isLoading { viewModel.confirmAttendance(eventId: event.id) }
                         }
                     }
+                    .skeleton(isLoading: viewModel.isLoading)
                     .padding(.horizontal, Spacing.screenEdgePadding)
                     .contextMenu {
                             Button {
