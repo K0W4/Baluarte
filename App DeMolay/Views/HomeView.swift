@@ -36,7 +36,9 @@ public struct HomeView: View {
                         events: displayEvents,
                         currentUserId: viewModel.currentUserId,
                         onConfirmAttendance: { eventId in
-                            if !viewModel.isLoading { viewModel.confirmAttendance(eventId: eventId) }
+                            if !viewModel.isLoading {
+                                Task { await viewModel.confirmAttendance(eventId: eventId) }
+                            }
                         }
                     )
                     .skeleton(isLoading: viewModel.isLoading)
@@ -48,7 +50,9 @@ public struct HomeView: View {
                         committees: displayCommittees,
                         tasks: displayTasks,
                         onTaskToggled: { taskId in
-                            if !viewModel.isLoading { viewModel.toggleTaskCompletion(taskId: taskId) }
+                            if !viewModel.isLoading {
+                                Task { await viewModel.toggleTaskCompletion(taskId: taskId) }
+                            }
                         }
                     )
                     .skeleton(isLoading: viewModel.isLoading)

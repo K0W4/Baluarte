@@ -1,7 +1,7 @@
 import Foundation
 
 public struct MockGoalService: GoalServiceProtocol {
-    public init() {}
+    nonisolated public init() {}
     
     public func fetchGoals(for chapterId: UUID) async throws -> [Goal] {
         return [

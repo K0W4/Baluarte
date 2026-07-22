@@ -1,7 +1,7 @@
 import Foundation
 
-public final class MockMemberService: MemberServiceProtocol {
-    public init() {}
+public struct MockMemberService: MemberServiceProtocol {
+    nonisolated public init() {}
     
     public func fetchMembers(for chapterId: UUID) async throws -> [Member] {
         let calendar = Calendar.current

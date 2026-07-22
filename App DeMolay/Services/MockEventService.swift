@@ -1,7 +1,7 @@
 import Foundation
 
 public struct MockEventService: EventServiceProtocol {
-    public init() {}
+    nonisolated public init() {}
     
     public func fetchEvents(for chapterId: UUID) async throws -> [Event] {
         return [
@@ -14,5 +14,9 @@ public struct MockEventService: EventServiceProtocol {
     
     public func createEvent(_ event: Event) async throws {
         try await Task.sleep(nanoseconds: 500_000_000)
+    }
+
+    public func confirmAttendance(eventId: UUID, userId: UUID) async throws {
+        try await Task.sleep(nanoseconds: 200_000_000)
     }
 }

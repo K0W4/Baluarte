@@ -7,46 +7,32 @@ public enum MembersFilter: String, CaseIterable, Identifiable {
     case ativos = "Ativos"
     case seniors = "Sêniors"
     case macons = "Maçons"
-    
+
     public var id: String { self.rawValue }
 }
 
+@MainActor
 @Observable
 public final class MembersViewModel {
     public var allMembers: [Member] = []
     public var searchText: String = ""
     public var selectedFilter: MembersFilter = .todos
-    
+
     public var isLoading = false
     public var errorMessage: String?
-    
-    public var committees: [Committee] = []
-    public var tasks: [ChapterTask] = []
-    
+
     private let memberService: MemberServiceProtocol
-    
+
     public init(memberService: MemberServiceProtocol = MockMemberService()) {
         self.memberService = memberService
     }
-    
-    @MainActor
+
     public func loadMembers() async {
         isLoading = true
         errorMessage = nil
         do {
             let mockChapterId = UUID()
             allMembers = try await memberService.fetchMembers(for: mockChapterId)
-            
-            let mockCommitteeId1 = UUID()
-            let mockCommitteeId2 = UUID()
-            committees = [
-                Committee(id: mockCommitteeId1, chapterId: mockChapterId, name: "Sindicância", chairmanId: nil, createdAt: Date()),
-                Committee(id: mockCommitteeId2, chapterId: mockChapterId, name: "Hospitalaria", chairmanId: nil, createdAt: Date())
-            ]
-            tasks = [
-                ChapterTask(id: UUID(), chapterId: mockChapterId, creatorId: UUID(), committeeId: mockCommitteeId1, title: "Entrevistar fulano", description: "", isCompleted: false, dueDate: Date().addingTimeInterval(86400), createdAt: Date()),
-                ChapterTask(id: UUID(), chapterId: mockChapterId, creatorId: UUID(), committeeId: mockCommitteeId1, title: "Votar em plenário", description: "", isCompleted: false, dueDate: Date().addingTimeInterval(-86400), createdAt: Date())
-            ]
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -54,10 +40,10 @@ public final class MembersViewModel {
             isLoading = false
         }
     }
-    
+
     public var filteredMembers: [Member] {
         var result = allMembers
-        
+
         switch selectedFilter {
         case .todos:
             break
@@ -68,16 +54,16 @@ public final class MembersViewModel {
         case .macons:
             result = result.filter { $0.isMason }
         }
-        
+
         if !searchText.isEmpty {
             result = result.filter { member in
                 member.fullName.localizedCaseInsensitiveContains(searchText) ||
                 (member.role?.localizedCaseInsensitiveContains(searchText) ?? false)
             }
         }
-        
+
         result.sort { $0.fullName < $1.fullName }
-        
+
         return result
     }
 }

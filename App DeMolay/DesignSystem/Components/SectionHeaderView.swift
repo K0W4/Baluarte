@@ -36,7 +36,7 @@ public struct SectionHeaderView: View {
                     action()
                 }) {
                     Image(systemName: actionIcon)
-                        .font(.system(size: 16 , weight: .semibold))
+                        .font(Typography.subheadline.weight(.semibold))
                         .foregroundColor(Theme.textPrimary)
                         .frame(width: 32, height: 32)
                         .background(Circle().fill(Theme.backgroundSecondary))

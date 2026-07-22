@@ -56,9 +56,11 @@ public struct CommitteeCard: View {
                             }) {
                                 Image(systemName: "circle")
                                     .foregroundColor(Theme.textSecondary)
+                                    .contentShape(Rectangle())
                             }
                             .buttonStyle(.plain)
-                            .accessibilityLabel("Marcar tarefa \(task.title) como concluída")
+                            .frame(width: 44, height: 44)
+                            .accessibilityLabel("Concluir tarefa: \(task.title)")
                             
                             HStack(alignment: .center) {
                                 Text(task.title)

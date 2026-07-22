@@ -20,8 +20,10 @@ public struct TaskCard: View {
                 Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
                     .font(Typography.title2)
                     .foregroundColor(task.isCompleted ? Theme.success : Theme.textSecondary)
+                    .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+            .frame(width: 44, height: 44)
             .accessibilityLabel(task.isCompleted ? "Desmarcar tarefa \(task.title)" : "Marcar tarefa \(task.title) como concluída")
             
             VStack(alignment: .leading, spacing: Spacing.sm) {
@@ -66,9 +68,5 @@ public struct TaskCard: View {
     
     private func formatDate(_ date: Date) -> String {
         Self.dateFormatter.string(from: date)
-    }
-    
-    private func isOverdue(_ date: Date) -> Bool {
-        date < Date()
     }
 }

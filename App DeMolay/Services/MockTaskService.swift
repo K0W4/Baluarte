@@ -1,7 +1,7 @@
 import Foundation
 
-public final class MockTaskService: TaskServiceProtocol {
-    public init() {}
+public struct MockTaskService: TaskServiceProtocol {
+    nonisolated public init() {}
     
     public static let committee1Id = UUID()
     public static let committee2Id = UUID()
@@ -27,5 +27,9 @@ public final class MockTaskService: TaskServiceProtocol {
     
     public func toggleTaskCompletion(taskId: UUID, isCompleted: Bool) async throws {
         try await Task.sleep(nanoseconds: 200_000_000)
+    }
+
+    public func deleteTask(taskId: UUID) async throws {
+        try await Task.sleep(nanoseconds: 300_000_000)
     }
 }

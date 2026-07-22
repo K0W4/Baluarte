@@ -164,9 +164,8 @@ public struct CalendarView: View {
             } else {
                 ForEach(selectedEvents) { event in
                     EventCard(event: event) {
-                        HapticManager.shared.impact(style: .medium)
-                        withAnimation {
-                            if !viewModel.isLoading { viewModel.confirmAttendance(eventId: event.id) }
+                        if !viewModel.isLoading {
+                            Task { await viewModel.confirmAttendance(eventId: event.id) }
                         }
                     }
                     .skeleton(isLoading: viewModel.isLoading)
