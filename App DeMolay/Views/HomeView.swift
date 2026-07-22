@@ -7,6 +7,19 @@ public struct HomeView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: Spacing.xl) {
+                    if let errorMessage = viewModel.errorMessage {
+                        ErrorBannerView(
+                            message: errorMessage,
+                            onRetry: {
+                                Task { await viewModel.loadData() }
+                            },
+                            onDismiss: {
+                                withAnimation { viewModel.errorMessage = nil }
+                            }
+                        )
+                        .padding(.horizontal, Spacing.screenEdgePadding)
+                    }
+                    
                     let displayEvents = viewModel.isLoading ? Event.skeletonList : viewModel.events
                     let displayGoals = viewModel.isLoading ? Goal.skeletonList : viewModel.goals
                     let displayCommittees = viewModel.isLoading ? Committee.skeletonList : viewModel.committees
@@ -39,7 +52,9 @@ public struct HomeView: View {
             .background(Theme.backgroundPrimary)
             .navigationTitle("Olá, Kowa")
             .toolbarTitleDisplayMode(.inlineLarge)
-            
+            .refreshable {
+                await viewModel.loadData()
+            }
             .task {
                 await viewModel.loadData()
             }
@@ -59,7 +74,6 @@ private struct EventsSection: View {
                 actionLabel: "Adicionar evento",
                 actionHint: "Toca duas vezes para criar um novo evento"
             ) {
-                // Action
             }
             .padding(.horizontal, Spacing.screenEdgePadding)
 
@@ -96,7 +110,6 @@ private struct GoalsSection: View {
                 actionLabel: "Adicionar meta",
                 actionHint: "Toca duas vezes para criar uma nova meta"
             ) {
-                // Action
             }
             .padding(.horizontal, Spacing.screenEdgePadding)
             
@@ -132,7 +145,6 @@ private struct CommitteesSection: View {
                 actionLabel: "Adicionar comissão",
                 actionHint: "Toca duas vezes para criar uma nova comissão"
             ) {
-                // Action
             }
             
             if committees.isEmpty {

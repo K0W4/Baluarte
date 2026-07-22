@@ -20,6 +20,18 @@ public struct MembersView: View {
                 
                 ScrollView {
                     LazyVStack(spacing: Spacing.md) {
+                        if let errorMessage = viewModel.errorMessage {
+                            ErrorBannerView(
+                                message: errorMessage,
+                                onRetry: {
+                                    Task { await viewModel.loadMembers() }
+                                },
+                                onDismiss: {
+                                    withAnimation { viewModel.errorMessage = nil }
+                                }
+                            )
+                        }
+                        
                         let members = viewModel.isLoading ? Member.skeletonList : viewModel.filteredMembers
                         
                         HStack {
@@ -43,6 +55,9 @@ public struct MembersView: View {
                     .padding(.vertical, Spacing.md)
                 }
                 .background(Theme.backgroundPrimary)
+                .refreshable {
+                    await viewModel.loadMembers()
+                }
             }
             .navigationTitle("Membros")
             .toolbarTitleDisplayMode(.inlineLarge)

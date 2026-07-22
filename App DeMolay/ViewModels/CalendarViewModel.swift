@@ -11,7 +11,7 @@ public final class CalendarViewModel {
     public var errorMessage: String?
     
     private let eventService: EventServiceProtocol
-    private let currentUserId = UUID(uuidString: "11111111-1111-1111-1111-111111111111")!
+    private let currentUserId = UUID()
     
     public init(eventService: EventServiceProtocol = MockEventService()) {
         self.eventService = eventService

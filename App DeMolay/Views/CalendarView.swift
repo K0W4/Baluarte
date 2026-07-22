@@ -12,6 +12,19 @@ public struct CalendarView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: Spacing.xl) {
+                    if let errorMessage = viewModel.errorMessage {
+                        ErrorBannerView(
+                            message: errorMessage,
+                            onRetry: {
+                                Task { await viewModel.loadEvents() }
+                            },
+                            onDismiss: {
+                                withAnimation { viewModel.errorMessage = nil }
+                            }
+                        )
+                        .padding(.horizontal, Spacing.screenEdgePadding)
+                    }
+                    
                     calendarHeader
                     daysGrid
                     eventsList
@@ -32,6 +45,9 @@ public struct CalendarView: View {
                     }
                     .foregroundColor(Theme.accent)
                 }
+            }
+            .refreshable {
+                await viewModel.loadEvents()
             }
             .task {
                 await viewModel.loadEvents()
@@ -126,7 +142,6 @@ public struct CalendarView: View {
                 actionLabel: "Adicionar evento",
                 actionHint: "Toca duas vezes para adicionar evento no calendário"
             ) {
-                // Action
             }
             .padding(.horizontal, Spacing.screenEdgePadding)
             

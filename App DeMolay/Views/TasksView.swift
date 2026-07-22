@@ -2,6 +2,7 @@ import SwiftUI
 
 public struct TasksView: View {
     @State private var viewModel = TasksViewModel()
+    @State private var taskToDelete: ChapterTask?
     
     public init() {}
     
@@ -12,8 +13,25 @@ public struct TasksView: View {
                 
                 if viewModel.activeTasks.isEmpty && !viewModel.isLoading {
                     ScrollView {
-                        EmptyStateCard(cardType: .task)
-                            .padding(Spacing.screenEdgePadding)
+                        VStack(spacing: Spacing.md) {
+                            if let errorMessage = viewModel.errorMessage {
+                                ErrorBannerView(
+                                    message: errorMessage,
+                                    onRetry: {
+                                        Task { await viewModel.loadData() }
+                                    },
+                                    onDismiss: {
+                                        withAnimation { viewModel.errorMessage = nil }
+                                    }
+                                )
+                            }
+                            
+                            EmptyStateCard(cardType: .task)
+                        }
+                        .padding(Spacing.screenEdgePadding)
+                    }
+                    .refreshable {
+                        await viewModel.loadData()
                     }
                 } else {
                     let displayAllTasks = viewModel.isLoading ? ChapterTask.skeletonList : viewModel.allTasks
@@ -22,6 +40,20 @@ public struct TasksView: View {
                     let displayCommitteeTasks = viewModel.isLoading ? [mockCommitteeId: ChapterTask.skeletonList] : viewModel.committeeTasks
                     
                     VStack(spacing: 0) {
+                        if let errorMessage = viewModel.errorMessage {
+                            ErrorBannerView(
+                                message: errorMessage,
+                                onRetry: {
+                                    Task { await viewModel.loadData() }
+                                },
+                                onDismiss: {
+                                    withAnimation { viewModel.errorMessage = nil }
+                                }
+                            )
+                            .padding(.horizontal, Spacing.screenEdgePadding)
+                            .padding(.top, Spacing.sm)
+                        }
+                        
                         if displayAllTasks.count > 0 {
                             TaskProgressCard(
                                 completed: displayAllTasks.filter { $0.isCompleted }.count,
@@ -47,11 +79,7 @@ public struct TasksView: View {
                                         .skeleton(isLoading: viewModel.isLoading)
                                         .swipeActions(edge: .trailing) {
                                             Button(role: .destructive) {
-                                                if !viewModel.isLoading {
-                                                    Task {
-                                                        await viewModel.deleteTask(task: task)
-                                                    }
-                                                }
+                                                taskToDelete = task
                                             } label: {
                                                 Label("Excluir", systemImage: "trash")
                                             }
@@ -88,11 +116,7 @@ public struct TasksView: View {
                                             .skeleton(isLoading: viewModel.isLoading)
                                             .swipeActions(edge: .trailing) {
                                                 Button(role: .destructive) {
-                                                    if !viewModel.isLoading {
-                                                        Task {
-                                                            await viewModel.deleteTask(task: task)
-                                                        }
-                                                    }
+                                                    taskToDelete = task
                                                 } label: {
                                                     Label("Excluir", systemImage: "trash")
                                                 }
@@ -117,6 +141,9 @@ public struct TasksView: View {
                         }
                         .listStyle(.plain)
                         .scrollContentBackground(.hidden)
+                        .refreshable {
+                            await viewModel.loadData()
+                        }
                     }
                 }
             }
@@ -125,12 +152,36 @@ public struct TasksView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
-                        let generator = UIImpactFeedbackGenerator(style: .medium)
-                        generator.impactOccurred()
+                        HapticManager.shared.impact(style: .medium)
                     }) {
                         Image(systemName: "plus")
+                            .font(.system(size: 16, weight: .bold))
                             .foregroundColor(Theme.accent)
+                            .frame(width: 32, height: 32)
+                            .background(Circle().fill(Theme.accent.opacity(0.15)))
                     }
+                }
+            }
+            .confirmationDialog(
+                "Excluir Tarefa",
+                isPresented: Binding(
+                    get: { taskToDelete != nil },
+                    set: { if !$0 { taskToDelete = nil } }
+                ),
+                titleVisibility: .visible
+            ) {
+                Button("Excluir", role: .destructive) {
+                    if let task = taskToDelete {
+                        Task { await viewModel.deleteTask(task: task) }
+                    }
+                    taskToDelete = nil
+                }
+                Button("Cancelar", role: .cancel) {
+                    taskToDelete = nil
+                }
+            } message: {
+                if let task = taskToDelete {
+                    Text("Tem certeza que deseja excluir \"\(task.title)\"? Esta ação não pode ser desfeita.")
                 }
             }
             .task {
