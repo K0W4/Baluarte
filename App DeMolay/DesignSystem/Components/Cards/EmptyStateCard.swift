@@ -78,8 +78,6 @@ public struct EmptyStateCard: View {
                 Text(cardType.buttonText)
             }
             .buttonStyle(PrimaryButtonStyle())
-            .disabled(true)
-            .opacity(0.5)
         }
         .padding(Spacing.md)
         .background(Theme.cardBackground)

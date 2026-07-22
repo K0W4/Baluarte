@@ -37,7 +37,7 @@ public struct ProgressRingCard: View {
         if percent < 50 { return (Theme.destructive, Theme.progressLowEnd) }
         if percent < 80 { return (Theme.warning, Theme.progressMediumEnd) }
         if percent < 100 { return (Theme.success, Theme.progressHighEnd) }
-        return (Theme.accent, Theme.accent)
+        return (Theme.progressHighEnd, Theme.progressAdvancedEnd)
     }
     
     private var ringGradient: AngularGradient {
@@ -68,20 +68,12 @@ public struct ProgressRingCard: View {
                     .opacity(goal.progressPercentage > 0 ? 1.0 : 0.0)
                 
                 if animatedProgress > 1.0 {
-                    let overlap = CGFloat(animatedProgress) - 1.0
-                    
-                    let angle = Angle.degrees(360 * Double(overlap) - 90)
-                    let radius = size / 2
-                    Circle()
-                        .fill(Theme.textPrimary)
-                        .frame(width: lineWidth - 2, height: lineWidth - 2)
-                        .offset(x: cos(angle.radians) * radius, y: sin(angle.radians) * radius)
-                        .shadow(color: Theme.textPrimary.opacity(0.4), radius: 5, x: 0, y: 0)
-                    
-                    Circle()
-                        .trim(from: 0, to: min(overlap, 1.0))
-                        .stroke(ringGradient, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
-                        .rotationEffect(.degrees(-90))
+                    OverflowRing(
+                        overlap: CGFloat(animatedProgress) - 1.0,
+                        size: size,
+                        lineWidth: lineWidth,
+                        ringGradient: ringGradient
+                    )
                 }
                 
                 VStack(spacing: Spacing.xxs) {
@@ -142,6 +134,29 @@ public struct ProgressRingCard: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Meta \(goal.title), \(progressPercentageValue) por cento completo, \(formattedCurrent) de \(formattedTarget)")
         .accessibilityValue("\(progressPercentageValue) por cento")
+    }
+}
+
+private struct OverflowRing: View {
+    let overlap: CGFloat
+    let size: CGFloat
+    let lineWidth: CGFloat
+    let ringGradient: AngularGradient
+    
+    var body: some View {
+        let angle = Angle.degrees(360 * Double(overlap) - 90)
+        let radius = size / 2
+        
+        Circle()
+            .fill(Theme.textPrimary)
+            .frame(width: lineWidth - 2, height: lineWidth - 2)
+            .offset(x: cos(angle.radians) * radius, y: sin(angle.radians) * radius)
+            .shadow(color: Theme.textPrimary.opacity(0.4), radius: 5, x: 0, y: 0)
+        
+        Circle()
+            .trim(from: 0, to: min(overlap, 1.0))
+            .stroke(ringGradient, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
+            .rotationEffect(.degrees(-90))
     }
 }
 

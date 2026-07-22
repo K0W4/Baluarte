@@ -43,6 +43,10 @@ public final class TasksViewModel {
         return Dictionary(grouping: tasksWithCommittee, by: { $0.committeeId ?? UUID() })
     }
     
+    public var completedTasks: [ChapterTask] {
+        allTasks.filter { $0.isCompleted }
+    }
+    
     @MainActor
     public func toggleTaskCompletion(task: ChapterTask) async {
         do {

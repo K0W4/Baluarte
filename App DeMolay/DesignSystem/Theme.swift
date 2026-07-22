@@ -28,4 +28,15 @@ public struct Theme {
     public static let progressLowEnd = Color(UIColor.systemPink)
     public static let progressMediumEnd = Color(UIColor.systemYellow)
     public static let progressHighEnd = Color(UIColor.systemMint)
+    public static let progressAdvancedEnd = Color(UIColor.systemBlue)
+}
+
+public struct CardButtonStyle: ButtonStyle {
+    public init() {}
+    
+    public func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.98 : 1.0)
+            .animation(.easeInOut(duration: 0.2), value: configuration.isPressed)
+    }
 }

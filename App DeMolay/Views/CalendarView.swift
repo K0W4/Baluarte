@@ -41,9 +41,14 @@ public struct CalendarView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Hoje") {
                         HapticManager.shared.impact(style: .light)
+                        let today = Date()
                         withAnimation {
-                            viewModel.currentMonth = Date()
-                            viewModel.selectedDate = Date()
+                            viewModel.selectedDate = today
+                        }
+                        if !Calendar.current.isDate(viewModel.currentMonth, equalTo: today, toGranularity: .month) {
+                            withAnimation(.easeInOut(duration: 0.3)) {
+                                viewModel.currentMonth = today
+                            }
                         }
                     }
                     .foregroundColor(Theme.accent)

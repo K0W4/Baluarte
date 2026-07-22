@@ -14,7 +14,7 @@ struct ContentView: View {
         TabView(selection: $selectedTab) {
             HomeView()
                 .tabItem {
-                    Label("Início", systemImage: "house.fill")
+                    Label("Início", systemImage: selectedTab == .home ? "house.fill" : "house")
                 }
                 .tag(Tab.home)
             
@@ -26,13 +26,13 @@ struct ContentView: View {
             
             MembersView()
                 .tabItem {
-                    Label("Membros", systemImage: "person.3.fill")
+                    Label("Membros", systemImage: selectedTab == .members ? "person.3.fill" : "person.3")
                 }
                 .tag(Tab.members)
             
             TasksView()
                 .tabItem {
-                    Label("Tarefas", systemImage: "checklist")
+                    Label("Tarefas", systemImage: selectedTab == .tasks ? "list.clipboard.fill" : "list.clipboard")
                 }
                 .tag(Tab.tasks)
         }

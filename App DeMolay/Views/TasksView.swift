@@ -138,6 +138,38 @@ public struct TasksView: View {
                                     .listRowBackground(Color.clear)
                                 }
                             }
+                            
+                            let completed = viewModel.completedTasks
+                            if !completed.isEmpty {
+                                Section {
+                                    DisclosureGroup("Mostrar concluídas (\(completed.count))") {
+                                        ForEach(completed) { task in
+                                            TaskCard(task: task) {
+                                                if !viewModel.isLoading {
+                                                    Task { await viewModel.toggleTaskCompletion(task: task) }
+                                                }
+                                            }
+                                            .skeleton(isLoading: viewModel.isLoading)
+                                            .swipeActions(edge: .trailing) {
+                                                Button(role: .destructive) {
+                                                    taskToDelete = task
+                                                } label: {
+                                                    Label("Excluir", systemImage: "trash")
+                                                }
+                                            }
+                                            .listRowSeparator(.hidden)
+                                            .listRowBackground(Color.clear)
+                                            .listRowInsets(EdgeInsets(top: Spacing.sm, leading: Spacing.screenEdgePadding, bottom: Spacing.sm, trailing: Spacing.screenEdgePadding))
+                                        }
+                                    }
+                                    .tint(Theme.accent)
+                                    .font(Typography.headline)
+                                    .padding(.vertical, Spacing.sm)
+                                    .listRowInsets(EdgeInsets(top: Spacing.md, leading: Spacing.screenEdgePadding, bottom: Spacing.md, trailing: Spacing.screenEdgePadding))
+                                    .listRowBackground(Color.clear)
+                                    .listRowSeparator(.hidden)
+                                }
+                            }
                         }
                         .listStyle(.plain)
                         .scrollContentBackground(.hidden)

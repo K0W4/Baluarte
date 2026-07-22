@@ -78,10 +78,13 @@ public struct CommitteeCard: View {
                     }
                     
                     if tasks.count > 3 {
-                        Text("+ \(tasks.count - 3) pendentes")
-                            .font(Typography.caption2)
-                            .foregroundColor(Theme.textSecondary)
-                            .padding(.top, Spacing.xxs)
+                        Button(action: {}) {
+                            Text("Ver as \(tasks.count - 3) tarefas restantes")
+                                .font(Typography.caption1)
+                                .foregroundColor(Theme.accent)
+                                .padding(.top, Spacing.xxs)
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
             }

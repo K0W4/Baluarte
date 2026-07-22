@@ -7,6 +7,13 @@ public struct HomeView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: Spacing.xl) {
+                    Text(viewModel.isLoading ? "Carregando resumo..." : "Você tem \(viewModel.tasks.filter { !$0.isCompleted }.count) tarefas pendentes.")
+                        .font(Typography.subheadline)
+                        .foregroundColor(Theme.textSecondary)
+                        .padding(.horizontal, Spacing.screenEdgePadding)
+                        .padding(.top, -Spacing.sm)
+                        .skeleton(isLoading: viewModel.isLoading)
+                        
                     if let errorMessage = viewModel.errorMessage {
                         ErrorBannerView(
                             message: errorMessage,
@@ -50,7 +57,7 @@ public struct HomeView: View {
                 .padding(.top, Spacing.screenEdgePadding)
             }
             .background(Theme.backgroundPrimary)
-            .navigationTitle("Olá, Kowa")
+            .navigationTitle("Olá, Irmão")
             .toolbarTitleDisplayMode(.inlineLarge)
             .refreshable {
                 await viewModel.loadData()
