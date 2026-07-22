@@ -35,7 +35,7 @@ public struct MembersView: View {
                         let members = viewModel.isLoading ? Member.skeletonList : viewModel.filteredMembers
                         
                         HStack {
-                            Text("\(members.count) membros")
+                            Text(viewModel.selectedFilter == .todos ? "\(members.count) membros" : "\(members.count) de \(viewModel.allMembers.count) membros")
                                 .font(Typography.subheadline)
                                 .foregroundColor(Theme.textSecondary)
                                 .skeleton(isLoading: viewModel.isLoading)

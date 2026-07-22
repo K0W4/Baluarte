@@ -2,6 +2,7 @@ import SwiftUI
 
 public struct CalendarView: View {
     @State private var viewModel = CalendarViewModel()
+    @State private var monthTransitionDirection: Edge = .trailing
     
     private let calendar = Calendar.current
     private let daysInWeek = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"]
@@ -27,6 +28,8 @@ public struct CalendarView: View {
                     
                     calendarHeader
                     daysGrid
+                        .id(viewModel.currentMonth)
+                        .transition(.push(from: monthTransitionDirection))
                     eventsList
                 }
                 .padding(.vertical, Spacing.lg)
@@ -44,6 +47,7 @@ public struct CalendarView: View {
                         }
                     }
                     .foregroundColor(Theme.accent)
+                    .disabled(Calendar.current.isDateInToday(viewModel.selectedDate) && Calendar.current.isDate(viewModel.currentMonth, equalTo: Date(), toGranularity: .month))
                 }
             }
             .refreshable {
@@ -176,8 +180,11 @@ public struct CalendarView: View {
     
     private func changeMonth(by value: Int) {
         HapticManager.shared.impact(style: .light)
+        monthTransitionDirection = value > 0 ? .trailing : .leading
         if let newMonth = calendar.date(byAdding: .month, value: value, to: viewModel.currentMonth) {
-            viewModel.currentMonth = newMonth
+            withAnimation(.easeInOut(duration: 0.3)) {
+                viewModel.currentMonth = newMonth
+            }
         }
     }
     
@@ -239,7 +246,7 @@ private struct DayCell: View {
                 
                 Circle()
                     .fill(hasEvents ? Theme.accent : Color.clear)
-                    .frame(width: 6, height: 6)
+                    .frame(width: 8, height: 8)
             }
             .frame(width: 44, height: 44)
             .contentShape(Rectangle())

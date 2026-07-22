@@ -19,4 +19,13 @@ public struct Theme {
 
     public static let border = Color(UIColor.separator)
     public static let cardBackground = Color(UIColor.secondarySystemBackground)
+
+    public static let tagAdmin = Color(UIColor.systemRed)
+    public static let tagSenior = Color(UIColor.systemBlue)
+    public static let tagMason = Color(UIColor.systemOrange)
+    public static let tagActive = Color(UIColor.systemGreen)
+    
+    public static let progressLowEnd = Color(UIColor.systemPink)
+    public static let progressMediumEnd = Color(UIColor.systemYellow)
+    public static let progressHighEnd = Color(UIColor.systemMint)
 }

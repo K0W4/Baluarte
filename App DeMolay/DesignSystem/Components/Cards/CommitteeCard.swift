@@ -56,9 +56,9 @@ public struct CommitteeCard: View {
                             }) {
                                 Image(systemName: "circle")
                                     .foregroundColor(Theme.textSecondary)
-                                    .font(Typography.headline)
                             }
                             .buttonStyle(.plain)
+                            .accessibilityLabel("Marcar tarefa \(task.title) como concluída")
                             
                             HStack(alignment: .center) {
                                 Text(task.title)
@@ -95,11 +95,15 @@ public struct CommitteeCard: View {
         )
     }
     
-    private func dueDateString(from date: Date) -> String {
+    private static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "pt_BR")
         formatter.dateFormat = "dd/MM"
-        return formatter.string(from: date)
+        return formatter
+    }()
+    
+    private func dueDateString(from date: Date) -> String {
+        Self.dateFormatter.string(from: date)
     }
 }
 

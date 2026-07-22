@@ -21,11 +21,15 @@ public struct EventCard: View {
         return "star.fill"
     }
     
-    private var dateString: String {
+    private static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "pt_BR")
         formatter.dateFormat = "EEEE, dd 'de' MMMM 'às' HH:mm'.'"
-        let formatted = formatter.string(from: event.scheduledDate)
+        return formatter
+    }()
+    
+    private var dateString: String {
+        let formatted = Self.dateFormatter.string(from: event.scheduledDate)
         return formatted.prefix(1).capitalized + formatted.dropFirst()
     }
     
@@ -60,15 +64,17 @@ public struct EventCard: View {
                     .foregroundColor(Theme.textSecondary)
             }
             
-            HStack(alignment: .top, spacing: Spacing.xxs) {
-                Text("Detalhes:")
-                    .font(Typography.subheadline)
-                    .foregroundColor(Theme.textPrimary)
-                
-                Text(event.notes?.isEmpty == false ? (event.notes ?? "") : "Não informada")
-                    .font(Typography.subheadline)
-                    .foregroundColor(Theme.textSecondary)
-                    .lineLimit(1)
+            if let notes = event.notes, !notes.isEmpty {
+                HStack(alignment: .top, spacing: Spacing.xxs) {
+                    Text("Detalhes:")
+                        .font(Typography.subheadline)
+                        .foregroundColor(Theme.textPrimary)
+                    
+                    Text(notes)
+                        .font(Typography.subheadline)
+                        .foregroundColor(Theme.textSecondary)
+                        .lineLimit(1)
+                }
             }
             
             Button(action: {
@@ -89,6 +95,7 @@ public struct EventCard: View {
                 .clipShape(Capsule())
             }
             .buttonStyle(.plain)
+            .accessibilityLabel(isUserConfirmed ? "Cancelar presença no evento \(event.title)" : "Confirmar presença no evento \(event.title)")
         }
         .padding(Spacing.md)
         .background(Theme.cardBackground)

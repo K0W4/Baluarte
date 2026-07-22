@@ -1,112 +1,85 @@
 import SwiftUI
 
-enum CardType {
+public enum CardType {
     case event
     case goal
     case committee
     case member
     case task
+    
+    var icon: String {
+        switch self {
+        case .event: return "calendar.badge.exclamationmark"
+        case .goal: return "target"
+        case .committee: return "person.2.fill"
+        case .member: return "person.fill.xmark"
+        case .task: return "checklist.checked"
+        }
+    }
+    
+    var title: String {
+        switch self {
+        case .event: return "Nenhum evento agendado"
+        case .goal: return "Nenhuma meta definida"
+        case .committee: return "Nenhuma comissão criada"
+        case .member: return "Nenhum membro encontrado"
+        case .task: return "Tudo em dia!"
+        }
+    }
+    
+    var subtitle: String {
+        switch self {
+        case .event: return "Agende um evento e ele aparecerá aqui."
+        case .goal: return "Defina uma meta e ela aparecerá aqui."
+        case .committee: return "Crie uma comissão e ela aparecerá aqui."
+        case .member: return "Adicione um membro e ele aparecerá aqui."
+        case .task: return "Crie uma tarefa e ela aparecerá aqui."
+        }
+    }
+    
+    var buttonText: String {
+        switch self {
+        case .event: return "Agendar evento"
+        case .goal: return "Definir meta"
+        case .committee: return "Criar comissão"
+        case .member: return "Adicionar membro"
+        case .task: return "Criar tarefa"
+        }
+    }
 }
 
-struct EmptyStateCard: View {
+public struct EmptyStateCard: View {
     let cardType: CardType
+    
+    public init(cardType: CardType) {
+        self.cardType = cardType
+    }
 
-    var body: some View {
+    public var body: some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
             VStack(alignment: .leading, spacing: Spacing.xs) {
                 HStack(alignment: .center, spacing: Spacing.xs) {
-                    switch cardType {
-                    case .event:
-                        Image(systemName: "calendar.badge.exclamationmark")
-                            .font(Typography.title3)
-                            .foregroundStyle(Theme.textPrimary)
+                    Image(systemName: cardType.icon)
+                        .font(Typography.title3)
+                        .foregroundStyle(Theme.textPrimary)
 
-                        Text("Nenhum evento agendado")
-                            .font(Typography.title3)
-                            .foregroundStyle(Theme.textPrimary)
-                        
-                    case .goal:
-                        Image(systemName: "target")
-                            .font(Typography.title3)
-                            .foregroundStyle(Theme.textPrimary)
-
-                        Text("Nenhuma meta definida")
-                            .font(Typography.title3)
-                            .foregroundStyle(Theme.textPrimary)
-                        
-                    case .committee:
-                        Image(systemName: "person.2.fill")
-                            .font(Typography.title3)
-                            .foregroundStyle(Theme.textPrimary)
-
-                        Text("Nenhuma comissão criada")
-                            .font(Typography.title3)
-                            .foregroundStyle(Theme.textPrimary)
-                        
-                    case .member:
-                        Image(systemName: "person.fill.xmark")
-                            .font(Typography.title3)
-                            .foregroundStyle(Theme.textPrimary)
-
-                        Text("Nenhum membro encontrado")
-                            .font(Typography.title3)
-                            .foregroundStyle(Theme.textPrimary)
-                        
-                    case .task:
-                        Image(systemName: "checklist.checked")
-                            .font(Typography.title3)
-                            .foregroundStyle(Theme.textPrimary)
-
-                        Text("Tudo em dia!")
-                            .font(Typography.title3)
-                            .foregroundStyle(Theme.textPrimary)
-                    }
+                    Text(cardType.title)
+                        .font(Typography.title3)
+                        .foregroundStyle(Theme.textPrimary)
                 }
                 
-                switch cardType {
-                case .event:
-                    Text("Agende um evento e ele aparecerá aqui.")
-                        .font(Typography.footnote)
-                        .foregroundStyle(Theme.textSecondary)
-                    
-                case .goal:
-                    Text("Defina uma meta e ela aparecerá aqui.")
-                        .font(Typography.footnote)
-                        .foregroundStyle(Theme.textSecondary)
-                    
-                case .committee:
-                    Text("Crie uma comissão e ela aparecerá aqui.")
-                        .font(Typography.footnote)
-                        .foregroundStyle(Theme.textSecondary)
-                    
-                case .member:
-                    Text("Adicione um membro e ele aparecerá aqui.")
-                        .font(Typography.footnote)
-                        .foregroundStyle(Theme.textSecondary)
-                    
-                case .task:
-                    Text("Crie uma tarefa e ela aparecerá aqui.")
-                        .font(Typography.footnote)
-                        .foregroundStyle(Theme.textSecondary)
-                }
+                Text(cardType.subtitle)
+                    .font(Typography.footnote)
+                    .foregroundStyle(Theme.textSecondary)
             }
             
             Button {
             } label: {
-                switch cardType {
-                case .event:
-                    Text("Agendar evento")
-                case .goal:
-                    Text("Definir meta")
-                case .committee:
-                    Text("Criar comissão")
-                case .member:
-                    Text("Adicionar membro")
-                case .task:
-                    Text("Criar tarefa")
-                }
+                Text(cardType.buttonText)
             }
             .buttonStyle(PrimaryButtonStyle())
+            .disabled(true)
+            .opacity(0.5)
         }
         .padding(Spacing.md)
         .background(Theme.cardBackground)
@@ -116,20 +89,15 @@ struct EmptyStateCard: View {
                 .stroke(Theme.border, lineWidth: 1)
         )
     }
-
 }
 
 #Preview {
     ScrollView {
         VStack(alignment: .leading, spacing: Spacing.xl) {
             EmptyStateCard(cardType: .event)
-            
             EmptyStateCard(cardType: .goal)
-            
             EmptyStateCard(cardType: .committee)
-            
             EmptyStateCard(cardType: .member)
-            
             EmptyStateCard(cardType: .task)
         }
         .padding(Spacing.screenEdgePadding)

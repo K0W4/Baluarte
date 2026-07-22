@@ -4,8 +4,6 @@ public final class MockMemberService: MemberServiceProtocol {
     public init() {}
     
     public func fetchMembers(for chapterId: UUID) async throws -> [Member] {
-        try await Task.sleep(nanoseconds: 800_000_000)
-        
         let calendar = Calendar.current
         let date1 = calendar.date(byAdding: .year, value: -20, to: Date()) ?? Date()
         let date2 = calendar.date(byAdding: .year, value: -22, to: Date()) ?? Date()

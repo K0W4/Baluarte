@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import SwiftUI
 
 @Observable
 public final class CalendarViewModel {
@@ -27,7 +28,9 @@ public final class CalendarViewModel {
         } catch {
             errorMessage = error.localizedDescription
         }
-        isLoading = false
+        withAnimation(.easeInOut(duration: 0.3)) {
+            isLoading = false
+        }
     }
     
     public func events(for date: Date) -> [Event] {

@@ -25,7 +25,9 @@ public final class TasksViewModel {
         } catch {
             errorMessage = error.localizedDescription
         }
-        isLoading = false
+        withAnimation(.easeInOut(duration: 0.3)) {
+            isLoading = false
+        }
     }
     
     public var activeTasks: [ChapterTask] {

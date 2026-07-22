@@ -26,18 +26,18 @@ public struct ProgressRingCard: View {
     
     private var baseColor: Color {
         let percent = Int(goal.progressPercentage * 100)
-        if percent < 50 { return .red }
-        if percent < 80 { return .orange }
-        if percent < 100 { return .green }
-        return .blue
+        if percent < 50 { return Theme.destructive }
+        if percent < 80 { return Theme.warning }
+        if percent < 100 { return Theme.success }
+        return Theme.accent
     }
     
     private var gradientColors: (start: Color, end: Color) {
         let percent = Int(goal.progressPercentage * 100)
-        if percent < 50 { return (.red, .pink) }
-        if percent < 80 { return (.orange, .yellow) }
-        if percent < 100 { return (.green, .mint) }
-        return (.cyan, .cyan)
+        if percent < 50 { return (Theme.destructive, Theme.progressLowEnd) }
+        if percent < 80 { return (Theme.warning, Theme.progressMediumEnd) }
+        if percent < 100 { return (Theme.success, Theme.progressHighEnd) }
+        return (Theme.accent, Theme.accent)
     }
     
     private var ringGradient: AngularGradient {
@@ -73,10 +73,10 @@ public struct ProgressRingCard: View {
                     let angle = Angle.degrees(360 * Double(overlap) - 90)
                     let radius = size / 2
                     Circle()
-                        .fill(Color.black)
+                        .fill(Theme.textPrimary)
                         .frame(width: lineWidth - 2, height: lineWidth - 2)
                         .offset(x: cos(angle.radians) * radius, y: sin(angle.radians) * radius)
-                        .shadow(color: .black.opacity(0.4), radius: 5, x: 0, y: 0)
+                        .shadow(color: Theme.textPrimary.opacity(0.4), radius: 5, x: 0, y: 0)
                     
                     Circle()
                         .trim(from: 0, to: min(overlap, 1.0))
@@ -139,6 +139,9 @@ public struct ProgressRingCard: View {
                 animatedProgress = newValue
             }
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Meta \(goal.title), \(progressPercentageValue) por cento completo, \(formattedCurrent) de \(formattedTarget)")
+        .accessibilityValue("\(progressPercentageValue) por cento")
     }
 }
 

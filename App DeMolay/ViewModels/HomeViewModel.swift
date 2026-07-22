@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import SwiftUI
 
 @Observable
 public final class HomeViewModel {
@@ -73,6 +74,8 @@ public final class HomeViewModel {
             errorMessage = error.localizedDescription
         }
         
-        isLoading = false
+        withAnimation(.easeInOut(duration: 0.3)) {
+            isLoading = false
+        }
     }
 }

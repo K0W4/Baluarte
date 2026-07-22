@@ -22,6 +22,7 @@ public struct TaskCard: View {
                     .foregroundColor(task.isCompleted ? Theme.success : Theme.textSecondary)
             }
             .buttonStyle(.plain)
+            .accessibilityLabel(task.isCompleted ? "Desmarcar tarefa \(task.title)" : "Marcar tarefa \(task.title) como concluída")
             
             VStack(alignment: .leading, spacing: Spacing.sm) {
                 HStack(alignment: .top, spacing: Spacing.xs) {
@@ -56,11 +57,15 @@ public struct TaskCard: View {
         )
     }
     
-    private func formatDate(_ date: Date) -> String {
+    private static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "pt_BR")
         formatter.dateFormat = "dd/MM/yy"
-        return formatter.string(from: date)
+        return formatter
+    }()
+    
+    private func formatDate(_ date: Date) -> String {
+        Self.dateFormatter.string(from: date)
     }
     
     private func isOverdue(_ date: Date) -> Bool {

@@ -141,6 +141,7 @@ public struct TasksView: View {
                         }
                         .listStyle(.plain)
                         .scrollContentBackground(.hidden)
+                        .contentMargins(.bottom, 60)
                         .refreshable {
                             await viewModel.loadData()
                         }
@@ -155,10 +156,7 @@ public struct TasksView: View {
                         HapticManager.shared.impact(style: .medium)
                     }) {
                         Image(systemName: "plus")
-                            .font(.system(size: 16, weight: .bold))
                             .foregroundColor(Theme.accent)
-                            .frame(width: 32, height: 32)
-                            .background(Circle().fill(Theme.accent.opacity(0.15)))
                     }
                 }
             }

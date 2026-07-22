@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import SwiftUI
 
 public enum MembersFilter: String, CaseIterable, Identifiable {
     case todos = "Todos"
@@ -49,7 +50,9 @@ public final class MembersViewModel {
         } catch {
             errorMessage = error.localizedDescription
         }
-        isLoading = false
+        withAnimation(.easeInOut(duration: 0.3)) {
+            isLoading = false
+        }
     }
     
     public var filteredMembers: [Member] {

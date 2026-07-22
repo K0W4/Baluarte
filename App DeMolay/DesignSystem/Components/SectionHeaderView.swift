@@ -32,6 +32,7 @@ public struct SectionHeaderView: View {
             
             if let actionIcon = actionIcon, let action = action {
                 Button(action: {
+                    HapticManager.shared.impact(style: .light)
                     action()
                 }) {
                     Image(systemName: actionIcon)

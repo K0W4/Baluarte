@@ -41,21 +41,23 @@ public struct MemberCard: View {
                 
                 HStack(spacing: Spacing.xs) {
                     if member.accessLevel == "admin" {
-                        tagView(text: "Admin", color: .red)
+                        tagView(text: "Admin", color: Theme.tagAdmin)
                     }
                     if member.isSenior {
-                        tagView(text: "Sênior", color: .blue)
+                        tagView(text: "Sênior", color: Theme.tagSenior)
                     }
                     if member.isMason {
-                        tagView(text: "Maçom", color: .yellow)
+                        tagView(text: "Maçom", color: Theme.tagMason)
                     }
                     if member.isActive {
-                        tagView(text: "Ativo", color: .green)
+                        tagView(text: "Ativo", color: Theme.tagActive)
                     }
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(member.fullName), \(member.role ?? "Sem cargo")")
         .padding(Spacing.md)
         .background(Theme.cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
