@@ -157,18 +157,24 @@ public struct TasksView: View {
                                                     Label("Excluir", systemImage: "trash")
                                                 }
                                             }
+                                            .padding(.bottom, Spacing.md)
                                             .listRowSeparator(.hidden)
                                             .listRowBackground(Color.clear)
-                                            .listRowInsets(EdgeInsets(top: Spacing.sm, leading: Spacing.screenEdgePadding, bottom: Spacing.sm, trailing: Spacing.screenEdgePadding))
+                                            .listRowInsets(EdgeInsets(top: 0, leading: Spacing.screenEdgePadding, bottom: 0, trailing: Spacing.screenEdgePadding))
                                         }
                                     }
                                     .tint(Theme.accent)
                                     .font(Typography.headline)
-                                    .padding(.vertical, Spacing.sm)
-                                    .listRowInsets(EdgeInsets(top: Spacing.md, leading: Spacing.screenEdgePadding, bottom: Spacing.md, trailing: Spacing.screenEdgePadding))
+                                    .padding(.top, Spacing.sm)
+                                    .padding(.bottom, Spacing.md)
+                                    .padding(.horizontal, Spacing.screenEdgePadding)
                                     .listRowBackground(Color.clear)
                                     .listRowSeparator(.hidden)
+                                    .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                                 }
+                                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                                .listRowSeparator(.hidden)
+                                .listRowBackground(Color.clear)
                             }
                         }
                         .listStyle(.plain)

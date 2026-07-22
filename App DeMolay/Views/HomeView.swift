@@ -57,7 +57,7 @@ public struct HomeView: View {
                 .padding(.top, Spacing.screenEdgePadding)
             }
             .background(Theme.backgroundPrimary)
-            .navigationTitle("Olá, Irmão")
+            .navigationTitle("Olá, Irmão!")
             .toolbarTitleDisplayMode(.inlineLarge)
             .refreshable {
                 await viewModel.loadData()

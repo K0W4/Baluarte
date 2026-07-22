@@ -37,7 +37,7 @@ public struct ProgressRingCard: View {
         if percent < 50 { return (Theme.destructive, Theme.progressLowEnd) }
         if percent < 80 { return (Theme.warning, Theme.progressMediumEnd) }
         if percent < 100 { return (Theme.success, Theme.progressHighEnd) }
-        return (Theme.progressHighEnd, Theme.progressAdvancedEnd)
+        return (Theme.progressAdvancedEnd, Theme.progressAdvancedEnd)
     }
     
     private var ringGradient: AngularGradient {
