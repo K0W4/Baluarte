@@ -26,12 +26,12 @@ public struct CommitteeCard: View {
                 Spacer()
                 
                 Image(systemName: "chevron.right")
-                    .font(Typography.headline)
+                    .font(Typography.body)
                     .foregroundColor(Theme.accent)
             }
             
             Divider()
-                .background(Theme.textSecondary)
+                .background(Theme.border)
             
             VStack(alignment: .leading, spacing: Spacing.sm) {
                 if tasks.isEmpty {

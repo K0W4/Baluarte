@@ -11,6 +11,7 @@ public final class CalendarViewModel {
     public var errorMessage: String?
     
     private let eventService: EventServiceProtocol
+    private let currentUserId = UUID(uuidString: "11111111-1111-1111-1111-111111111111")!
     
     public init(eventService: EventServiceProtocol = MockEventService()) {
         self.eventService = eventService
@@ -35,6 +36,18 @@ public final class CalendarViewModel {
     
     public func hasEvents(for date: Date) -> Bool {
         !events(for: date).isEmpty
+    }
+    
+    public func confirmAttendance(eventId: UUID) {
+        if let index = events.firstIndex(where: { $0.id == eventId }) {
+            var attendees = events[index].confirmedAttendees ?? []
+            if attendees.contains(currentUserId) {
+                attendees.removeAll { $0 == currentUserId }
+            } else {
+                attendees.append(currentUserId)
+            }
+            events[index].confirmedAttendees = attendees
+        }
     }
     
     public func addToNativeCalendar(event: Event) async {

@@ -1,7 +1,7 @@
 import Foundation
 import Observation
 
-public enum RosterFilter: String, CaseIterable, Identifiable {
+public enum MembersFilter: String, CaseIterable, Identifiable {
     case todos = "Todos"
     case ativos = "Ativos"
     case seniors = "Sêniors"
@@ -11,10 +11,10 @@ public enum RosterFilter: String, CaseIterable, Identifiable {
 }
 
 @Observable
-public final class RosterViewModel {
+public final class MembersViewModel {
     public var allMembers: [Member] = []
     public var searchText: String = ""
-    public var selectedFilter: RosterFilter = .todos
+    public var selectedFilter: MembersFilter = .todos
     
     public var isLoading = false
     public var errorMessage: String?

@@ -8,27 +8,36 @@ public struct MemberCard: View {
     }
     
     public var body: some View {
-        HStack(spacing: Spacing.md) {
-            Circle()
-                .fill(Color.accentColor.opacity(0.1))
-                .frame(width: 50, height: 50)
-                .overlay(
-                    Text(initials(for: member.fullName))
-                        .font(Typography.headline)
-                        .foregroundColor(.accentColor)
-                )
-            
-            VStack(alignment: .leading, spacing: Spacing.xxs) {
+        VStack(spacing: Spacing.sm) {
+            HStack(spacing: Spacing.sm) {
+                Circle()
+                    .fill(Theme.accent.opacity(0.1))
+                    .frame(width: 40, height: 40)
+                    .overlay(
+                        Text(initials(for: member.fullName))
+                            .font(Typography.headline)
+                            .foregroundColor(Theme.accent)
+                    )
+                
                 Text(member.fullName)
                     .font(Typography.headline)
                     .foregroundColor(Theme.textPrimary)
                     .lineLimit(1)
                 
-                if let role = member.role {
-                    Text(role)
-                        .font(Typography.caption1)
-                        .foregroundColor(Theme.textSecondary)
-                }
+                Spacer()
+                
+                Image(systemName: "chevron.right")
+                    .font(Typography.body)
+                    .foregroundColor(Theme.accent)
+            }
+            
+            Divider()
+                .background(Theme.border)
+            
+            VStack(alignment: .leading, spacing: Spacing.sm) {
+                Text(member.role ?? "Sem cargo")
+                    .font(Typography.subheadline)
+                    .foregroundColor(member.role != nil ? Theme.textSecondary : Theme.textTertiary)
                 
                 HStack(spacing: Spacing.xs) {
                     if member.accessLevel == "admin" {
@@ -38,23 +47,17 @@ public struct MemberCard: View {
                         tagView(text: "Sênior", color: .blue)
                     }
                     if member.isMason {
-                        tagView(text: "Maçom", color: .purple)
+                        tagView(text: "Maçom", color: .yellow)
                     }
                     if member.isActive {
                         tagView(text: "Ativo", color: .green)
                     }
                 }
-                .padding(.top, Spacing.xxs)
             }
-            
-            Spacer()
-            
-            Image(systemName: "chevron.right")
-                .foregroundColor(Theme.textTertiary)
-                .font(Typography.caption1)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(Spacing.md)
-        .background(Theme.backgroundSecondary)
+        .background(Theme.cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .overlay(RoundedRectangle(cornerRadius: 16).stroke(Theme.border, lineWidth: 1))
     }

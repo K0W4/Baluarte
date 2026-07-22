@@ -21,6 +21,18 @@ public struct CalendarView: View {
             .background(Theme.backgroundPrimary)
             .navigationTitle("Calendário")
             .toolbarTitleDisplayMode(.inlineLarge)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Hoje") {
+                        HapticManager.shared.impact(style: .light)
+                        withAnimation {
+                            viewModel.currentMonth = Date()
+                            viewModel.selectedDate = Date()
+                        }
+                    }
+                    .foregroundColor(Theme.accent)
+                }
+            }
             .task {
                 await viewModel.loadEvents()
             }
@@ -34,7 +46,7 @@ public struct CalendarView: View {
             } label: {
                 Image(systemName: "chevron.left")
                     .font(Typography.title3)
-                    .foregroundColor(Theme.textTertiary)
+                    .foregroundColor(Theme.textPrimary)
                     .frame(width: 44, height: 44)
                     .contentShape(Rectangle())
             }
@@ -55,7 +67,7 @@ public struct CalendarView: View {
             } label: {
                 Image(systemName: "chevron.right")
                     .font(Typography.title3)
-                    .foregroundColor(Theme.textTertiary)
+                    .foregroundColor(Theme.textPrimary)
                     .frame(width: 44, height: 44)
                     .contentShape(Rectangle())
             }
@@ -125,9 +137,14 @@ public struct CalendarView: View {
                     .padding(.horizontal, Spacing.screenEdgePadding)
             } else {
                 ForEach(selectedEvents) { event in
-                    EventCard(event: event)
-                        .padding(.horizontal, Spacing.screenEdgePadding)
-                        .contextMenu {
+                    EventCard(event: event) {
+                        HapticManager.shared.impact(style: .medium)
+                        withAnimation {
+                            viewModel.confirmAttendance(eventId: event.id)
+                        }
+                    }
+                    .padding(.horizontal, Spacing.screenEdgePadding)
+                    .contextMenu {
                             Button {
                                 Task {
                                     await viewModel.addToNativeCalendar(event: event)

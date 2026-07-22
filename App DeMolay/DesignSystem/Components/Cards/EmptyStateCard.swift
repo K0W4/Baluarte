@@ -109,7 +109,7 @@ struct EmptyStateCard: View {
             .buttonStyle(PrimaryButtonStyle())
         }
         .padding(Spacing.md)
-        .background(Theme.backgroundSecondary)
+        .background(Theme.cardBackground)
         .clipShape(.rect(cornerRadius: 16))
         .overlay(
             RoundedRectangle(cornerRadius: 16)

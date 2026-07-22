@@ -1,7 +1,7 @@
 import SwiftUI
 
-public struct RosterView: View {
-    @State private var viewModel = RosterViewModel()
+public struct MembersView: View {
+    @State private var viewModel = MembersViewModel()
     
     public init() {}
     
@@ -9,7 +9,7 @@ public struct RosterView: View {
         NavigationStack {
             VStack(spacing: 0) {
                 Picker("Filtro", selection: $viewModel.selectedFilter) {
-                    ForEach(RosterFilter.allCases) { filter in
+                    ForEach(MembersFilter.allCases) { filter in
                         Text(filter.rawValue).tag(filter)
                     }
                 }
@@ -20,11 +20,17 @@ public struct RosterView: View {
                 
                 ScrollView {
                     LazyVStack(spacing: Spacing.md) {
-                        
                         if viewModel.isLoading {
-                            ProgressView("Carregando nominata...")
+                            ProgressView("Carregando membros...")
                         } else {
                             let members = viewModel.filteredMembers
+                            
+                            HStack {
+                                Text("\(members.count) membros")
+                                    .font(Typography.subheadline)
+                                    .foregroundColor(Theme.textSecondary)
+                                Spacer()
+                            }
                             
                             if members.isEmpty {
                                 EmptyStateCard(cardType: .member)
@@ -40,8 +46,18 @@ public struct RosterView: View {
                 }
                 .background(Theme.backgroundPrimary)
             }
-            .navigationTitle("Nominata")
+            .navigationTitle("Membros")
             .toolbarTitleDisplayMode(.inlineLarge)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        HapticManager.shared.impact(style: .light)
+                    } label: {
+                        Image(systemName: "plus")
+                            .foregroundColor(Theme.accent)
+                    }
+                }
+            }
             .searchable(text: $viewModel.searchText, prompt: "Buscar membro ou cargo")
             .task {
                 await viewModel.loadMembers()
@@ -51,5 +67,5 @@ public struct RosterView: View {
 }
 
 #Preview {
-    RosterView()
+    MembersView()
 }

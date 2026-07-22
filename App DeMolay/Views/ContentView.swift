@@ -4,7 +4,7 @@ struct ContentView: View {
     enum Tab {
         case home
         case calendar
-        case roster
+        case members
         case tasks
     }
     
@@ -24,11 +24,11 @@ struct ContentView: View {
                 }
                 .tag(Tab.calendar)
             
-            RosterView()
+            MembersView()
                 .tabItem {
-                    Label("Nominata", systemImage: "person.3.fill")
+                    Label("Membros", systemImage: "person.3.fill")
                 }
-                .tag(Tab.roster)
+                .tag(Tab.members)
             
             TasksView()
                 .tabItem {

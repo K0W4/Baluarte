@@ -43,16 +43,22 @@ public struct EventCard: View {
                 Spacer()
                 
                 Image(systemName: "chevron.right")
-                    .font(Typography.headline)
+                    .font(Typography.body)
                     .foregroundColor(Theme.accent)
             }
             
-            Text(dateString)
-                .font(Typography.subheadline)
-                .foregroundColor(Theme.textSecondary)
-            
             Divider()
-                .background(Theme.textSecondary)
+                .background(Theme.border)
+            
+            HStack(alignment: .top, spacing: Spacing.xxs) {
+                Text("Data:")
+                    .font(Typography.subheadline)
+                    .foregroundColor(Theme.textPrimary)
+                
+                Text(dateString)
+                    .font(Typography.subheadline)
+                    .foregroundColor(Theme.textSecondary)
+            }
             
             HStack(alignment: .top, spacing: Spacing.xxs) {
                 Text("Detalhes:")
@@ -83,10 +89,9 @@ public struct EventCard: View {
                 .clipShape(Capsule())
             }
             .buttonStyle(.plain)
-            .padding(.top, Spacing.xs)
         }
         .padding(Spacing.md)
-        .background(Theme.backgroundSecondary)
+        .background(Theme.cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .overlay(
             RoundedRectangle(cornerRadius: 16)

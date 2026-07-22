@@ -127,7 +127,7 @@ public struct ProgressRingCard: View {
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .overlay(
             RoundedRectangle(cornerRadius: 16)
-                .stroke(Theme.backgroundSecondary, lineWidth: 1)
+                .stroke(Theme.border, lineWidth: 1)
         )
         .onAppear {
             withAnimation(.spring(response: 1, dampingFraction: 0.9, blendDuration: 0.5)) {
