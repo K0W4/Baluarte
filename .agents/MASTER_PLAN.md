@@ -15,8 +15,8 @@ Este é o nosso **Plano de Implementação Mestre**, na ordem exata de produçã
 - [x] Revisão e melhoria das especificações dos arquivos `.agents`
 - [x] Busca profunda de design e melhoria
 - [x] Alterações no projeto de acordo com a busca
-- [ ] Lapidação de componentes e estruturas
-- [ ] Revisão de design
+- [x] Lapidação de componentes e estruturas
+- [x] Revisão de design
 - [ ] Revisão profunda de MVVM
 
 ### Épico 2: Expansão de Features e Testes

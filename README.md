@@ -1,80 +1,81 @@
 # App DeMolay
 
-> Smart and gamified management application for DeMolay Order Chapters.
+> Aplicativo de gestão inteligente e gamificada para Capítulos da Ordem DeMolay.
 
 [![Swift](https://img.shields.io/badge/Swift-5.9-orange.svg)](https://swift.org)
 [![iOS](https://img.shields.io/badge/iOS-17.0%2B-blue.svg)](https://developer.apple.com/ios/)
 [![Supabase](https://img.shields.io/badge/Supabase-Backend-green.svg)](https://supabase.com)
 [![Architecture](https://img.shields.io/badge/Architecture-MVVM-lightgrey.svg)]()
+[![Design](https://img.shields.io/badge/Design-Heuristics%20%7C%20WCAG-blueviolet.svg)]()
 
-## 📖 Overview
+## 📖 Visão Geral
 
-The **App DeMolay** was designed to revolutionize chapter management, providing modern and predictive tools for attendance tracking (Roster), event calendar, financial management, and member engagement through a goal-tracking system.
+O **App DeMolay** foi desenhado para revolucionar a gestão capitular, fornecendo ferramentas modernas e preditivas para o controle de presença (Roster), calendário de eventos, gestão financeira e engajamento dos membros através de um sistema de acompanhamento de metas.
 
-The project was built focusing on scalability principles, using cutting-edge technologies from the Apple ecosystem and maintaining an architecture that will allow for a smooth and future expansion to Android.
+O projeto foi construído focando em princípios de escalabilidade e design centrado no usuário, utilizando tecnologias de ponta do ecossistema Apple e mantendo uma arquitetura que permitirá uma expansão suave e futura para o Android.
 
-## ✨ Key Features
+## ✨ Principais Funcionalidades
 
-* **🔒 Robust Authentication:** Secure login and role-based permission control via Supabase.
-* **📅 Smart Calendar:** Visual management of meetings, rituals, and events.
-* **📊 Goal Management:** Gamified tracking of goals (financial, initiations, etc.) with automatic progression calculation.
-* **📜 Roster:** Overview and attendance control of all active members.
-* **🤖 Integrated CoreML (Coming soon):** Predictive reading of documents and minutes using on-device Artificial Intelligence.
+* **🔒 Autenticação Robusta:** Login seguro e controle de permissões baseadas em cargos via Supabase.
+* **📅 Calendário Inteligente:** Gestão visual de reuniões, rituais e eventos.
+* **📊 Gestão de Metas:** Acompanhamento gamificado de objetivos (financeiros, iniciações, etc.) com cálculo automático de progressão.
+* **📜 Roster (Lista de Presença):** Visão geral e controle de frequência de todos os membros ativos.
+* **🤖 Inteligência Artificial (CoreML) - Em breve:** Leitura preditiva de documentos e atas utilizando Inteligência Artificial on-device.
 
-## 🛠️ Technology Stack & Architecture
+## 🛠️ Stack Tecnológico e Arquitetura
 
-This project strictly follows the **MVVM** (Model-View-ViewModel) pattern using Apple's new observation system (iOS 17+).
+O projeto segue estritamente o padrão **MVVM** (Model-View-ViewModel) utilizando o novo sistema de observação da Apple (iOS 17+).
 
-* **Language:** Swift
+* **Linguagem:** Swift
 * **UI Framework:** SwiftUI
-* **Design System:** Standardized components and tokens (Protocol-Oriented).
-* **State Management:** `@Observable` (Replacing the legacy `@ObservableObject`).
-* **Dependency Injection:** Protocols (Services) injected via `@Environment`, allowing isolated testing via Mocks.
-* **Backend:** Supabase (PostgreSQL, PostgREST) configured as BaaS.
+* **Design System:** Componentes e tokens padronizados e injetáveis. Desenvolvido com base em **Heurísticas de Nielsen**, **Acessibilidade WCAG**, e forte **Psicologia aplicada a UX**.
+* **Gerenciamento de Estado:** `@Observable` (Substituindo o antigo `@ObservableObject`).
+* **Injeção de Dependência:** Protocolos (Services) injetados via `@Environment`, permitindo testes isolados via Mocks.
+* **Backend:** Supabase (PostgreSQL, PostgREST) configurado como BaaS.
 * **Package Manager:** Swift Package Manager (SPM).
 
-## 🚀 Getting Started
+## 🚀 Como Começar (Getting Started)
 
-### Prerequisites
-* macOS Sonoma (14.0) or higher.
-* Xcode 15 or higher.
-* Active Supabase account (for the database).
+### Pré-requisitos
+* macOS Sonoma (14.0) ou superior.
+* Xcode 15 ou superior.
+* Conta ativa no Supabase (para o banco de dados).
 
-### Installation
+### Instalação
 
-1. Clone the repository:
+1. Clone o repositório:
 ```bash
 git clone https://github.com/YOUR_USERNAME/app-demolay.git
 ```
 
-2. Open the project file:
+2. Abra o arquivo do projeto:
 ```bash
 cd app-demolay
 open "App DeMolay.xcodeproj"
 ```
 
-3. Swift Package Manager will automatically download the Supabase SDK.
-4. Select the desired simulator (e.g., iPhone 15 Pro) and click **Run** (`Cmd + R`).
+3. O Swift Package Manager fará o download automático do SDK do Supabase.
+4. Selecione o simulador desejado (ex: iPhone 15 Pro) e clique em **Run** (`Cmd + R`).
 
-## 🗄️ Database Structure (Supabase)
+## 🗄️ Estrutura do Banco de Dados (Supabase)
 
-The application consumes a dynamically generated API by Supabase, based on the following schema:
+A aplicação consome uma API gerada dinamicamente pelo Supabase, baseada no seguinte schema:
 
 - `chapter`
 - `member`
 - `event`
-- `goal` (Goals with progression percentage)
+- `goal` (Metas com porcentagem de progressão)
 - `committee`
 
-> **Security Note:** The tables use RLS (Row Level Security) to ensure that members only access information related to their respective Chapter.
+> **Nota de Segurança:** As tabelas utilizam RLS (Row Level Security) para garantir que os membros acessem apenas as informações relacionadas ao seu respectivo Capítulo. Os dados também são tratados para segurança máxima e criptografia local.
 
-## 📐 Ponytail Philosophy (Design Principles)
+## 📐 Filosofia de Desenvolvimento e Design
 
-Developed under strict engineering principles:
-- **KISS & YAGNI:** Absolute prioritization of native iOS solutions (Minimum Viable Code). No third-party libraries are used unless strictly necessary (e.g., Supabase SDK).
-- **Test-Driven:** Decoupled architecture via protocols, ready for unit testing.
-- **Aesthetics First:** Use of micro-animations, semantic contrasts, and fluid typography to generate engagement through Interface Design.
+Desenvolvido sob rígidos princípios de engenharia e design de produto:
+- **KISS & YAGNI:** Priorização absoluta de soluções nativas do iOS (Minimum Viable Code). Nenhuma biblioteca de terceiros é utilizada a menos que seja estritamente necessária.
+- **Test-Driven:** Arquitetura desacoplada via protocolos, pronta para testes unitários.
+- **UX/UI Profundo:** Uso de micro-animações, contrastes semânticos, esqueletos de carregamento e tipografia fluida para gerar engajamento. As interfaces são desenhadas considerando a redução da carga cognitiva (Lei de Hick) e acessibilidade em primeiro plano.
 
-## 📄 License
+## 📄 Licença
 
-This project is developed for internal use by Chapters of the DeMolay Order. All rights reserved.
+Este projeto é desenvolvido para uso interno por Capítulos da Ordem DeMolay. Todos os direitos reservados.

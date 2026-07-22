@@ -3,6 +3,7 @@ import SwiftUI
 public struct TasksView: View {
     @State private var viewModel = TasksViewModel()
     @State private var taskToDelete: ChapterTask?
+    @State private var isCompletedExpanded = false
     
     public init() {}
     
@@ -142,7 +143,7 @@ public struct TasksView: View {
                             let completed = viewModel.completedTasks
                             if !completed.isEmpty {
                                 Section {
-                                    DisclosureGroup("Mostrar concluídas (\(completed.count))") {
+                                    if isCompletedExpanded {
                                         ForEach(completed) { task in
                                             TaskCard(task: task) {
                                                 if !viewModel.isLoading {
@@ -157,21 +158,32 @@ public struct TasksView: View {
                                                     Label("Excluir", systemImage: "trash")
                                                 }
                                             }
-                                            .padding(.bottom, Spacing.md)
                                             .listRowSeparator(.hidden)
                                             .listRowBackground(Color.clear)
-                                            .listRowInsets(EdgeInsets(top: 0, leading: Spacing.screenEdgePadding, bottom: 0, trailing: Spacing.screenEdgePadding))
+                                            .listRowInsets(EdgeInsets(top: 0, leading: Spacing.screenEdgePadding, bottom: Spacing.md, trailing: Spacing.screenEdgePadding))
                                         }
                                     }
-                                    .tint(Theme.accent)
-                                    .font(Typography.headline)
-                                    .padding(.top, Spacing.sm)
-                                    .padding(.bottom, Spacing.md)
-                                    .padding(.horizontal, Spacing.screenEdgePadding)
-                                    .listRowBackground(Color.clear)
-                                    .listRowSeparator(.hidden)
-                                    .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                                } header: {
+                                    Button(action: {
+                                        withAnimation {
+                                            isCompletedExpanded.toggle()
+                                        }
+                                    }) {
+                                        HStack {
+                                            Text("Mostrar concluídas (\(completed.count))")
+                                                .font(Typography.headline)
+                                            Spacer()
+                                            Image(systemName: isCompletedExpanded ? "chevron.down" : "chevron.right")
+                                        }
+                                        .foregroundColor(Theme.textPrimary)
+                                        .padding(.horizontal, Spacing.screenEdgePadding)
+                                        .padding(.top, Spacing.sm)
+                                        .padding(.bottom, Spacing.md)
+                                    }
                                 }
+                                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                                .listRowSeparator(.hidden)
+                                .listRowBackground(Color.clear)
                                 .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                                 .listRowSeparator(.hidden)
                                 .listRowBackground(Color.clear)

@@ -46,6 +46,12 @@ App DeMolay/
 * Todo espaçamento deve vir de `Spacing` (ex: `Spacing.md`, `Spacing.cardPadding`). Valores mágicos como `.padding(14)` são proibidos.
 * Componentes visuais reutilizáveis (Cards, Botões, Rows) devem residir em `DesignSystem/Components/` e aceitar dados via parâmetros de `init`, nunca acessando ViewModels diretamente.
 
+**Diretrizes Essenciais de UX/UI:** Todo novo layout ou refatoração visual deve **obrigatoriamente** levar em consideração:
+- **Heurísticas de Nielsen:** Prevenção de erros, visibilidade do status do sistema, consistência e padrões.
+- **WCAG Acessibilidade:** Contraste adequado de cores, tamanhos mínimos de toque (44x44pt) e suporte a VoiceOver/Dynamic Type.
+- **Princípios de UX e Design:** Hierarquia visual clara, espaçamentos consistentes (Lei de Proximidade) e feedback visual imediato.
+- **Psicologia aplicada UX:** Redução da carga cognitiva, Lei de Hick (poucas e boas opções) e Efeito Von Restorff (destaque para ações principais).
+
 ## 5. Testabilidade
 
 * Todo código de ViewModel deve ser escrito visando testabilidade: dependências externas isoladas via protocolos, estado interno acessível publicamente para asserções, e métodos com responsabilidade única.
