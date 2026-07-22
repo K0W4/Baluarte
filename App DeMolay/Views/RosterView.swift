@@ -41,6 +41,7 @@ public struct RosterView: View {
                 .background(Theme.backgroundPrimary)
             }
             .navigationTitle("Nominata")
+            .toolbarTitleDisplayMode(.inlineLarge)
             .searchable(text: $viewModel.searchText, prompt: "Buscar membro ou cargo")
             .task {
                 await viewModel.loadMembers()

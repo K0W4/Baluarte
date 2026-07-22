@@ -13,7 +13,7 @@ public struct Goal: Codable, Identifiable, Hashable {
     
     public var progressPercentage: Double {
         guard targetValue > 0 else { return 0 }
-        return min(currentValue / targetValue, 1.0)
+        return currentValue / targetValue
     }
     
     enum CodingKeys: String, CodingKey {

@@ -62,7 +62,7 @@ public struct MemberCard: View {
     @ViewBuilder
     private func tagView(text: String, color: Color) -> some View {
         Text(text.uppercased())
-            .font(Typography.caption2).bold()
+            .font(Typography.caption2)
             .foregroundColor(color)
             .padding(.horizontal, 6)
             .padding(.vertical, 2)

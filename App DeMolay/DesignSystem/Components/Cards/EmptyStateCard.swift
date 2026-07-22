@@ -19,56 +19,46 @@ struct EmptyStateCard: View {
                     case .event:
                         Image(systemName: "calendar.badge.exclamationmark")
                             .font(Typography.title3)
-                            .bold()
                             .foregroundStyle(Theme.textPrimary)
 
-                        Text("Nenhum evento futuro")
+                        Text("Nenhum evento agendado")
                             .font(Typography.title3)
-                            .bold()
                             .foregroundStyle(Theme.textPrimary)
                         
                     case .goal:
                         Image(systemName: "target")
                             .font(Typography.title3)
-                            .bold()
                             .foregroundStyle(Theme.textPrimary)
 
                         Text("Nenhuma meta definida")
                             .font(Typography.title3)
-                            .bold()
                             .foregroundStyle(Theme.textPrimary)
                         
                     case .committee:
                         Image(systemName: "person.2.fill")
                             .font(Typography.title3)
-                            .bold()
                             .foregroundStyle(Theme.textPrimary)
 
                         Text("Nenhuma comissão criada")
                             .font(Typography.title3)
-                            .bold()
                             .foregroundStyle(Theme.textPrimary)
                         
                     case .member:
                         Image(systemName: "person.fill.xmark")
                             .font(Typography.title3)
-                            .bold()
                             .foregroundStyle(Theme.textPrimary)
 
                         Text("Nenhum membro encontrado")
                             .font(Typography.title3)
-                            .bold()
                             .foregroundStyle(Theme.textPrimary)
                         
                     case .task:
-                        Image(systemName: "checkmark.circle.fill")
+                        Image(systemName: "checklist.checked")
                             .font(Typography.title3)
-                            .bold()
-                            .foregroundStyle(.green)
+                            .foregroundStyle(Theme.textPrimary)
 
                         Text("Tudo em dia!")
                             .font(Typography.title3)
-                            .bold()
                             .foregroundStyle(Theme.textPrimary)
                     }
                 }
@@ -88,12 +78,14 @@ struct EmptyStateCard: View {
                     Text("Crie uma comissão e ela aparecerá aqui.")
                         .font(Typography.footnote)
                         .foregroundStyle(Theme.textSecondary)
+                    
                 case .member:
-                    Text("Ajuste os filtros de busca para tentar novamente.")
+                    Text("Adicione um membro e ele aparecerá aqui.")
                         .font(Typography.footnote)
                         .foregroundStyle(Theme.textSecondary)
+                    
                 case .task:
-                    Text("Você concluiu todas as suas tarefas. Aproveite o descanso!")
+                    Text("Crie uma tarefa e ela aparecerá aqui.")
                         .font(Typography.footnote)
                         .foregroundStyle(Theme.textSecondary)
                 }
@@ -109,9 +101,9 @@ struct EmptyStateCard: View {
                 case .committee:
                     Text("Criar comissão")
                 case .member:
-                    Text("Limpar busca")
+                    Text("Adicionar membro")
                 case .task:
-                    Text("Criar nova tarefa")
+                    Text("Criar tarefa")
                 }
             }
             .buttonStyle(PrimaryButtonStyle())
@@ -128,12 +120,18 @@ struct EmptyStateCard: View {
 }
 
 #Preview {
-    VStack(alignment: .leading, spacing: Spacing.xl) {
-        EmptyStateCard(cardType: .event)
-        
-        EmptyStateCard(cardType: .goal)
-        
-        EmptyStateCard(cardType: .committee)
+    ScrollView {
+        VStack(alignment: .leading, spacing: Spacing.xl) {
+            EmptyStateCard(cardType: .event)
+            
+            EmptyStateCard(cardType: .goal)
+            
+            EmptyStateCard(cardType: .committee)
+            
+            EmptyStateCard(cardType: .member)
+            
+            EmptyStateCard(cardType: .task)
+        }
+        .padding(Spacing.screenEdgePadding)
     }
-    .padding(Spacing.screenEdgePadding)
 }

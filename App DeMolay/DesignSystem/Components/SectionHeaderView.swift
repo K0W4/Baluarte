@@ -9,7 +9,7 @@ public struct SectionHeaderView: View {
     
     public init(
         title: String,
-        actionIcon: String? = "plus.circle",
+        actionIcon: String? = "plus",
         actionLabel: String? = nil,
         actionHint: String? = nil,
         action: (() -> Void)? = nil
@@ -35,9 +35,10 @@ public struct SectionHeaderView: View {
                     action()
                 }) {
                     Image(systemName: actionIcon)
-                        .font(Typography.title2)
-                        .bold()
-                        .foregroundColor(Theme.accent)
+                        .font(.system(size: 16 , weight: .semibold))
+                        .foregroundColor(Theme.textPrimary)
+                        .frame(width: 32, height: 32)
+                        .background(Circle().fill(Theme.backgroundSecondary))
                         .frame(width: 44, height: 44)
                         .contentShape(Rectangle())
                 }

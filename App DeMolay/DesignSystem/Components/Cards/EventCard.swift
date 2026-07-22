@@ -2,9 +2,13 @@ import SwiftUI
 
 public struct EventCard: View {
     let event: Event
+    let isUserConfirmed: Bool
+    let onConfirmAttendance: (() -> Void)?
     
-    public init(event: Event) {
+    public init(event: Event, isUserConfirmed: Bool = false, onConfirmAttendance: (() -> Void)? = nil) {
         self.event = event
+        self.isUserConfirmed = isUserConfirmed
+        self.onConfirmAttendance = onConfirmAttendance
     }
     
     private var iconName: String {
@@ -40,7 +44,7 @@ public struct EventCard: View {
                 
                 Image(systemName: "chevron.right")
                     .font(Typography.headline)
-                    .foregroundColor(Theme.textTertiary)
+                    .foregroundColor(Theme.accent)
             }
             
             Text(dateString)
@@ -53,7 +57,6 @@ public struct EventCard: View {
             HStack(alignment: .top, spacing: Spacing.xxs) {
                 Text("Detalhes:")
                     .font(Typography.subheadline)
-                    .bold()
                     .foregroundColor(Theme.textPrimary)
                 
                 Text(event.notes?.isEmpty == false ? (event.notes ?? "") : "Não informada")
@@ -61,6 +64,26 @@ public struct EventCard: View {
                     .foregroundColor(Theme.textSecondary)
                     .lineLimit(1)
             }
+            
+            Button(action: {
+                let generator = UIImpactFeedbackGenerator(style: isUserConfirmed ? .rigid : .medium)
+                generator.impactOccurred()
+                onConfirmAttendance?()
+            }) {
+                HStack(spacing: Spacing.xs) {
+                    Image(systemName: isUserConfirmed ? "checkmark.circle.fill" : "person.crop.circle.badge.plus")
+                        .font(Typography.caption1)
+                    Text(isUserConfirmed ? "Presença Confirmada" : "Confirmar Presença")
+                        .font(Typography.caption1)
+                }
+                .foregroundColor(isUserConfirmed ? Theme.success : Theme.accent)
+                .padding(.horizontal, Spacing.sm)
+                .padding(.vertical, Spacing.xxs)
+                .background(isUserConfirmed ? Theme.success.opacity(0.15) : Theme.accent.opacity(0.15))
+                .clipShape(Capsule())
+            }
+            .buttonStyle(.plain)
+            .padding(.top, Spacing.xs)
         }
         .padding(Spacing.md)
         .background(Theme.backgroundSecondary)
@@ -73,16 +96,18 @@ public struct EventCard: View {
 }
 
 #Preview {
-    VStack(spacing: 16) {
-        EventCard(event: Event(id: UUID(), chapterId: UUID(), title: "Reunião Ritualística", scheduledDate: Date(), eventType: "Ritualística", notes: "Apresentação de trabalho", createdAt: Date()))
-        
-        EventCard(event: Event(id: UUID(), chapterId: UUID(), title: "Reunião Administrativa", scheduledDate: Date(), eventType: "Administrativa", notes: "Planejamento de filantropia", createdAt: Date()))
-        
-        EventCard(event: Event(id: UUID(), chapterId: UUID(), title: "Congresso Estadual", scheduledDate: Date(), eventType: "Congresso", notes: "CGOD", createdAt: Date()))
-        
-        EventCard(event: Event(id: UUID(), chapterId: UUID(), title: "Filantropia", scheduledDate: Date(), eventType: "Filantropia", notes: "Filantropia na escola municipal", createdAt: Date()))
+    ScrollView {
+        VStack(alignment: .leading, spacing: Spacing.xl) {
+            EventCard(event: Event(id: UUID(), chapterId: UUID(), title: "Reunião Ritualística", scheduledDate: Date(), eventType: "Ritualística", notes: "Apresentação de trabalho", createdAt: Date()))
+            
+            EventCard(event: Event(id: UUID(), chapterId: UUID(), title: "Reunião Administrativa", scheduledDate: Date(), eventType: "Administrativa", notes: "Planejamento de filantropia", createdAt: Date()))
+            
+            EventCard(event: Event(id: UUID(), chapterId: UUID(), title: "Congresso Estadual", scheduledDate: Date(), eventType: "Congresso", notes: "CGOD", createdAt: Date()))
+            
+            EventCard(event: Event(id: UUID(), chapterId: UUID(), title: "Filantropia", scheduledDate: Date(), eventType: "Filantropia", notes: "Filantropia na escola municipal", createdAt: Date()))
+            
+            EventCard(event: Event(id: UUID(), chapterId: UUID(), title: "Lanche Coletivo", scheduledDate: Date(), eventType: "Lanche", notes: "Lanche depois da reunião", createdAt: Date()))
+        }
+        .padding(Spacing.screenEdgePadding)
     }
-    .padding()
-    .background(Color(UIColor.systemBackground))
-    .preferredColorScheme(.dark)
 }

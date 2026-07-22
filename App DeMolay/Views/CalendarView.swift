@@ -20,6 +20,7 @@ public struct CalendarView: View {
             }
             .background(Theme.backgroundPrimary)
             .navigationTitle("Calendário")
+            .toolbarTitleDisplayMode(.inlineLarge)
             .task {
                 await viewModel.loadEvents()
             }

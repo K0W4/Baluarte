@@ -47,6 +47,7 @@ public struct TasksView: View {
                 }
             }
             .navigationTitle("Tarefas")
+            .toolbarTitleDisplayMode(.inlineLarge)
             .task {
                 await viewModel.loadData()
             }

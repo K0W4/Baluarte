@@ -3,17 +3,19 @@ import SwiftUI
 public struct CommitteeCard: View {
     let committee: Committee
     let tasks: [ChapterTask]
+    let onTaskToggled: ((UUID) -> Void)?
     
-    public init(committee: Committee, tasks: [ChapterTask]) {
+    public init(committee: Committee, tasks: [ChapterTask], onTaskToggled: ((UUID) -> Void)? = nil) {
         self.committee = committee
         self.tasks = tasks.filter { !$0.isCompleted }
+        self.onTaskToggled = onTaskToggled
     }
     
     public var body: some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
             HStack(spacing: Spacing.xs) {
                 Image(systemName: "person.2.fill")
-                    .foregroundColor(.accent)
+                    .foregroundColor(Theme.textPrimary)
                     .font(Typography.headline)
                 
                 Text(committee.name)
@@ -25,7 +27,7 @@ public struct CommitteeCard: View {
                 
                 Image(systemName: "chevron.right")
                     .font(Typography.headline)
-                    .foregroundColor(Theme.textTertiary)
+                    .foregroundColor(Theme.accent)
             }
             
             Divider()
@@ -33,26 +35,38 @@ public struct CommitteeCard: View {
             
             VStack(alignment: .leading, spacing: Spacing.sm) {
                 if tasks.isEmpty {
-                    HStack {
+                    HStack(spacing: Spacing.sm) {
                         Image(systemName: "checkmark.seal.fill")
-                            .foregroundColor(.accent)
+                            .foregroundColor(Theme.success)
+                            .font(Typography.headline)
+                        
                         Text("Tudo em dia!")
                             .font(Typography.subheadline)
                             .foregroundColor(Theme.textPrimary)
+                            
+                        Spacer()
                     }
-                    .padding(Spacing.xxs)
                 } else {
                     ForEach(tasks.prefix(3)) { task in
-                        HStack(alignment: .top, spacing: Spacing.sm) {
-                            Image(systemName: "circle")
-                                .foregroundColor(Theme.textSecondary)
-                                .font(Typography.headline)
+                        HStack(alignment: .center, spacing: Spacing.sm) {
+                            Button(action: {
+                                let generator = UINotificationFeedbackGenerator()
+                                generator.notificationOccurred(.success)
+                                onTaskToggled?(task.id)
+                            }) {
+                                Image(systemName: "circle")
+                                    .foregroundColor(Theme.textSecondary)
+                                    .font(Typography.headline)
+                            }
+                            .buttonStyle(.plain)
                             
-                            VStack(alignment: .leading, spacing: Spacing.xxs) {
+                            HStack(alignment: .center) {
                                 Text(task.title)
                                     .font(Typography.subheadline)
                                     .foregroundColor(Theme.textPrimary)
                                     .lineLimit(1)
+                                
+                                Spacer()
                                 
                                 if let due = task.dueDate {
                                     Text(dueDateString(from: due))
