@@ -15,13 +15,14 @@ public final class TasksViewModel {
         self.taskService = taskService
     }
     
+    public var currentUserId: UUID = UUID()
+    
     @MainActor
     public func loadData() async {
         isLoading = true
         errorMessage = nil
         do {
-            let mockUserId = UUID()
-            allTasks = try await taskService.fetchTasks(for: mockUserId)
+            allTasks = try await taskService.fetchTasks(for: currentUserId)
         } catch {
             errorMessage = error.localizedDescription
         }

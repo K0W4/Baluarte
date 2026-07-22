@@ -3,6 +3,7 @@ import SwiftUI
 public struct ProgressRingCard: View {
     let goal: Goal
     @State private var animatedProgress: Double = 0
+    @State private var showShadowDot: Bool = false
     
     private let lineWidth: CGFloat = 16
     private let size: CGFloat = 120
@@ -29,7 +30,7 @@ public struct ProgressRingCard: View {
         if percent < 50 { return Theme.destructive }
         if percent < 80 { return Theme.warning }
         if percent < 100 { return Theme.success }
-        return Theme.accent
+        return Theme.progressAdvancedEnd
     }
     
     private var gradientColors: (start: Color, end: Color) {
@@ -67,14 +68,15 @@ public struct ProgressRingCard: View {
                     .offset(y: -size / 2)
                     .opacity(goal.progressPercentage > 0 ? 1.0 : 0.0)
                 
-                if animatedProgress > 1.0 {
-                    OverflowRing(
-                        overlap: CGFloat(animatedProgress) - 1.0,
-                        size: size,
-                        lineWidth: lineWidth,
-                        ringGradient: ringGradient
-                    )
-                }
+                OverflowRing(
+                    currentOverlap: max(0, CGFloat(animatedProgress) - 1.0),
+                    targetOverlap: max(0, CGFloat(goal.progressPercentage) - 1.0),
+                    showShadowDot: showShadowDot,
+                    size: size,
+                    lineWidth: lineWidth,
+                    ringGradient: ringGradient
+                )
+                .opacity(animatedProgress > 1.0 ? 1.0 : 0.0)
                 
                 VStack(spacing: Spacing.xxs) {
                     Text("\(progressPercentageValue)%")
@@ -124,11 +126,24 @@ public struct ProgressRingCard: View {
         .onAppear {
             withAnimation(.spring(response: 1, dampingFraction: 0.9, blendDuration: 0.5)) {
                 animatedProgress = goal.progressPercentage
+            } completion: {
+                if goal.progressPercentage > 1.0 {
+                    withAnimation(.easeIn(duration: 0.15)) {
+                        showShadowDot = true
+                    }
+                }
             }
         }
         .onChange(of: goal.progressPercentage) { _, newValue in
+            showShadowDot = false
             withAnimation(.spring(response: 1, dampingFraction: 0.9, blendDuration: 0.5)) {
                 animatedProgress = newValue
+            } completion: {
+                if newValue > 1 {
+                    withAnimation(.easeIn(duration: 0.1)) {
+                        showShadowDot = true
+                    }
+                }
             }
         }
         .accessibilityElement(children: .ignore)
@@ -138,23 +153,26 @@ public struct ProgressRingCard: View {
 }
 
 private struct OverflowRing: View {
-    let overlap: CGFloat
+    let currentOverlap: CGFloat
+    let targetOverlap: CGFloat
+    let showShadowDot: Bool
     let size: CGFloat
     let lineWidth: CGFloat
     let ringGradient: AngularGradient
     
     var body: some View {
-        let angle = Angle.degrees(360 * Double(overlap) - 90)
+        let finalAngle = Angle.degrees(360 * Double(targetOverlap) - 90)
         let radius = size / 2
         
         Circle()
-            .fill(Theme.textPrimary)
-            .frame(width: lineWidth - 2, height: lineWidth - 2)
-            .offset(x: cos(angle.radians) * radius, y: sin(angle.radians) * radius)
-            .shadow(color: Theme.textPrimary.opacity(0.4), radius: 5, x: 0, y: 0)
-        
+            .fill(Color.black)
+            .frame(width: lineWidth - 1, height: lineWidth - 1)
+            .offset(x: cos(finalAngle.radians) * radius, y: sin(finalAngle.radians) * radius)
+            .shadow(color: Color.black, radius: 10, x: 0, y: 0)
+            .opacity(showShadowDot ? 1.0 : 0.0)
+            
         Circle()
-            .trim(from: 0, to: min(overlap, 1.0))
+            .trim(from: 0, to: min(currentOverlap, 1.0))
             .stroke(ringGradient, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
             .rotationEffect(.degrees(-90))
     }
@@ -163,13 +181,13 @@ private struct OverflowRing: View {
 #Preview {
     ScrollView(.horizontal, showsIndicators: false) {
         HStack(spacing: 16) {
+            ProgressRingCard(goal: Goal(id: UUID(), chapterId: UUID(), type: "Filantropia", title: "Doações", description: "Irmão Sangue Bom", currentValue: 150, targetValue: 100, targetDate: nil, createdAt: Date()))
+            
             ProgressRingCard(goal: Goal(id: UUID(), chapterId: UUID(), type: "Financeiro", title: "Mensalidades", description: "Arrecadação mensal", currentValue: 999, targetValue: 2000, targetDate: nil, createdAt: Date()))
             
             ProgressRingCard(goal: Goal(id: UUID(), chapterId: UUID(), type: "Iniciação", title: "Novos Membros", description: "Campanha 2026", currentValue: 79, targetValue: 100, targetDate: nil, createdAt: Date()))
             
             ProgressRingCard(goal: Goal(id: UUID(), chapterId: UUID(), type: "Filantropia", title: "Doações", description: "Campanha do agasalho", currentValue: 1999, targetValue: 2000, targetDate: nil, createdAt: Date()))
-            
-            ProgressRingCard(goal: Goal(id: UUID(), chapterId: UUID(), type: "Filantropia", title: "Doações", description: "Irmão Sangue Bom", currentValue: 150, targetValue: 100, targetDate: nil, createdAt: Date()))
         }
         .padding()
     }

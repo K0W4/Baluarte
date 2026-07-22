@@ -8,53 +8,40 @@ public struct MemberCard: View {
     }
     
     public var body: some View {
-        VStack(spacing: Spacing.sm) {
-            HStack(spacing: Spacing.sm) {
-                Circle()
-                    .fill(Theme.accent.opacity(0.1))
-                    .frame(width: 40, height: 40)
-                    .overlay(
-                        Text(initials(for: member.fullName))
+        HStack(alignment: .center, spacing: Spacing.md) {
+            VStack(alignment: .leading, spacing: Spacing.xxs) {
+                HStack(alignment: .center, spacing: Spacing.xs) {
+                    ViewThatFits(in: .horizontal) {
+                        Text(member.fullName)
                             .font(Typography.headline)
-                            .foregroundColor(Theme.accent)
-                    )
+                            .foregroundColor(Theme.textPrimary)
+                            .lineLimit(1)
+                            .fixedSize(horizontal: true, vertical: false)
+                            
+                        Text(abbreviatedName(for: member.fullName))
+                            .font(Typography.headline)
+                            .foregroundColor(Theme.textPrimary)
+                            .lineLimit(1)
+                    }
+                    .layoutPriority(1)
+                    
+                    if member.accessLevel == "admin" { tagView(text: "Admin") }
+                    if member.isSenior { tagView(text: "Sênior") }
+                    if member.isMason { tagView(text: "Maçom") }
+                    if member.isActive { tagView(text: "Ativo") }
+                }
                 
-                Text(member.fullName)
-                    .font(Typography.headline)
-                    .foregroundColor(Theme.textPrimary)
-                    .lineLimit(1)
-                
-                Spacer()
-                
-                Image(systemName: "chevron.right")
-                    .font(Typography.body)
-                    .foregroundColor(Theme.accent)
-            }
-            
-            Divider()
-                .background(Theme.border)
-            
-            VStack(alignment: .leading, spacing: Spacing.sm) {
                 Text(member.role ?? "Sem cargo")
                     .font(Typography.subheadline)
                     .foregroundColor(member.role != nil ? Theme.textSecondary : Theme.textTertiary)
-                
-                HStack(spacing: Spacing.xs) {
-                    if member.accessLevel == "admin" {
-                        tagView(text: "Admin", color: Theme.tagAdmin)
-                    }
-                    if member.isSenior {
-                        tagView(text: "Sênior", color: Theme.tagSenior)
-                    }
-                    if member.isMason {
-                        tagView(text: "Maçom", color: Theme.tagMason)
-                    }
-                    if member.isActive {
-                        tagView(text: "Ativo", color: Theme.tagActive)
-                    }
-                }
+                    .lineLimit(1)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            
+            Spacer(minLength: Spacing.xs)
+            
+            Image(systemName: "chevron.right")
+                .font(Typography.body)
+                .foregroundColor(Theme.accent)
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(member.fullName), \(member.role ?? "Sem cargo")")
@@ -65,25 +52,24 @@ public struct MemberCard: View {
     }
     
     @ViewBuilder
-    private func tagView(text: String, color: Color) -> some View {
-        Text(text.uppercased())
+    private func tagView(text: String) -> some View {
+        Text(text)
             .font(Typography.caption2)
-            .foregroundColor(color)
+            .foregroundColor(Theme.textPrimary)
             .padding(.horizontal, 6)
             .padding(.vertical, 2)
-            .background(color.opacity(0.1))
+            .background(Theme.textSecondary.opacity(0.15))
             .clipShape(Capsule())
+            .fixedSize(horizontal: true, vertical: false)
     }
     
-    private func initials(for name: String) -> String {
+    private func abbreviatedName(for name: String) -> String {
         let components = name.components(separatedBy: .whitespacesAndNewlines).filter { !$0.isEmpty }
         if components.count >= 2 {
-            let first = components[0].prefix(1)
+            let first = components[0]
             let last = components.last?.prefix(1) ?? ""
-            return String(first + last).uppercased()
-        } else if let first = components.first {
-            return String(first.prefix(2)).uppercased()
+            return "\(first) \(last)."
         }
-        return "??"
+        return name
     }
 }

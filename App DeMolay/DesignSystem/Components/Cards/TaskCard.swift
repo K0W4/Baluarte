@@ -30,13 +30,13 @@ public struct TaskCard: View {
                         .font(Typography.headline)
                         .foregroundColor(task.isCompleted ? Theme.textSecondary : Theme.textPrimary)
                         .strikethrough(task.isCompleted, color: Theme.textSecondary)
-                    
-                    Spacer()
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     
                     if let dueDate = task.dueDate {
                         Text(formatDate(dueDate))
-                            .font(Typography.body)
-                            .foregroundColor(isOverdue(dueDate) && !task.isCompleted ? Theme.destructive : Theme.textSecondary)
+                            .font(Typography.subheadline)
+                            .foregroundColor(Theme.textSecondary)
+                            .fixedSize(horizontal: true, vertical: false)
                     }
                 }
                 

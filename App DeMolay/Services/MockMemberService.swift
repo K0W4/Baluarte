@@ -17,7 +17,8 @@ public final class MockMemberService: MemberServiceProtocol {
             Member(id: UUID(), chapterId: chapterId, fullName: "Pedro Souza", role: "Presidente do Conselho Consultivo", isActive: false, isSenior: true, isMason: true, accessLevel: "admin", birthdate: date3, cid: "123458", createdAt: Date()),
             Member(id: UUID(), chapterId: chapterId, fullName: "Lucas Almeida", role: nil, isActive: false, isSenior: true, isMason: false, accessLevel: "member", birthdate: date2, cid: "123459", createdAt: Date()),
             Member(id: UUID(), chapterId: chapterId, fullName: "Marcos Oliveira", role: "Consultor", isActive: false, isSenior: false, isMason: true, accessLevel: "member", birthdate: date4, cid: "123460", createdAt: Date()),
-            Member(id: UUID(), chapterId: chapterId, fullName: "Thiago Mendes", role: "Escrivão", isActive: true, isSenior: false, isMason: false, accessLevel: "member", birthdate: date5, cid: "123461", createdAt: Date())
+            Member(id: UUID(), chapterId: chapterId, fullName: "Thiago Mendes", role: "Escrivão", isActive: true, isSenior: false, isMason: false, accessLevel: "member", birthdate: date5, cid: "123461", createdAt: Date()),
+            Member(id: UUID(), chapterId: chapterId, fullName: "Juliano Magalhães Albuquerque", role: "Hospitalário", isActive: true, isSenior: true, isMason: true, accessLevel: "member", birthdate: date1, cid: "123462", createdAt: Date())
         ]
     }
 }

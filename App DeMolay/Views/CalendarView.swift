@@ -34,6 +34,8 @@ public struct CalendarView: View {
                 }
                 .padding(.vertical, Spacing.lg)
             }
+            .scrollIndicators(.hidden)
+            .contentMargins(.bottom, 100, for: .scrollContent)
             .background(Theme.backgroundPrimary)
             .navigationTitle("Calendário")
             .toolbarTitleDisplayMode(.inlineLarge)

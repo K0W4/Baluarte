@@ -4,7 +4,7 @@ public struct PrimaryButtonStyle: ButtonStyle {
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(Typography.headline)
-            .foregroundColor(Theme.accent)
+            .foregroundColor(Theme.textPrimary)
             .frame(maxWidth: .infinity)
             .padding(.vertical, Spacing.sm)
             .background(Theme.backgroundTertiary)

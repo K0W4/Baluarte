@@ -56,6 +56,8 @@ public struct HomeView: View {
                 }
                 .padding(.top, Spacing.screenEdgePadding)
             }
+            .scrollIndicators(.hidden)
+            .contentMargins(.bottom, 100, for: .scrollContent)
             .background(Theme.backgroundPrimary)
             .navigationTitle("Olá, Irmão!")
             .toolbarTitleDisplayMode(.inlineLarge)

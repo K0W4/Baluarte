@@ -54,6 +54,8 @@ public struct MembersView: View {
                     .padding(.horizontal, Spacing.screenEdgePadding)
                     .padding(.vertical, Spacing.md)
                 }
+                .scrollIndicators(.hidden)
+                .contentMargins(.bottom, 100, for: .scrollContent)
                 .background(Theme.backgroundPrimary)
                 .refreshable {
                     await viewModel.loadMembers()

@@ -84,17 +84,12 @@ public struct EventCard: View {
             }) {
                 HStack(spacing: Spacing.xs) {
                     Image(systemName: isUserConfirmed ? "checkmark.circle.fill" : "person.crop.circle.badge.plus")
-                        .font(Typography.caption1)
+                        .foregroundColor(isUserConfirmed ? Theme.success : Theme.accent)
+                        .frame(width: 24, height: 24)
                     Text(isUserConfirmed ? "Presença Confirmada" : "Confirmar Presença")
-                        .font(Typography.caption1)
                 }
-                .foregroundColor(isUserConfirmed ? Theme.success : Theme.accent)
-                .padding(.horizontal, Spacing.sm)
-                .padding(.vertical, Spacing.xxs)
-                .background(isUserConfirmed ? Theme.success.opacity(0.15) : Theme.accent.opacity(0.15))
-                .clipShape(Capsule())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(PrimaryButtonStyle())
             .accessibilityLabel(isUserConfirmed ? "Cancelar presença no evento \(event.title)" : "Confirmar presença no evento \(event.title)")
         }
         .padding(Spacing.md)
