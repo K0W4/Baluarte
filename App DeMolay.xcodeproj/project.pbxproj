@@ -10,14 +10,30 @@
 		7FB0E5AC0DFACF1CCD6EB4EB /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 0D227F8247D2E027CD98DB6A /* Supabase */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		9353B3A03011A47C00D754B7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 932EA1763006CB3D00CD22BF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 932EA17D3006CB3D00CD22BF;
+			remoteInfo = "App DeMolay";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		932EA17E3006CB3D00CD22BF /* App DeMolay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "App DeMolay.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9353B39C3011A47C00D754B7 /* App DeMolayTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "App DeMolayTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		932EA1803006CB3D00CD22BF /* App DeMolay */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = "App DeMolay";
+			sourceTree = "<group>";
+		};
+		9353B39D3011A47C00D754B7 /* App DeMolayTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "App DeMolayTests";
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -31,6 +47,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9353B3993011A47C00D754B7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -38,6 +61,7 @@
 			isa = PBXGroup;
 			children = (
 				932EA1803006CB3D00CD22BF /* App DeMolay */,
+				9353B39D3011A47C00D754B7 /* App DeMolayTests */,
 				932EA17F3006CB3D00CD22BF /* Products */,
 			);
 			sourceTree = "<group>";
@@ -46,6 +70,7 @@
 			isa = PBXGroup;
 			children = (
 				932EA17E3006CB3D00CD22BF /* App DeMolay.app */,
+				9353B39C3011A47C00D754B7 /* App DeMolayTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -76,6 +101,29 @@
 			productReference = 932EA17E3006CB3D00CD22BF /* App DeMolay.app */;
 			productType = "com.apple.product-type.application";
 		};
+		9353B39B3011A47C00D754B7 /* App DeMolayTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9353B3A23011A47C00D754B7 /* Build configuration list for PBXNativeTarget "App DeMolayTests" */;
+			buildPhases = (
+				9353B3983011A47C00D754B7 /* Sources */,
+				9353B3993011A47C00D754B7 /* Frameworks */,
+				9353B39A3011A47C00D754B7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9353B3A13011A47C00D754B7 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				9353B39D3011A47C00D754B7 /* App DeMolayTests */,
+			);
+			name = "App DeMolayTests";
+			packageProductDependencies = (
+			);
+			productName = "App DeMolayTests";
+			productReference = 9353B39C3011A47C00D754B7 /* App DeMolayTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -88,6 +136,10 @@
 				TargetAttributes = {
 					932EA17D3006CB3D00CD22BF = {
 						CreatedOnToolsVersion = 26.5;
+					};
+					9353B39B3011A47C00D754B7 = {
+						CreatedOnToolsVersion = 26.5;
+						TestTargetID = 932EA17D3006CB3D00CD22BF;
 					};
 				};
 			};
@@ -109,12 +161,20 @@
 			projectRoot = "";
 			targets = (
 				932EA17D3006CB3D00CD22BF /* App DeMolay */,
+				9353B39B3011A47C00D754B7 /* App DeMolayTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		932EA17C3006CB3D00CD22BF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9353B39A3011A47C00D754B7 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -131,7 +191,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9353B3983011A47C00D754B7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		9353B3A13011A47C00D754B7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 932EA17D3006CB3D00CD22BF /* App DeMolay */;
+			targetProxy = 9353B3A03011A47C00D754B7 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		932EA1873006CB3E00CD22BF /* Debug */ = {
@@ -319,6 +394,48 @@
 			};
 			name = Release;
 		};
+		9353B3A33011A47C00D754B7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2U54MVQ5ZR;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Kowa.App-DeMolayTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/App DeMolay.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/App DeMolay";
+			};
+			name = Debug;
+		};
+		9353B3A43011A47C00D754B7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2U54MVQ5ZR;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Kowa.App-DeMolayTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/App DeMolay.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/App DeMolay";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -336,6 +453,15 @@
 			buildConfigurations = (
 				932EA18A3006CB3E00CD22BF /* Debug */,
 				932EA18B3006CB3E00CD22BF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9353B3A23011A47C00D754B7 /* Build configuration list for PBXNativeTarget "App DeMolayTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9353B3A33011A47C00D754B7 /* Debug */,
+				9353B3A43011A47C00D754B7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
