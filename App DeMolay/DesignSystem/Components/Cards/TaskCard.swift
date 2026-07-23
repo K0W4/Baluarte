@@ -11,7 +11,7 @@ public struct TaskCard: View {
     
     public var body: some View {
         
-        HStack(alignment: .top, spacing: Spacing.sm) {
+        HStack(alignment: task.description.isEmpty ? .center : .top, spacing: Spacing.sm) {
             Button {
                 let generator = UIImpactFeedbackGenerator(style: .medium)
                 generator.impactOccurred()
@@ -26,7 +26,7 @@ public struct TaskCard: View {
             .frame(width: 44, height: 44)
             .accessibilityLabel(task.isCompleted ? "Desmarcar tarefa \(task.title)" : "Marcar tarefa \(task.title) como concluída")
             
-            VStack(alignment: .leading, spacing: Spacing.sm) {
+            VStack(alignment: .leading, spacing: task.isCompleted ? 0 : Spacing.sm) {
                 HStack(alignment: .top, spacing: Spacing.xs) {
                     Text(task.title)
                         .font(Typography.headline)
@@ -42,7 +42,7 @@ public struct TaskCard: View {
                     }
                 }
                 
-                if !task.description.isEmpty {
+                if !task.description.isEmpty && !task.isCompleted {
                     Text(task.description)
                         .font(Typography.subheadline)
                         .foregroundColor(Theme.textSecondary)
@@ -50,7 +50,7 @@ public struct TaskCard: View {
                 }
             }
         }
-        .padding(Spacing.md)
+        .padding(task.isCompleted ? Spacing.sm : Spacing.md)
         .background(Theme.cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .overlay(

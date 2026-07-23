@@ -10,11 +10,23 @@ public struct CommitteeCard: View {
         self.tasks = tasks.filter { !$0.isCompleted }
         self.onTaskToggled = onTaskToggled
     }
+    private var iconName: String {
+        let name = committee.name.lowercased()
+        if name.contains("sindicância") { return "magnifyingglass" }
+        if name.contains("hospitalaria") { return "cross.case.fill" }
+        if name.contains("finança") || name.contains("tesouraria") { return "dollarsign.circle.fill" }
+        if name.contains("auditoria") { return "doc.text.magnifyingglass" }
+        if name.contains("evento") || name.contains("social") { return "sparkles" }
+        if name.contains("entretenimento") { return "popcorn.fill" }
+        if name.contains("marketing") || name.contains("mídia") || name.contains("midia") || name.contains("comunicação") { return "megaphone.fill" }
+        if name.contains("ritual") || name.contains("grau") { return "book.closed.fill" }
+        return "rectangle.3.group.fill"
+    }
     
     public var body: some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
             HStack(spacing: Spacing.xs) {
-                Image(systemName: "person.2.fill")
+                Image(systemName: iconName)
                     .foregroundColor(Theme.textPrimary)
                     .font(Typography.headline)
                 

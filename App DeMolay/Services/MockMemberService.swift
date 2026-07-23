@@ -21,4 +21,16 @@ public struct MockMemberService: MemberServiceProtocol {
             Member(id: UUID(), chapterId: chapterId, fullName: "Juliano Magalhães Albuquerque", role: "Hospitalário", isActive: true, isSenior: true, isMason: true, accessLevel: "member", birthdate: date1, cid: "123462", createdAt: Date())
         ]
     }
+    
+    public func createMember(_ member: Member) async throws {
+        try await Task.sleep(nanoseconds: 500_000_000)
+    }
+    
+    public func updateMember(_ member: Member) async throws {
+        try await Task.sleep(nanoseconds: 500_000_000)
+    }
+    
+    public func deleteMember(memberId: UUID) async throws {
+        try await Task.sleep(nanoseconds: 500_000_000)
+    }
 }

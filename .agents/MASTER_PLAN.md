@@ -10,20 +10,21 @@ Este é o nosso **Plano de Implementação Mestre**, na ordem exata de produçã
 
 ## 🗺️ Cronograma de Produção (5 Grandes Épicos)
 
-### Épico 1: Refinamento Arquitetural e Design 🚧
-*(Nosso alvo atual!)*
+### Épico 1: Refinamento Arquitetural e Design ✅
+*(Concluído)*
 - [x] Revisão e melhoria das especificações dos arquivos `.agents`
 - [x] Busca profunda de design e melhoria
 - [x] Alterações no projeto de acordo com a busca
 - [x] Lapidação de componentes e estruturas
 - [x] Revisão de design
-- [ ] Revisão profunda de MVVM
+- [x] Revisão profunda de MVVM
 
-### Épico 2: Expansão de Features e Testes
-*(Pendente)*
-- [ ] Adicionar features restantes de CRUD (Criação das telas que faltam)
-- [ ] Alterações de acordo com a revisão do CRUD
-- [ ] Implementação de testes
+### Épico 2: Interatividade e Formulários 🚧
+*(Em andamento)*
+- [x] Conexão da navegação e fluxos de criação
+- [x] Construção das modais e viewmodels de criação
+- [x] Refinamentos de UI/UX e validações de negócios
+- [ ] Implementação de testes automatizados para ViewModels
 
 ### Épico 3: Integração Backend e Banco de Dados
 - [ ] Revisão do banco de dados (Supabase)

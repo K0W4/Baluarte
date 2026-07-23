@@ -5,6 +5,7 @@ public struct Committee: Codable, Identifiable, Hashable {
     public let chapterId: UUID
     public var name: String
     public var chairmanId: UUID?
+    public var memberIds: [UUID]?
     public var createdAt: Date
     
     enum CodingKeys: String, CodingKey {
@@ -12,6 +13,7 @@ public struct Committee: Codable, Identifiable, Hashable {
         case chapterId = "chapter_id"
         case name
         case chairmanId = "chairman_id"
+        case memberIds = "member_ids"
         case createdAt = "created_at"
     }
 }

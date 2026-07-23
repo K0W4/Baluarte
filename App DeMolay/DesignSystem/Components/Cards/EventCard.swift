@@ -16,8 +16,8 @@ public struct EventCard: View {
         if type.contains("ritual") { return "book.closed.fill" }
         if type.contains("admin") { return "briefcase.fill" }
         if type.contains("congresso") { return "lanyardcard.fill" }
-        if type.contains("filantropia") { return "calendar" }
-        if type.contains("arrecada") { return "dollarsign.circle.fill" }
+        if type.contains("filantropia") { return "hands.and.sparkles.fill" }
+        if type.contains("monet") { return "dollarsign.circle.fill" }
         return "star.fill"
     }
     

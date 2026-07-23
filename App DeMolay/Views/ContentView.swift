@@ -26,13 +26,13 @@ struct ContentView: View {
             
             MembersView()
                 .tabItem {
-                    Label("Membros", systemImage: selectedTab == .members ? "person.3.fill" : "person.3")
+                    Label("Membros", systemImage: selectedTab == .members ? "person.2.fill" : "person.2")
                 }
                 .tag(Tab.members)
             
             TasksView()
                 .tabItem {
-                    Label("Tarefas", systemImage: selectedTab == .tasks ? "list.clipboard.fill" : "list.clipboard")
+                    Label("Tarefas", systemImage: "checklist")
                 }
                 .tag(Tab.tasks)
         }

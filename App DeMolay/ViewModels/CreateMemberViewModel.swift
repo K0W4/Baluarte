@@ -1,0 +1,78 @@
+import Foundation
+import SwiftUI
+
+@Observable
+@MainActor
+public final class CreateMemberViewModel {
+    public var fullName: String = ""
+    public var role: String = "Membro"
+    public var isActive: Bool = true
+    public var isSenior: Bool = false
+    public var isMason: Bool = false
+    public var cid: String = ""
+    public var birthdate: Date = Date().addingTimeInterval(-86400 * 365 * 18) // 18 anos
+    
+    public var isLoading: Bool = false
+    public var errorMessage: String? = nil
+    
+    private let memberService: MemberServiceProtocol
+    private let chapterId: UUID
+    
+    public var roles: [String] {
+        if isMason {
+            return ["Membro", "Consultor", "Presidente do Conselho Consultivo"]
+        } else if isSenior {
+            return ["Membro", "Consultor"]
+        } else {
+            return ["Membro", "Mestre Conselheiro", "1º Conselheiro", "2º Conselheiro", "Escrivão", "Tesoureiro", "Hospitalário"]
+        }
+    }
+    
+    public var isValid: Bool {
+        !fullName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
+        (isActive || isSenior || isMason) &&
+        !(isActive && (isSenior || isMason))
+    }
+    
+    public func updateRoleIfNeeded() {
+        if !roles.contains(role) {
+            role = roles.first ?? "Membro"
+        }
+    }
+    
+    public init(memberService: MemberServiceProtocol = MockMemberService(), chapterId: UUID = UUID()) {
+        self.memberService = memberService
+        self.chapterId = chapterId
+    }
+    
+    public func saveMember() async -> Bool {
+        guard isValid else { return false }
+        
+        isLoading = true
+        errorMessage = nil
+        
+        let newMember = Member(
+            id: UUID(),
+            chapterId: chapterId,
+            fullName: fullName.trimmingCharacters(in: .whitespacesAndNewlines),
+            role: role == "Membro" ? nil : role,
+            isActive: isActive,
+            isSenior: isSenior,
+            isMason: isMason,
+            accessLevel: "member",
+            birthdate: birthdate,
+            cid: cid.isEmpty ? nil : cid,
+            createdAt: Date()
+        )
+        
+        do {
+            try await memberService.createMember(newMember)
+            isLoading = false
+            return true
+        } catch {
+            errorMessage = "Erro ao adicionar o membro. Tente novamente."
+            isLoading = false
+            return false
+        }
+    }
+}

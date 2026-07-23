@@ -181,13 +181,13 @@ private struct OverflowRing: View {
 #Preview {
     ScrollView(.horizontal, showsIndicators: false) {
         HStack(spacing: 16) {
-            ProgressRingCard(goal: Goal(id: UUID(), chapterId: UUID(), type: "Filantropia", title: "Doações", description: "Irmão Sangue Bom", currentValue: 150, targetValue: 100, targetDate: nil, createdAt: Date()))
+            ProgressRingCard(goal: Goal(id: UUID(), chapterId: UUID(), title: "Doações", description: "Irmão Sangue Bom", currentValue: 150, targetValue: 100, targetDate: nil, createdAt: Date()))
             
-            ProgressRingCard(goal: Goal(id: UUID(), chapterId: UUID(), type: "Financeiro", title: "Mensalidades", description: "Arrecadação mensal", currentValue: 999, targetValue: 2000, targetDate: nil, createdAt: Date()))
+            ProgressRingCard(goal: Goal(id: UUID(), chapterId: UUID(), title: "Mensalidades", description: "Arrecadação mensal", currentValue: 999, targetValue: 2000, targetDate: nil, createdAt: Date()))
             
-            ProgressRingCard(goal: Goal(id: UUID(), chapterId: UUID(), type: "Iniciação", title: "Novos Membros", description: "Campanha 2026", currentValue: 79, targetValue: 100, targetDate: nil, createdAt: Date()))
+            ProgressRingCard(goal: Goal(id: UUID(), chapterId: UUID(), title: "Novos Membros", description: "Campanha 2026", currentValue: 79, targetValue: 100, targetDate: nil, createdAt: Date()))
             
-            ProgressRingCard(goal: Goal(id: UUID(), chapterId: UUID(), type: "Filantropia", title: "Doações", description: "Campanha do agasalho", currentValue: 1999, targetValue: 2000, targetDate: nil, createdAt: Date()))
+            ProgressRingCard(goal: Goal(id: UUID(), chapterId: UUID(), title: "Doações", description: "Campanha do agasalho", currentValue: 1999, targetValue: 2000, targetDate: nil, createdAt: Date()))
         }
         .padding()
     }

@@ -1,0 +1,125 @@
+import SwiftUI
+
+public struct EventDetailView: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var viewModel: EventDetailViewModel
+    @State private var showingDeleteAlert = false
+    
+    public init(event: Event) {
+        self._viewModel = State(initialValue: EventDetailViewModel(event: event))
+    }
+    
+    public var body: some View {
+        NavigationStack {
+            Form {
+                Section {
+                    TextField("Título do Evento", text: $viewModel.title)
+                    
+                    Picker("Tipo", selection: $viewModel.eventType) {
+                        ForEach(viewModel.eventTypes, id: \.self) { type in
+                            Text(type).tag(type)
+                        }
+                    }
+                    
+                    DatePicker("Data e Hora", selection: $viewModel.scheduledDate)
+                        .environment(\.locale, Locale(identifier: "pt_BR"))
+                } header: {
+                    Text("Informações Básicas")
+                }
+                
+                Section {
+                    TextField("Observações (Opcional)", text: $viewModel.notes, axis: .vertical)
+                        .lineLimit(3...6)
+                } header: {
+                    Text("Detalhes")
+                }
+                
+                Section {
+                    Button(action: {
+                        Task {
+                            let generator = UIImpactFeedbackGenerator(style: viewModel.isUserConfirmed ? .rigid : .medium)
+                            generator.impactOccurred()
+                            await viewModel.toggleAttendance()
+                        }
+                    }) {
+                        HStack(spacing: Spacing.xs) {
+                            Image(systemName: viewModel.isUserConfirmed ? "checkmark.circle.fill" : "person.crop.circle.badge.plus")
+                                .foregroundColor(viewModel.isUserConfirmed ? Theme.success : Theme.accent)
+                                .frame(width: 24, height: 24)
+                            Text(viewModel.isUserConfirmed ? "Presença Confirmada" : "Confirmar Presença")
+                                .foregroundColor(Theme.textPrimary)
+                        }
+                    }
+                    .buttonStyle(PrimaryButtonStyle())
+                }
+                .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets())
+                
+                Section {
+                    Button(action: {
+                        showingDeleteAlert = true
+                    }) {
+                        Text("Excluir Evento")
+                            .foregroundColor(Theme.destructive)
+                    }
+                    .buttonStyle(PrimaryButtonStyle())
+                }
+                .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets())
+                
+                if let errorMessage = viewModel.errorMessage {
+                    Section {
+                        Text(errorMessage)
+                            .foregroundColor(.red)
+                            .font(Typography.caption1)
+                    }
+                }
+            }
+            .scrollDismissesKeyboard(.interactively)
+            .navigationTitle("Detalhes do Evento")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Fechar") {
+                        dismiss()
+                    }
+                    .foregroundColor(Theme.accent)
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Salvar") {
+                        Task {
+                            let success = await viewModel.saveChanges()
+                            if success { dismiss() }
+                        }
+                    }
+                    .font(.body.bold())
+                    .foregroundColor(viewModel.isValid && viewModel.hasChanges ? Theme.accent : Theme.textSecondary.opacity(0.5))
+                    .disabled(!viewModel.isValid || !viewModel.hasChanges || viewModel.isLoading)
+                }
+            }
+            .alert("Excluir Evento", isPresented: $showingDeleteAlert) {
+                Button("Cancelar", role: .cancel) { showingDeleteAlert = false }
+                Button("Excluir", role: .destructive) {
+                    Task {
+                        let success = await viewModel.deleteEvent()
+                        if success { dismiss() }
+                    }
+                }
+            } message: {
+                Text("Tem certeza que deseja excluir este evento? Esta ação não pode ser desfeita.")
+            }
+            .overlay {
+                if viewModel.isLoading {
+                    ZStack {
+                        Color.black.opacity(0.2).ignoresSafeArea()
+                        ProgressView()
+                            .padding()
+                            .background(Theme.backgroundSecondary)
+                            .cornerRadius(8)
+                    }
+                }
+            }
+        }
+    }
+}

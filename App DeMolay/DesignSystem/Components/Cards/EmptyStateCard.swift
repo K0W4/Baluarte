@@ -50,9 +50,11 @@ public enum CardType {
 
 public struct EmptyStateCard: View {
     let cardType: CardType
+    let action: (() -> Void)?
     
-    public init(cardType: CardType) {
+    public init(cardType: CardType, action: (() -> Void)? = nil) {
         self.cardType = cardType
+        self.action = action
     }
 
     public var body: some View {
@@ -74,6 +76,7 @@ public struct EmptyStateCard: View {
             }
             
             Button {
+                action?()
             } label: {
                 Text(cardType.buttonText)
             }

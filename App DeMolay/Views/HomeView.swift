@@ -2,6 +2,13 @@ import SwiftUI
 
 public struct HomeView: View {
     @State private var viewModel = HomeViewModel()
+    @State private var showingCreateEvent = false
+    @State private var showingCreateGoal = false
+    @State private var showingCreateCommittee = false
+    
+    @State private var selectedEvent: Event?
+    @State private var selectedGoal: Goal?
+    @State private var selectedCommittee: Committee?
 
     public var body: some View {
         NavigationStack {
@@ -34,25 +41,48 @@ public struct HomeView: View {
                     
                     EventsSection(
                         events: displayEvents,
+                        isLoading: viewModel.isLoading,
                         currentUserId: viewModel.currentUserId,
                         onConfirmAttendance: { eventId in
                             if !viewModel.isLoading {
                                 Task { await viewModel.confirmAttendance(eventId: eventId) }
                             }
+                        },
+                        onCreateEvent: {
+                            showingCreateEvent = true
+                        },
+                        onSelectEvent: { event in
+                            selectedEvent = event
                         }
                     )
                     .skeleton(isLoading: viewModel.isLoading)
                     
-                    GoalsSection(goals: displayGoals)
+                    GoalsSection(
+                        goals: displayGoals,
+                        isLoading: viewModel.isLoading,
+                        onCreateGoal: {
+                            showingCreateGoal = true
+                        },
+                        onSelectGoal: { goal in
+                            selectedGoal = goal
+                        }
+                    )
                         .skeleton(isLoading: viewModel.isLoading)
                         
                     CommitteesSection(
                         committees: displayCommittees,
                         tasks: displayTasks,
+                        isLoading: viewModel.isLoading,
                         onTaskToggled: { taskId in
                             if !viewModel.isLoading {
                                 Task { await viewModel.toggleTaskCompletion(taskId: taskId) }
                             }
+                        },
+                        onCreateCommittee: {
+                            showingCreateCommittee = true
+                        },
+                        onSelectCommittee: { committee in
+                            selectedCommittee = committee
                         }
                     )
                     .skeleton(isLoading: viewModel.isLoading)
@@ -71,14 +101,35 @@ public struct HomeView: View {
             .task {
                 await viewModel.loadData()
             }
+            .sheet(isPresented: $showingCreateEvent) {
+                CreateEventView()
+            }
+            .sheet(isPresented: $showingCreateGoal) {
+                CreateGoalView()
+            }
+            .sheet(isPresented: $showingCreateCommittee) {
+                CreateCommitteeView()
+            }
+            .sheet(item: $selectedEvent) { event in
+                EventDetailView(event: event)
+            }
+            .sheet(item: $selectedGoal) { goal in
+                GoalDetailView(goal: goal)
+            }
+            .sheet(item: $selectedCommittee) { committee in
+                CommitteeDetailView(committee: committee)
+            }
         }
     }
 }
 
 private struct EventsSection: View {
     let events: [Event]
+    let isLoading: Bool
     let currentUserId: UUID
     let onConfirmAttendance: (UUID) -> Void
+    let onCreateEvent: () -> Void
+    let onSelectEvent: (Event) -> Void
     
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
@@ -87,12 +138,15 @@ private struct EventsSection: View {
                 actionLabel: "Adicionar evento",
                 actionHint: "Toca duas vezes para criar um novo evento"
             ) {
+                onCreateEvent()
             }
             .padding(.horizontal, Spacing.screenEdgePadding)
 
-            if events.isEmpty {
-                EmptyStateCard(cardType: .event)
-                    .padding(.horizontal, Spacing.screenEdgePadding)
+            if events.isEmpty && !isLoading {
+                EmptyStateCard(cardType: .event) {
+                    onCreateEvent()
+                }
+                .padding(.horizontal, Spacing.screenEdgePadding)
             } else {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: Spacing.xs) {
@@ -101,7 +155,10 @@ private struct EventsSection: View {
                             EventCard(event: event, isUserConfirmed: isConfirmed) {
                                 onConfirmAttendance(event.id)
                             }
-                                .containerRelativeFrame(.horizontal)
+                            .containerRelativeFrame(.horizontal)
+                            .onTapGesture {
+                                onSelectEvent(event)
+                            }
                         }
                     }
                     .scrollTargetLayout()
@@ -115,6 +172,9 @@ private struct EventsSection: View {
 
 private struct GoalsSection: View {
     let goals: [Goal]
+    let isLoading: Bool
+    let onCreateGoal: () -> Void
+    let onSelectGoal: (Goal) -> Void
     
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
@@ -123,18 +183,24 @@ private struct GoalsSection: View {
                 actionLabel: "Adicionar meta",
                 actionHint: "Toca duas vezes para criar uma nova meta"
             ) {
+                onCreateGoal()
             }
             .padding(.horizontal, Spacing.screenEdgePadding)
             
-            if goals.isEmpty {
-                EmptyStateCard(cardType: .goal)
-                    .padding(.horizontal, Spacing.screenEdgePadding)
+            if goals.isEmpty && !isLoading {
+                EmptyStateCard(cardType: .goal) {
+                    onCreateGoal()
+                }
+                .padding(.horizontal, Spacing.screenEdgePadding)
             } else {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: Spacing.xs) {
                         ForEach(goals) { goal in
                             ProgressRingCard(goal: goal)
                                 .containerRelativeFrame(.horizontal, count: 2, span: 1, spacing: Spacing.xs)
+                                .onTapGesture {
+                                    onSelectGoal(goal)
+                                }
                         }
                     }
                     .scrollTargetLayout()
@@ -149,7 +215,10 @@ private struct GoalsSection: View {
 private struct CommitteesSection: View {
     let committees: [Committee]
     let tasks: [ChapterTask]
+    let isLoading: Bool
     let onTaskToggled: (UUID) -> Void
+    let onCreateCommittee: () -> Void
+    let onSelectCommittee: (Committee) -> Void
     
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
@@ -158,10 +227,13 @@ private struct CommitteesSection: View {
                 actionLabel: "Adicionar comissão",
                 actionHint: "Toca duas vezes para criar uma nova comissão"
             ) {
+                onCreateCommittee()
             }
             
-            if committees.isEmpty {
-                EmptyStateCard(cardType: .committee)
+            if committees.isEmpty && !isLoading {
+                EmptyStateCard(cardType: .committee) {
+                    onCreateCommittee()
+                }
             } else {
                 ForEach(committees) { committee in
                     let committeeTasks = tasks.filter { $0.committeeId == committee.id }
@@ -170,6 +242,9 @@ private struct CommitteesSection: View {
                         tasks: committeeTasks,
                         onTaskToggled: onTaskToggled
                     )
+                    .onTapGesture {
+                        onSelectCommittee(committee)
+                    }
                 }
             }
         }

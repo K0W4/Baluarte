@@ -3,6 +3,7 @@ import SwiftUI
 public struct TasksView: View {
     @State private var viewModel = TasksViewModel()
     @State private var taskToDelete: ChapterTask?
+    @State private var showingCreateTask = false
 
     @State private var isCompletedExpanded = true
     @State private var isIndividualExpanded = true
@@ -36,7 +37,10 @@ public struct TasksView: View {
                                         onDismiss: { withAnimation { viewModel.errorMessage = nil } }
                                     )
                                 }
-                                EmptyStateCard(cardType: .task)
+                                EmptyStateCard(cardType: .task) {
+                                    showingCreateTask = true
+                                }
+                                .padding(.horizontal, Spacing.screenEdgePadding)
                             }
                             .padding(Spacing.screenEdgePadding)
                         }
@@ -74,6 +78,7 @@ public struct TasksView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
                         HapticManager.shared.impact(style: .medium)
+                        showingCreateTask = true
                     }) {
                         Image(systemName: "plus").foregroundColor(Theme.accent)
                     }
@@ -97,6 +102,9 @@ public struct TasksView: View {
             }
             .task {
                 await viewModel.loadData()
+            }
+            .sheet(isPresented: $showingCreateTask) {
+                CreateTaskView()
             }
         }
     }

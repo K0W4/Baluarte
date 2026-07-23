@@ -32,4 +32,8 @@ public struct MockTaskService: TaskServiceProtocol {
     public func deleteTask(taskId: UUID) async throws {
         try await Task.sleep(nanoseconds: 300_000_000)
     }
+    
+    public func createTask(_ task: ChapterTask) async throws {
+        try await Task.sleep(nanoseconds: 500_000_000)
+    }
 }

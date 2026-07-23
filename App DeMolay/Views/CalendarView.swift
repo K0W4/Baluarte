@@ -3,6 +3,8 @@ import SwiftUI
 public struct CalendarView: View {
     @State private var viewModel = CalendarViewModel()
     @State private var monthTransitionDirection: Edge = .trailing
+    @State private var showingCreateEvent = false
+    @State private var selectedEvent: Event?
     
     private let calendar = Calendar.current
     private let daysInWeek = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"]
@@ -62,6 +64,12 @@ public struct CalendarView: View {
             }
             .task {
                 await viewModel.loadEvents()
+            }
+            .sheet(isPresented: $showingCreateEvent) {
+                CreateEventView(initialDate: viewModel.selectedDate)
+            }
+            .sheet(item: $selectedEvent) { event in
+                EventDetailView(event: event)
             }
         }
     }
@@ -153,13 +161,16 @@ public struct CalendarView: View {
                 actionLabel: "Adicionar evento",
                 actionHint: "Toca duas vezes para adicionar evento no calendário"
             ) {
+                showingCreateEvent = true
             }
             .padding(.horizontal, Spacing.screenEdgePadding)
             
             let selectedEvents = viewModel.isLoading ? Event.skeletonList : viewModel.events(for: viewModel.selectedDate)
             
             if selectedEvents.isEmpty && !viewModel.isLoading {
-                EmptyStateCard(cardType: .event)
+                EmptyStateCard(cardType: .event) {
+                    showingCreateEvent = true
+                }
                     .padding(.horizontal, Spacing.screenEdgePadding)
             } else {
                 ForEach(selectedEvents) { event in
@@ -170,6 +181,9 @@ public struct CalendarView: View {
                     }
                     .skeleton(isLoading: viewModel.isLoading)
                     .padding(.horizontal, Spacing.screenEdgePadding)
+                    .onTapGesture {
+                        selectedEvent = event
+                    }
                     .contextMenu {
                             Button {
                                 Task {

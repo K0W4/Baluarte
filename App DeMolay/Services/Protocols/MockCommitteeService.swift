@@ -12,4 +12,16 @@ public struct MockCommitteeService: CommitteeServiceProtocol {
             Committee(id: UUID(), chapterId: chapterId, name: "Eventos", chairmanId: nil, createdAt: Date())
         ]
     }
+    
+    public func createCommittee(_ committee: Committee) async throws {
+        try await Task.sleep(nanoseconds: 500_000_000)
+    }
+    
+    public func updateCommittee(_ committee: Committee) async throws {
+        try await Task.sleep(nanoseconds: 500_000_000)
+    }
+    
+    public func deleteCommittee(committeeId: UUID) async throws {
+        try await Task.sleep(nanoseconds: 500_000_000)
+    }
 }

@@ -2,6 +2,8 @@ import SwiftUI
 
 public struct MembersView: View {
     @State private var viewModel = MembersViewModel()
+    @State private var showingCreateMember = false
+    @State private var selectedMember: Member?
     
     public init() {}
     
@@ -43,11 +45,16 @@ public struct MembersView: View {
                         }
                         
                         if members.isEmpty && !viewModel.isLoading {
-                            EmptyStateCard(cardType: .member)
+                            EmptyStateCard(cardType: .member) {
+                                showingCreateMember = true
+                            }
                         } else {
                             ForEach(members) { member in
                                 MemberCard(member: member)
                                     .skeleton(isLoading: viewModel.isLoading)
+                                    .onTapGesture {
+                                        selectedMember = member
+                                    }
                             }
                         }
                     }
@@ -67,6 +74,7 @@ public struct MembersView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
                         HapticManager.shared.impact(style: .light)
+                        showingCreateMember = true
                     } label: {
                         Image(systemName: "plus")
                             .foregroundColor(Theme.accent)
@@ -76,6 +84,12 @@ public struct MembersView: View {
             .searchable(text: $viewModel.searchText, prompt: "Buscar membro ou cargo")
             .task {
                 await viewModel.loadMembers()
+            }
+            .sheet(isPresented: $showingCreateMember) {
+                CreateMemberView()
+            }
+            .sheet(item: $selectedMember) { member in
+                MemberDetailView(member: member)
             }
         }
     }
