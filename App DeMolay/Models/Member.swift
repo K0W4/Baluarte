@@ -9,7 +9,7 @@ public struct Member: Codable, Identifiable, Hashable {
     public var isSenior: Bool
     public var isMason: Bool
     public var accessLevel: String
-    public var birthdate: Date?
+    @SupabaseDate public var birthdate: Date?
     public var cid: String?
     public var createdAt: Date
     

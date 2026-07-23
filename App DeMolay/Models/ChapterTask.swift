@@ -9,7 +9,7 @@ public struct ChapterTask: Codable, Identifiable, Hashable {
     public var title: String
     public var description: String
     public var isCompleted: Bool
-    public var dueDate: Date?
+    @SupabaseDate public var dueDate: Date?
     public var createdAt: Date
     
     public init(id: UUID, chapterId: UUID, creatorId: UUID, assigneeId: UUID? = nil, committeeId: UUID? = nil, title: String, description: String, isCompleted: Bool, dueDate: Date? = nil, createdAt: Date) {

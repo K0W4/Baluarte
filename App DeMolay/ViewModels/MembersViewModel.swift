@@ -23,7 +23,7 @@ public final class MembersViewModel {
 
     private let memberService: MemberServiceProtocol
 
-    public init(memberService: MemberServiceProtocol = MockMemberService()) {
+    public init(memberService: MemberServiceProtocol = Services.member) {
         self.memberService = memberService
     }
 
@@ -31,9 +31,14 @@ public final class MembersViewModel {
         isLoading = true
         errorMessage = nil
         do {
-            let mockChapterId = UUID()
+            let mockChapterId = Constants.testChapterId
             allMembers = try await memberService.fetchMembers(for: mockChapterId)
         } catch {
+            if error is CancellationError { 
+                withAnimation(.easeInOut(duration: 0.3)) { self.isLoading = false }
+                return 
+            }
+            print("❌ Supabase Error (Members): \(error)")
             errorMessage = error.localizedDescription
         }
         withAnimation(.easeInOut(duration: 0.3)) {

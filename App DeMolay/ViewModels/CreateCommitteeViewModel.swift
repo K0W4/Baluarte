@@ -43,9 +43,9 @@ public final class CreateCommitteeViewModel {
     }
     
     public init(
-        committeeService: CommitteeServiceProtocol = MockCommitteeService(),
-        memberService: MemberServiceProtocol = MockMemberService(),
-        chapterId: UUID = UUID()
+        committeeService: CommitteeServiceProtocol = Services.committee,
+        memberService: MemberServiceProtocol = Services.member,
+        chapterId: UUID = Constants.testChapterId
     ) {
         self.committeeService = committeeService
         self.memberService = memberService
@@ -58,6 +58,7 @@ public final class CreateCommitteeViewModel {
             self.availableMembers = try await memberService.fetchMembers(for: chapterId)
             isFetchingMembers = false
         } catch {
+            if error is CancellationError { return }
             isFetchingMembers = false
         }
     }
@@ -94,6 +95,8 @@ public final class CreateCommitteeViewModel {
             isLoading = false
             return true
         } catch {
+            if error is CancellationError { return false }
+            print("❌ Supabase Error: \(error)")
             errorMessage = "Erro ao criar a comissão. Tente novamente."
             isLoading = false
             return false

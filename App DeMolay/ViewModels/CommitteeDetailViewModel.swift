@@ -39,9 +39,9 @@ public final class CommitteeDetailViewModel {
     
     public init(
         committee: Committee,
-        committeeService: CommitteeServiceProtocol = MockCommitteeService(),
-        memberService: MemberServiceProtocol = MockMemberService(),
-        taskService: TaskServiceProtocol = MockTaskService()
+        committeeService: CommitteeServiceProtocol = Services.committee,
+        memberService: MemberServiceProtocol = Services.member,
+        taskService: TaskServiceProtocol = Services.task
     ) {
         self.committee = committee
         self.committeeService = committeeService
@@ -58,7 +58,7 @@ public final class CommitteeDetailViewModel {
         errorMessage = nil
         do {
             async let fetchMembers = memberService.fetchMembers(for: committee.chapterId)
-            async let fetchTasks = taskService.fetchTasks(for: UUID()) // using random UUID to fetch all mock tasks
+            async let fetchTasks = taskService.fetchTasks(forChapter: Constants.testChapterId)
             
             let (members, tasks) = try await (fetchMembers, fetchTasks)
             
@@ -67,6 +67,8 @@ public final class CommitteeDetailViewModel {
             
             isFetchingMembers = false
         } catch {
+            if error is CancellationError { return }
+            print("❌ Supabase Error: \(error)")
             errorMessage = "Erro ao carregar dados da comissão."
             isFetchingMembers = false
         }
@@ -94,6 +96,7 @@ public final class CommitteeDetailViewModel {
         do {
             try await taskService.toggleTaskCompletion(taskId: taskId, isCompleted: newStatus)
         } catch {
+            if error is CancellationError { return }
             committeeTasks[index].isCompleted = !newStatus
             errorMessage = "Erro ao atualizar a tarefa."
         }
@@ -116,6 +119,8 @@ public final class CommitteeDetailViewModel {
             isLoading = false
             return true
         } catch {
+            if error is CancellationError { return false }
+            print("❌ Supabase Error: \(error)")
             errorMessage = "Erro ao atualizar a comissão."
             isLoading = false
             return false
@@ -131,6 +136,8 @@ public final class CommitteeDetailViewModel {
             isLoading = false
             return true
         } catch {
+            if error is CancellationError { return false }
+            print("❌ Supabase Error: \(error)")
             errorMessage = "Erro ao excluir a comissão."
             isLoading = false
             return false

@@ -21,7 +21,7 @@ public final class CreateEventViewModel {
         !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
     
-    public init(eventService: EventServiceProtocol = MockEventService(), chapterId: UUID = UUID(), initialDate: Date = Date()) {
+    public init(eventService: EventServiceProtocol = Services.event, chapterId: UUID = Constants.testChapterId, initialDate: Date = Date()) {
         self.eventService = eventService
         self.chapterId = chapterId
         self.scheduledDate = initialDate
@@ -49,7 +49,9 @@ public final class CreateEventViewModel {
             isLoading = false
             return true
         } catch {
-            errorMessage = "Erro ao criar o evento. Tente novamente."
+            if error is CancellationError { return false }
+            print("❌ Erro no Supabase (Create Event): \(error)")
+            errorMessage = "Erro ao criar o evento: \(error.localizedDescription)"
             isLoading = false
             return false
         }

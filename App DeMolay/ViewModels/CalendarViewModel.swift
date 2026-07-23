@@ -13,23 +13,30 @@ public final class CalendarViewModel {
     public var errorMessage: String?
 
     private let eventService: EventServiceProtocol
-    private let currentUserId = UUID()
+    private let currentUserId = Constants.testUserId
 
-    public init(eventService: EventServiceProtocol = MockEventService()) {
+    public init(eventService: EventServiceProtocol = Services.event) {
         self.eventService = eventService
     }
 
-    public func loadEvents() async {
-        isLoading = true
+    public func loadEvents(showLoading: Bool = true) async {
+        if showLoading { isLoading = true }
         errorMessage = nil
         do {
-            let mockChapterId = UUID()
+            let mockChapterId = Constants.testChapterId
             events = try await eventService.fetchEvents(for: mockChapterId)
         } catch {
+            if error is CancellationError { 
+                withAnimation(.easeInOut(duration: 0.3)) { self.isLoading = false }
+                return 
+            }
+            print("❌ Supabase Error (Calendar): \(error)")
             errorMessage = error.localizedDescription
         }
-        withAnimation(.easeInOut(duration: 0.3)) {
-            isLoading = false
+        if showLoading {
+            withAnimation(.easeInOut(duration: 0.3)) {
+                isLoading = false
+            }
         }
     }
 
@@ -41,12 +48,17 @@ public final class CalendarViewModel {
         !events(for: date).isEmpty
     }
 
+    public func isUserConfirmed(for event: Event) -> Bool {
+        return event.confirmedAttendees?.contains(currentUserId) ?? false
+    }
+
     public func confirmAttendance(eventId: UUID) async {
         guard let index = events.firstIndex(where: { $0.id == eventId }) else { return }
         let originalAttendees = events[index].confirmedAttendees
 
         var attendees = events[index].confirmedAttendees ?? []
-        if attendees.contains(currentUserId) {
+        let isRemoving = attendees.contains(currentUserId)
+        if isRemoving {
             attendees.removeAll { $0 == currentUserId }
             HapticManager.shared.impact(style: .rigid)
         } else {
@@ -56,8 +68,13 @@ public final class CalendarViewModel {
         events[index].confirmedAttendees = attendees
 
         do {
-            try await eventService.confirmAttendance(eventId: eventId, userId: currentUserId)
+            if isRemoving {
+                try await eventService.removeAttendance(eventId: eventId, userId: currentUserId)
+            } else {
+                try await eventService.confirmAttendance(eventId: eventId, userId: currentUserId)
+            }
         } catch {
+            if error is CancellationError { return }
             events[index].confirmedAttendees = originalAttendees
         }
     }
@@ -75,6 +92,8 @@ public final class CalendarViewModel {
                 )
             }
         } catch {
+            if error is CancellationError { return }
+            print("❌ Supabase Error: \(error)")
             errorMessage = "Não foi possível adicionar ao calendário."
         }
     }

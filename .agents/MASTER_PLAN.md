@@ -19,17 +19,18 @@ Este é o nosso **Plano de Implementação Mestre**, na ordem exata de produçã
 - [x] Revisão de design
 - [x] Revisão profunda de MVVM
 
-### Épico 2: Interatividade e Formulários 🚧
-*(Em andamento)*
+### Épico 2: Interatividade e Formulários ✅
+*(Concluído)*
 - [x] Conexão da navegação e fluxos de criação
 - [x] Construção das modais e viewmodels de criação
 - [x] Refinamentos de UI/UX e validações de negócios
-- [ ] Implementação de testes automatizados para ViewModels
+- [x] Implementação de testes automatizados para ViewModels
 
-### Épico 3: Integração Backend e Banco de Dados
-- [ ] Revisão do banco de dados (Supabase)
-- [ ] Alterações de acordo com a revisão
-- [ ] Integração do banco com o projeto
+### Épico 3: Integração Backend e Banco de Dados ✅
+*(Concluído)*
+- [x] Revisão do banco de dados (Supabase)
+- [x] Alterações de acordo com a revisão
+- [x] Integração do banco com o projeto
 
 ### Épico 4: Ecossistema Apple e Inteligência
 - [ ] Análise para implementação de AppIntents e Widgets

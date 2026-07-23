@@ -65,10 +65,19 @@ public struct CalendarView: View {
             .task {
                 await viewModel.loadEvents()
             }
-            .sheet(isPresented: $showingCreateEvent) {
+            .onAppear {
+                Task {
+                    await viewModel.loadEvents(showLoading: false)
+                }
+            }
+            .sheet(isPresented: $showingCreateEvent, onDismiss: {
+                Task { await viewModel.loadEvents() }
+            }) {
                 CreateEventView(initialDate: viewModel.selectedDate)
             }
-            .sheet(item: $selectedEvent) { event in
+            .sheet(item: $selectedEvent, onDismiss: {
+                Task { await viewModel.loadEvents() }
+            }) { event in
                 EventDetailView(event: event)
             }
         }
@@ -174,7 +183,10 @@ public struct CalendarView: View {
                     .padding(.horizontal, Spacing.screenEdgePadding)
             } else {
                 ForEach(selectedEvents) { event in
-                    EventCard(event: event) {
+                    EventCard(
+                        event: event,
+                        isUserConfirmed: viewModel.isUserConfirmed(for: event)
+                    ) {
                         if !viewModel.isLoading {
                             Task { await viewModel.confirmAttendance(eventId: event.id) }
                         }

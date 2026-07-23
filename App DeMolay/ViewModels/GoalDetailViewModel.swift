@@ -43,7 +43,7 @@ public final class GoalDetailViewModel {
                (goal.targetDate ?? Date()) != targetDate
     }
     
-    public init(goal: Goal, goalService: GoalServiceProtocol = MockGoalService()) {
+    public init(goal: Goal, goalService: GoalServiceProtocol = Services.goal) {
         self.goal = goal
         self.goalService = goalService
         
@@ -92,6 +92,8 @@ public final class GoalDetailViewModel {
             isLoading = false
             return true
         } catch {
+            if error is CancellationError { return false }
+            print("❌ Supabase Error: \(error)")
             errorMessage = "Erro ao atualizar a meta."
             isLoading = false
             return false
@@ -107,6 +109,8 @@ public final class GoalDetailViewModel {
             isLoading = false
             return true
         } catch {
+            if error is CancellationError { return false }
+            print("❌ Supabase Error: \(error)")
             errorMessage = "Erro ao excluir a meta."
             isLoading = false
             return false

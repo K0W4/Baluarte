@@ -55,6 +55,54 @@ public struct EventDetailView: View {
                 .listRowBackground(Color.clear)
                 .listRowInsets(EdgeInsets())
                 
+                if !viewModel.activeMembers.isEmpty || !viewModel.seniorMembers.isEmpty || !viewModel.advisoryCouncil.isEmpty {
+                    Section {
+                        if !viewModel.activeMembers.isEmpty {
+                            VStack(alignment: .leading, spacing: Spacing.xxs) {
+                                Text("Ativos (\(viewModel.activeMembers.count))")
+                                    .font(Typography.caption1.bold())
+                                    .foregroundColor(Theme.textSecondary)
+                                ForEach(viewModel.activeMembers) { member in
+                                    Text(member.fullName)
+                                        .font(Typography.body)
+                                        .foregroundColor(Theme.textPrimary)
+                                }
+                            }
+                            .padding(.vertical, Spacing.xs)
+                        }
+                        
+                        if !viewModel.seniorMembers.isEmpty {
+                            VStack(alignment: .leading, spacing: Spacing.xxs) {
+                                Text("Sêniors (\(viewModel.seniorMembers.count))")
+                                    .font(Typography.caption1.bold())
+                                    .foregroundColor(Theme.textSecondary)
+                                ForEach(viewModel.seniorMembers) { member in
+                                    Text(member.fullName)
+                                        .font(Typography.body)
+                                        .foregroundColor(Theme.textPrimary)
+                                }
+                            }
+                            .padding(.vertical, Spacing.xs)
+                        }
+                        
+                        if !viewModel.advisoryCouncil.isEmpty {
+                            VStack(alignment: .leading, spacing: Spacing.xxs) {
+                                Text("Conselho Consultivo (\(viewModel.advisoryCouncil.count))")
+                                    .font(Typography.caption1.bold())
+                                    .foregroundColor(Theme.textSecondary)
+                                ForEach(viewModel.advisoryCouncil) { member in
+                                    Text(member.fullName)
+                                        .font(Typography.body)
+                                        .foregroundColor(Theme.textPrimary)
+                                }
+                            }
+                            .padding(.vertical, Spacing.xs)
+                        }
+                    } header: {
+                        Text("Presenças Confirmadas (\(viewModel.activeMembers.count + viewModel.seniorMembers.count + viewModel.advisoryCouncil.count))")
+                    }
+                }
+                
                 Section {
                     Button(action: {
                         showingDeleteAlert = true
@@ -78,6 +126,9 @@ public struct EventDetailView: View {
             .scrollDismissesKeyboard(.interactively)
             .navigationTitle("Detalhes do Evento")
             .navigationBarTitleDisplayMode(.inline)
+            .task {
+                await viewModel.loadMembers()
+            }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Fechar") {

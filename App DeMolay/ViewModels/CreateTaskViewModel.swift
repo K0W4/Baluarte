@@ -25,10 +25,10 @@ public final class CreateTaskViewModel {
     }
     
     public init(
-        taskService: TaskServiceProtocol = MockTaskService(),
-        committeeService: CommitteeServiceProtocol = MockCommitteeService(),
-        chapterId: UUID = UUID(),
-        currentUserId: UUID = UUID()
+        taskService: TaskServiceProtocol = Services.task,
+        committeeService: CommitteeServiceProtocol = Services.committee,
+        chapterId: UUID = Constants.testChapterId,
+        currentUserId: UUID = Constants.testUserId
     ) {
         self.taskService = taskService
         self.committeeService = committeeService
@@ -42,6 +42,7 @@ public final class CreateTaskViewModel {
             self.committees = try await committeeService.fetchCommittees(for: chapterId)
             isFetchingCommittees = false
         } catch {
+            if error is CancellationError { return }
             isFetchingCommittees = false
             // Ignorar falha, apenas não mostraremos comissões
         }
@@ -57,7 +58,7 @@ public final class CreateTaskViewModel {
             id: UUID(),
             chapterId: chapterId,
             creatorId: currentUserId,
-            assigneeId: nil,
+            assigneeId: currentUserId,
             committeeId: selectedCommitteeId,
             title: title.trimmingCharacters(in: .whitespacesAndNewlines),
             description: description.trimmingCharacters(in: .whitespacesAndNewlines),
@@ -71,6 +72,8 @@ public final class CreateTaskViewModel {
             isLoading = false
             return true
         } catch {
+            if error is CancellationError { return false }
+            print("❌ Supabase Error: \(error)")
             errorMessage = "Erro ao criar a tarefa. Tente novamente."
             isLoading = false
             return false

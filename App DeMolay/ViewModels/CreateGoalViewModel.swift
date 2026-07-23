@@ -20,7 +20,7 @@ public final class CreateGoalViewModel {
         Double(targetValue.replacingOccurrences(of: ",", with: ".")) != nil
     }
     
-    public init(goalService: GoalServiceProtocol = MockGoalService(), chapterId: UUID = UUID()) {
+    public init(goalService: GoalServiceProtocol = Services.goal, chapterId: UUID = Constants.testChapterId) {
         self.goalService = goalService
         self.chapterId = chapterId
     }
@@ -53,6 +53,8 @@ public final class CreateGoalViewModel {
             isLoading = false
             return true
         } catch {
+            if error is CancellationError { return false }
+            print("❌ Supabase Error: \(error)")
             errorMessage = "Erro ao criar a meta. Tente novamente."
             isLoading = false
             return false

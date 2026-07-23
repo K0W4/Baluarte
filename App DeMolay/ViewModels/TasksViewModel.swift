@@ -3,7 +3,7 @@ import Observation
 import SwiftUI
 
 public enum TasksFilterSegment: String, CaseIterable, Identifiable {
-    case todas = "Todas as Tarefas"
+    case gerais = "Tarefas Gerais"
     case minhas = "Minhas Tarefas"
     public var id: String { rawValue }
 }
@@ -12,29 +12,36 @@ public enum TasksFilterSegment: String, CaseIterable, Identifiable {
 @Observable
 public final class TasksViewModel {
     public var allTasks: [ChapterTask] = []
-    public var selectedSegment: TasksFilterSegment = .todas
+    public var selectedSegment: TasksFilterSegment = .gerais
 
     public var isLoading = false
     public var errorMessage: String?
 
     private let taskService: TaskServiceProtocol
 
-    public init(taskService: TaskServiceProtocol = MockTaskService()) {
+    public init(taskService: TaskServiceProtocol = Services.task) {
         self.taskService = taskService
     }
 
-    public var currentUserId: UUID = UUID()
+    public var currentUserId: UUID = Constants.testUserId
 
-    public func loadData() async {
-        isLoading = true
+    public func loadData(showLoading: Bool = true) async {
+        if showLoading { isLoading = true }
         errorMessage = nil
         do {
-            allTasks = try await taskService.fetchTasks(for: currentUserId)
+            allTasks = try await taskService.fetchTasks(forChapter: Constants.testChapterId)
         } catch {
+            if error is CancellationError { 
+                withAnimation(.easeInOut(duration: 0.3)) { self.isLoading = false }
+                return 
+            }
+            print("❌ Supabase Error (Tasks): \(error)")
             errorMessage = error.localizedDescription
         }
-        withAnimation(.easeInOut(duration: 0.3)) {
-            isLoading = false
+        if showLoading {
+            withAnimation(.easeInOut(duration: 0.3)) {
+                isLoading = false
+            }
         }
     }
 
@@ -58,21 +65,24 @@ public final class TasksViewModel {
     // MARK: - Filtered Computed Properties
 
     public var displayIndividualTasks: [ChapterTask] {
-        if selectedSegment == .todas { return [] }
         if isLoading { return ChapterTask.skeletonList }
-        return generalTasks.filter { $0.assigneeId == currentUserId }
+        if selectedSegment == .gerais {
+            return []
+        }
+        // Minhas Tarefas
+        return generalTasks.filter { $0.assigneeId == currentUserId || $0.creatorId == currentUserId }
     }
 
     public var displayCommitteeTasks: [UUID: [ChapterTask]] {
         if isLoading {
             return [UUID(): ChapterTask.skeletonList]
         }
-        if selectedSegment == .todas {
+        if selectedSegment == .gerais {
             return committeeTasks
         }
         var filtered: [UUID: [ChapterTask]] = [:]
         for (key, value) in committeeTasks {
-            let myTasks = value.filter { $0.assigneeId == currentUserId }
+            let myTasks = value.filter { $0.assigneeId == currentUserId || $0.creatorId == currentUserId }
             if !myTasks.isEmpty { filtered[key] = myTasks }
         }
         return filtered
@@ -80,10 +90,11 @@ public final class TasksViewModel {
 
     public var displayCompletedTasks: [ChapterTask] {
         if isLoading { return [] }
-        if selectedSegment == .todas {
-            return completedTasks
+        if selectedSegment == .gerais {
+            return completedTasks.filter { $0.committeeId != nil }
         }
-        return completedTasks.filter { $0.assigneeId == currentUserId }
+        // Em Minhas Tarefas, mostramos as minhas concluídas
+        return completedTasks.filter { $0.assigneeId == currentUserId || $0.creatorId == currentUserId }
     }
 
     public var progressCounts: (completed: Int, total: Int) {
@@ -111,6 +122,7 @@ public final class TasksViewModel {
 
             try await taskService.toggleTaskCompletion(taskId: task.id, isCompleted: !task.isCompleted)
         } catch {
+            if error is CancellationError { return }
             if let index = allTasks.firstIndex(where: { $0.id == task.id }) {
                 withAnimation {
                     allTasks[index].isCompleted.toggle()
@@ -120,9 +132,7 @@ public final class TasksViewModel {
     }
 
     public func committeeName(for id: UUID) -> String {
-        if id == MockTaskService.committee1Id { return "Comissão de Sindicância" }
-        if id == MockTaskService.committee2Id { return "Comissão de Hospitalaria" }
-        return "Comissão Específica"
+        return "Comissão de Trabalho"
     }
 
     public func deleteTask(task: ChapterTask) async {
@@ -135,6 +145,7 @@ public final class TasksViewModel {
         do {
             try await taskService.deleteTask(taskId: task.id)
         } catch {
+            if error is CancellationError { return }
             withAnimation {
                 allTasks = originalTasks
             }

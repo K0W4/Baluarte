@@ -13,7 +13,7 @@ public final class TestMockTaskService: TaskServiceProtocol {
     
     public init() {}
     
-    public func fetchTasks(for userId: UUID) async throws -> [ChapterTask] {
+    public func fetchTasks(forChapter chapterId: UUID) async throws -> [ChapterTask] {
         fetchTasksCallCount += 1
         if shouldThrowError {
             throw NSError(domain: "TestMockTaskService", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to fetch tasks"])

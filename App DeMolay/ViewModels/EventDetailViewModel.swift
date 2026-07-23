@@ -14,7 +14,12 @@ public final class EventDetailViewModel {
     
     public let eventTypes = ["Reunião Ritualística", "Reunião Administrativa", "Congresso", "Filantropia", "Monetário", "Outro"]
     
+    public var activeMembers: [Member] = []
+    public var seniorMembers: [Member] = []
+    public var advisoryCouncil: [Member] = []
+    
     private let eventService: EventServiceProtocol
+    private let memberService: MemberServiceProtocol
     private var event: Event
     private let currentUserId: UUID
     
@@ -33,9 +38,10 @@ public final class EventDetailViewModel {
         event.confirmedAttendees?.contains(currentUserId) ?? false
     }
     
-    public init(event: Event, eventService: EventServiceProtocol = MockEventService(), currentUserId: UUID = UUID()) {
+    public init(event: Event, eventService: EventServiceProtocol = Services.event, memberService: MemberServiceProtocol = Services.member, currentUserId: UUID = Constants.testUserId) {
         self.event = event
         self.eventService = eventService
+        self.memberService = memberService
         self.currentUserId = currentUserId
         
         self.title = event.title
@@ -62,6 +68,8 @@ public final class EventDetailViewModel {
             isLoading = false
             return true
         } catch {
+            if error is CancellationError { return false }
+            print("❌ Supabase Error: \(error)")
             errorMessage = "Erro ao atualizar o evento."
             isLoading = false
             return false
@@ -83,8 +91,11 @@ public final class EventDetailViewModel {
                 }
                 event.confirmedAttendees?.append(currentUserId)
             }
+            await loadMembers()
             isLoading = false
         } catch {
+            if error is CancellationError { return }
+            print("❌ Supabase Error: \(error)")
             errorMessage = "Erro ao atualizar presença."
             isLoading = false
         }
@@ -99,9 +110,24 @@ public final class EventDetailViewModel {
             isLoading = false
             return true
         } catch {
+            if error is CancellationError { return false }
+            print("❌ Supabase Error: \(error)")
             errorMessage = "Erro ao excluir o evento."
             isLoading = false
             return false
+        }
+    }
+    
+    public func loadMembers() async {
+        do {
+            let allMembers = try await memberService.fetchMembers(for: event.chapterId)
+            let attendees = allMembers.filter { event.confirmedAttendees?.contains($0.id) ?? false }
+            
+            self.activeMembers = attendees.filter { $0.isActive && !$0.isSenior && !$0.isMason && $0.role != "Consultor" }.sorted(by: { $0.fullName < $1.fullName })
+            self.seniorMembers = attendees.filter { $0.isSenior }.sorted(by: { $0.fullName < $1.fullName })
+            self.advisoryCouncil = attendees.filter { $0.isMason || $0.role == "Consultor" }.sorted(by: { $0.fullName < $1.fullName })
+        } catch {
+            print("❌ Supabase Error (Event Members): \(error)")
         }
     }
 }

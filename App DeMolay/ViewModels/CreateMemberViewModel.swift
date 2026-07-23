@@ -40,7 +40,7 @@ public final class CreateMemberViewModel {
         }
     }
     
-    public init(memberService: MemberServiceProtocol = MockMemberService(), chapterId: UUID = UUID()) {
+    public init(memberService: MemberServiceProtocol = Services.member, chapterId: UUID = Constants.testChapterId) {
         self.memberService = memberService
         self.chapterId = chapterId
     }
@@ -70,6 +70,8 @@ public final class CreateMemberViewModel {
             isLoading = false
             return true
         } catch {
+            if error is CancellationError { return false }
+            print("❌ Supabase Error: \(error)")
             errorMessage = "Erro ao adicionar o membro. Tente novamente."
             isLoading = false
             return false

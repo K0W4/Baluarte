@@ -34,7 +34,7 @@ public struct HomeView: View {
                         .padding(.horizontal, Spacing.screenEdgePadding)
                     }
                     
-                    let displayEvents = viewModel.isLoading ? Event.skeletonList : viewModel.events
+                    let displayEvents = viewModel.isLoading ? Event.skeletonList : viewModel.upcomingEvents
                     let displayGoals = viewModel.isLoading ? Goal.skeletonList : viewModel.goals
                     let displayCommittees = viewModel.isLoading ? Committee.skeletonList : viewModel.committees
                     let displayTasks = viewModel.isLoading ? ChapterTask.skeletonList : viewModel.tasks
@@ -93,7 +93,7 @@ public struct HomeView: View {
             .scrollIndicators(.hidden)
             .contentMargins(.bottom, 100, for: .scrollContent)
             .background(Theme.backgroundPrimary)
-            .navigationTitle("Olá, Irmão!")
+            .navigationTitle(viewModel.currentUser != nil ? "Olá, \(viewModel.currentUser!.fullName.split(separator: " ").first ?? "Irmão")!" : "Olá, Irmão!")
             .toolbarTitleDisplayMode(.inlineLarge)
             .refreshable {
                 await viewModel.loadData()
@@ -101,22 +101,37 @@ public struct HomeView: View {
             .task {
                 await viewModel.loadData()
             }
-            .sheet(isPresented: $showingCreateEvent) {
+            .onAppear {
+                Task { await viewModel.loadData(showLoading: false) }
+            }
+            .sheet(isPresented: $showingCreateEvent, onDismiss: {
+                Task { await viewModel.loadData() }
+            }) {
                 CreateEventView()
             }
-            .sheet(isPresented: $showingCreateGoal) {
+            .sheet(isPresented: $showingCreateGoal, onDismiss: {
+                Task { await viewModel.loadData() }
+            }) {
                 CreateGoalView()
             }
-            .sheet(isPresented: $showingCreateCommittee) {
+            .sheet(isPresented: $showingCreateCommittee, onDismiss: {
+                Task { await viewModel.loadData() }
+            }) {
                 CreateCommitteeView()
             }
-            .sheet(item: $selectedEvent) { event in
+            .sheet(item: $selectedEvent, onDismiss: {
+                Task { await viewModel.loadData() }
+            }) { event in
                 EventDetailView(event: event)
             }
-            .sheet(item: $selectedGoal) { goal in
+            .sheet(item: $selectedGoal, onDismiss: {
+                Task { await viewModel.loadData() }
+            }) { goal in
                 GoalDetailView(goal: goal)
             }
-            .sheet(item: $selectedCommittee) { committee in
+            .sheet(item: $selectedCommittee, onDismiss: {
+                Task { await viewModel.loadData() }
+            }) { committee in
                 CommitteeDetailView(committee: committee)
             }
         }

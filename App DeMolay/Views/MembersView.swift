@@ -85,10 +85,14 @@ public struct MembersView: View {
             .task {
                 await viewModel.loadMembers()
             }
-            .sheet(isPresented: $showingCreateMember) {
+            .sheet(isPresented: $showingCreateMember, onDismiss: {
+                Task { await viewModel.loadMembers() }
+            }) {
                 CreateMemberView()
             }
-            .sheet(item: $selectedMember) { member in
+            .sheet(item: $selectedMember, onDismiss: {
+                Task { await viewModel.loadMembers() }
+            }) { member in
                 MemberDetailView(member: member)
             }
         }

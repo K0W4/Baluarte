@@ -50,7 +50,7 @@ public final class MemberDetailViewModel {
         }
     }
     
-    public init(member: Member, memberService: MemberServiceProtocol = MockMemberService()) {
+    public init(member: Member, memberService: MemberServiceProtocol = Services.member) {
         self.member = member
         self.memberService = memberService
         
@@ -84,6 +84,8 @@ public final class MemberDetailViewModel {
             isLoading = false
             return true
         } catch {
+            if error is CancellationError { return false }
+            print("❌ Supabase Error: \(error)")
             errorMessage = "Erro ao atualizar o membro."
             isLoading = false
             return false
@@ -99,6 +101,8 @@ public final class MemberDetailViewModel {
             isLoading = false
             return true
         } catch {
+            if error is CancellationError { return false }
+            print("❌ Supabase Error: \(error)")
             errorMessage = "Erro ao excluir o membro."
             isLoading = false
             return false

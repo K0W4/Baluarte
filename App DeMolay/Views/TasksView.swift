@@ -103,7 +103,12 @@ public struct TasksView: View {
             .task {
                 await viewModel.loadData()
             }
-            .sheet(isPresented: $showingCreateTask) {
+            .onAppear {
+                Task { await viewModel.loadData(showLoading: false) }
+            }
+            .sheet(isPresented: $showingCreateTask, onDismiss: {
+                Task { await viewModel.loadData() }
+            }) {
                 CreateTaskView()
             }
         }
