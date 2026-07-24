@@ -86,7 +86,7 @@ public struct EventCard: View {
                     Image(systemName: isUserConfirmed ? "checkmark.circle.fill" : "person.crop.circle.badge.plus")
                         .foregroundColor(isUserConfirmed ? Theme.success : Theme.accent)
                         .frame(width: 24, height: 24)
-                    Text(isUserConfirmed ? "Presença Confirmada" : "Confirmar Presença")
+                    Text(isUserConfirmed ? "Presença confirmada" : "Confirmar presença")
                 }
             }
             .buttonStyle(PrimaryButtonStyle())

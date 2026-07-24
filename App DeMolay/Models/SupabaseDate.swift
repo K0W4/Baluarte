@@ -37,6 +37,20 @@ public struct SupabaseDate: Codable, Hashable {
             return
         }
         
+        let fallback = DateFormatter()
+        fallback.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
+        fallback.timeZone = TimeZone(abbreviation: "UTC")
+        if let date = fallback.date(from: dateString) {
+            wrappedValue = date
+            return
+        }
+        
+        fallback.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        if let date = fallback.date(from: dateString) {
+            wrappedValue = date
+            return
+        }
+        
         throw DecodingError.dataCorruptedError(in: container, debugDescription: "Invalid date format: \(dateString)")
     }
     

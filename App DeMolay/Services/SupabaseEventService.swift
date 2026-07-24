@@ -1,5 +1,6 @@
 import Foundation
 import Supabase
+import WidgetKit
 
 public final class SupabaseEventService: EventServiceProtocol {
     private var client: SupabaseClient {
@@ -24,6 +25,7 @@ public final class SupabaseEventService: EventServiceProtocol {
             .from("event")
             .insert(event)
             .execute()
+        WidgetCenter.shared.reloadAllTimelines()
     }
     
     public func updateEvent(_ event: Event) async throws {
@@ -32,6 +34,7 @@ public final class SupabaseEventService: EventServiceProtocol {
             .update(event)
             .eq("id", value: event.id)
             .execute()
+        WidgetCenter.shared.reloadAllTimelines()
     }
     
     public func deleteEvent(eventId: UUID) async throws {
@@ -40,6 +43,7 @@ public final class SupabaseEventService: EventServiceProtocol {
             .delete()
             .eq("id", value: eventId)
             .execute()
+        WidgetCenter.shared.reloadAllTimelines()
     }
     
     public func confirmAttendance(eventId: UUID, userId: UUID) async throws {
@@ -65,6 +69,7 @@ public final class SupabaseEventService: EventServiceProtocol {
                 .update(UpdateAttendees(confirmed_attendees: attendees))
                 .eq("id", value: eventId)
                 .execute()
+            WidgetCenter.shared.reloadAllTimelines()
         }
     }
     
@@ -90,6 +95,7 @@ public final class SupabaseEventService: EventServiceProtocol {
                 .update(UpdateAttendees(confirmed_attendees: attendees))
                 .eq("id", value: eventId)
                 .execute()
+            WidgetCenter.shared.reloadAllTimelines()
         }
     }
 }

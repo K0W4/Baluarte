@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		7FB0E5AC0DFACF1CCD6EB4EB /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 0D227F8247D2E027CD98DB6A /* Supabase */; };
+		9353B3E130127E3000D754B7 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9353B3E030127E2F00D754B7 /* WidgetKit.framework */; };
+		9353B3E330127E3000D754B7 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9353B3E230127E3000D754B7 /* SwiftUI.framework */; };
+		9353B3F230127E3100D754B7 /* AppDeMolayWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 9353B3DE30127E2F00D754B7 /* AppDeMolayWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -18,22 +21,78 @@
 			remoteGlobalIDString = 932EA17D3006CB3D00CD22BF;
 			remoteInfo = "App DeMolay";
 		};
+		9353B3F030127E3100D754B7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 932EA1763006CB3D00CD22BF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9353B3DD30127E2F00D754B7;
+			remoteInfo = AppDeMolayWidgetsExtension;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		9353B3F730127E3100D754B7 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				9353B3F230127E3100D754B7 /* AppDeMolayWidgetsExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		932EA17E3006CB3D00CD22BF /* App DeMolay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "App DeMolay.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9353B39C3011A47C00D754B7 /* App DeMolayTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "App DeMolayTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9353B3DE30127E2F00D754B7 /* AppDeMolayWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AppDeMolayWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		9353B3E030127E2F00D754B7 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		9353B3E230127E3000D754B7 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		9353B3F330127E3100D754B7 /* Exceptions for "AppDeMolayWidgets" folder in "AppDeMolayWidgetsExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 9353B3DD30127E2F00D754B7 /* AppDeMolayWidgetsExtension */;
+		};
+		9353B4013012817900D754B7 /* Exceptions for "App DeMolay" folder in "AppDeMolayWidgetsExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Core/Constants.swift,
+				Core/SupabaseSecrets.swift,
+				Models/ChapterTask.swift,
+				Models/Event.swift,
+				Models/SupabaseDate.swift,
+			);
+			target = 9353B3DD30127E2F00D754B7 /* AppDeMolayWidgetsExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		932EA1803006CB3D00CD22BF /* App DeMolay */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				9353B4013012817900D754B7 /* Exceptions for "App DeMolay" folder in "AppDeMolayWidgetsExtension" target */,
+			);
 			path = "App DeMolay";
 			sourceTree = "<group>";
 		};
 		9353B39D3011A47C00D754B7 /* App DeMolayTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = "App DeMolayTests";
+			sourceTree = "<group>";
+		};
+		9353B3E430127E3000D754B7 /* AppDeMolayWidgets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				9353B3F330127E3100D754B7 /* Exceptions for "AppDeMolayWidgets" folder in "AppDeMolayWidgetsExtension" target */,
+			);
+			path = AppDeMolayWidgets;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -54,6 +113,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9353B3DB30127E2F00D754B7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9353B3E330127E3000D754B7 /* SwiftUI.framework in Frameworks */,
+				9353B3E130127E3000D754B7 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -62,6 +130,8 @@
 			children = (
 				932EA1803006CB3D00CD22BF /* App DeMolay */,
 				9353B39D3011A47C00D754B7 /* App DeMolayTests */,
+				9353B3E430127E3000D754B7 /* AppDeMolayWidgets */,
+				9353B3DF30127E2F00D754B7 /* Frameworks */,
 				932EA17F3006CB3D00CD22BF /* Products */,
 			);
 			sourceTree = "<group>";
@@ -71,8 +141,18 @@
 			children = (
 				932EA17E3006CB3D00CD22BF /* App DeMolay.app */,
 				9353B39C3011A47C00D754B7 /* App DeMolayTests.xctest */,
+				9353B3DE30127E2F00D754B7 /* AppDeMolayWidgetsExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		9353B3DF30127E2F00D754B7 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9353B3E030127E2F00D754B7 /* WidgetKit.framework */,
+				9353B3E230127E3000D754B7 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -85,10 +165,12 @@
 				932EA17A3006CB3D00CD22BF /* Sources */,
 				932EA17B3006CB3D00CD22BF /* Frameworks */,
 				932EA17C3006CB3D00CD22BF /* Resources */,
+				9353B3F730127E3100D754B7 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				9353B3F130127E3100D754B7 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				932EA1803006CB3D00CD22BF /* App DeMolay */,
@@ -124,6 +206,28 @@
 			productReference = 9353B39C3011A47C00D754B7 /* App DeMolayTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		9353B3DD30127E2F00D754B7 /* AppDeMolayWidgetsExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9353B3F430127E3100D754B7 /* Build configuration list for PBXNativeTarget "AppDeMolayWidgetsExtension" */;
+			buildPhases = (
+				9353B3DA30127E2F00D754B7 /* Sources */,
+				9353B3DB30127E2F00D754B7 /* Frameworks */,
+				9353B3DC30127E2F00D754B7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				9353B3E430127E3000D754B7 /* AppDeMolayWidgets */,
+			);
+			name = AppDeMolayWidgetsExtension;
+			packageProductDependencies = (
+			);
+			productName = AppDeMolayWidgetsExtension;
+			productReference = 9353B3DE30127E2F00D754B7 /* AppDeMolayWidgetsExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -140,6 +244,9 @@
 					9353B39B3011A47C00D754B7 = {
 						CreatedOnToolsVersion = 26.5;
 						TestTargetID = 932EA17D3006CB3D00CD22BF;
+					};
+					9353B3DD30127E2F00D754B7 = {
+						CreatedOnToolsVersion = 26.5;
 					};
 				};
 			};
@@ -162,6 +269,7 @@
 			targets = (
 				932EA17D3006CB3D00CD22BF /* App DeMolay */,
 				9353B39B3011A47C00D754B7 /* App DeMolayTests */,
+				9353B3DD30127E2F00D754B7 /* AppDeMolayWidgetsExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -175,6 +283,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		9353B39A3011A47C00D754B7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9353B3DC30127E2F00D754B7 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -198,6 +313,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9353B3DA30127E2F00D754B7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -205,6 +327,11 @@
 			isa = PBXTargetDependency;
 			target = 932EA17D3006CB3D00CD22BF /* App DeMolay */;
 			targetProxy = 9353B3A03011A47C00D754B7 /* PBXContainerItemProxy */;
+		};
+		9353B3F130127E3100D754B7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9353B3DD30127E2F00D754B7 /* AppDeMolayWidgetsExtension */;
+			targetProxy = 9353B3F030127E3100D754B7 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -343,8 +470,8 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -353,12 +480,16 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "Kowa.App-DeMolay";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -375,8 +506,8 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -385,12 +516,16 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "Kowa.App-DeMolay";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -406,11 +541,15 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "Kowa.App-DeMolayTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/App DeMolay.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/App DeMolay";
 			};
 			name = Debug;
@@ -427,12 +566,84 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "Kowa.App-DeMolayTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/App DeMolay.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/App DeMolay";
+			};
+			name = Release;
+		};
+		9353B3F530127E3100D754B7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2U54MVQ5ZR;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AppDeMolayWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = AppDeMolayWidgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Kowa.App-DeMolay.AppDeMolayWidgets";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		9353B3F630127E3100D754B7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2U54MVQ5ZR;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AppDeMolayWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = AppDeMolayWidgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Kowa.App-DeMolay.AppDeMolayWidgets";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -462,6 +673,15 @@
 			buildConfigurations = (
 				9353B3A33011A47C00D754B7 /* Debug */,
 				9353B3A43011A47C00D754B7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9353B3F430127E3100D754B7 /* Build configuration list for PBXNativeTarget "AppDeMolayWidgetsExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9353B3F530127E3100D754B7 /* Debug */,
+				9353B3F630127E3100D754B7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

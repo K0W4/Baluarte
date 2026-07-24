@@ -1,5 +1,6 @@
 import Foundation
 import Supabase
+import WidgetKit
 
 public final class SupabaseTaskService: TaskServiceProtocol {
     private var client: SupabaseClient {
@@ -29,6 +30,7 @@ public final class SupabaseTaskService: TaskServiceProtocol {
             .update(UpdateTaskCompletion(is_completed: isCompleted))
             .eq("id", value: taskId)
             .execute()
+        WidgetCenter.shared.reloadAllTimelines()
     }
     
     public func deleteTask(taskId: UUID) async throws {
@@ -37,6 +39,7 @@ public final class SupabaseTaskService: TaskServiceProtocol {
             .delete()
             .eq("id", value: taskId)
             .execute()
+        WidgetCenter.shared.reloadAllTimelines()
     }
     
     public func createTask(_ task: ChapterTask) async throws {
@@ -44,5 +47,6 @@ public final class SupabaseTaskService: TaskServiceProtocol {
             .from("task")
             .insert(task)
             .execute()
+        WidgetCenter.shared.reloadAllTimelines()
     }
 }
