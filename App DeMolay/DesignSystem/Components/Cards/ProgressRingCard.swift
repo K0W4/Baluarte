@@ -99,18 +99,6 @@ public struct ProgressRingCard: View {
                     .multilineTextAlignment(.center)
                     .lineLimit(2)
                     .frame(height: 48, alignment: .center)
-                
-                if let desc = goal.description, !desc.isEmpty {
-                    Text(desc)
-                        .font(Typography.subheadline)
-                        .foregroundColor(Theme.textSecondary)
-                        .multilineTextAlignment(.center)
-                        .lineLimit(2)
-                        .frame(height: 48, alignment: .top)
-                } else {
-                    Spacer()
-                        .frame(height: 48)
-                }
             }
         }
         .padding(.horizontal, Spacing.md)

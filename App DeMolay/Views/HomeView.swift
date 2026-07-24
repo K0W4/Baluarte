@@ -95,7 +95,8 @@ public struct HomeView: View {
             .background(Theme.backgroundPrimary)
             .navigationTitle(viewModel.currentUser != nil ? "Olá, \(viewModel.currentUser!.fullName.split(separator: " ").first ?? "Irmão")!" : "Olá, Irmão!")
             .toolbarTitleDisplayMode(.inlineLarge)
-            .refreshable {
+            .tint(Theme.accent)
+        .refreshable {
                 await viewModel.loadData()
             }
             .task {

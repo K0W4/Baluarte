@@ -15,13 +15,7 @@ public struct CreateCommitteeView: View {
                     Text("Informações Básicas")
                 }
                 
-                Section {
-                    TextField("Descrição (Opcional)", text: $viewModel.description, axis: .vertical)
-                        .lineLimit(3...6)
-                } header: {
-                    Text("Detalhes")
-                }
-                
+
                 Section {
                     if viewModel.isFetchingMembers {
                         ProgressView("Carregando membros...")
@@ -125,9 +119,7 @@ public struct CreateCommitteeView: View {
                     ZStack {
                         Color.black.opacity(0.2).ignoresSafeArea()
                         ProgressView()
-                            .padding()
-                            .background(Theme.backgroundSecondary)
-                            .cornerRadius(8)
+                            .tint(Theme.accent)
                     }
                 }
             }

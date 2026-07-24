@@ -34,7 +34,7 @@ public struct TaskCard: View {
                         .strikethrough(task.isCompleted, color: Theme.textSecondary)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
-                    if let dueDate = task.dueDate {
+                    if let dueDate = task.dueDate, !task.isCompleted {
                         Text(formatDate(dueDate))
                             .font(Typography.subheadline)
                             .foregroundColor(Theme.textSecondary)
@@ -50,7 +50,7 @@ public struct TaskCard: View {
                 }
             }
         }
-        .padding(task.isCompleted ? Spacing.sm : Spacing.md)
+        .padding(Spacing.sm)
         .background(Theme.cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .overlay(

@@ -30,22 +30,11 @@ public struct GoalDetailView: View {
                             .keyboardType(.decimalPad)
                             .multilineTextAlignment(.trailing)
                     }
-                } header: {
-                    Text("Informações Básicas")
-                }
-                
-                Section {
-                    DatePicker("Prazo", selection: $viewModel.targetDate, displayedComponents: .date)
+                    
+                    DatePicker("Data Limite", selection: $viewModel.targetDate, displayedComponents: .date)
                         .environment(\.locale, Locale(identifier: "pt_BR"))
                 } header: {
-                    Text("Prazo")
-                }
-                
-                Section {
-                    TextField("Descrição (Opcional)", text: $viewModel.description, axis: .vertical)
-                        .lineLimit(3...6)
-                } header: {
-                    Text("Detalhes")
+                    Text("Informações Básicas")
                 }
                 
                 Section {
@@ -105,9 +94,7 @@ public struct GoalDetailView: View {
                     ZStack {
                         Color.black.opacity(0.2).ignoresSafeArea()
                         ProgressView()
-                            .padding()
-                            .background(Theme.backgroundSecondary)
-                            .cornerRadius(8)
+                            .tint(Theme.accent)
                     }
                 }
             }

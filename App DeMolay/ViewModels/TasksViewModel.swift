@@ -12,15 +12,18 @@ public enum TasksFilterSegment: String, CaseIterable, Identifiable {
 @Observable
 public final class TasksViewModel {
     public var allTasks: [ChapterTask] = []
+    public var committees: [Committee] = []
     public var selectedSegment: TasksFilterSegment = .gerais
 
     public var isLoading = false
     public var errorMessage: String?
 
     private let taskService: TaskServiceProtocol
+    private let committeeService: CommitteeServiceProtocol
 
-    public init(taskService: TaskServiceProtocol = Services.task) {
+    public init(taskService: TaskServiceProtocol = Services.task, committeeService: CommitteeServiceProtocol = Services.committee) {
         self.taskService = taskService
+        self.committeeService = committeeService
     }
 
     public var currentUserId: UUID = Constants.testUserId
@@ -29,7 +32,11 @@ public final class TasksViewModel {
         if showLoading { isLoading = true }
         errorMessage = nil
         do {
-            allTasks = try await taskService.fetchTasks(forChapter: Constants.testChapterId)
+            async let tasks = taskService.fetchTasks(forChapter: Constants.testChapterId)
+            async let comms = committeeService.fetchCommittees(for: Constants.testChapterId)
+            let (fetchedTasks, fetchedCommittees) = try await (tasks, comms)
+            allTasks = fetchedTasks
+            committees = fetchedCommittees
         } catch {
             if error is CancellationError { 
                 withAnimation(.easeInOut(duration: 0.3)) { self.isLoading = false }
@@ -132,7 +139,7 @@ public final class TasksViewModel {
     }
 
     public func committeeName(for id: UUID) -> String {
-        return "Comissão de Trabalho"
+        return committees.first(where: { $0.id == id })?.name ?? "Comissão"
     }
 
     public func deleteTask(task: ChapterTask) async {

@@ -5,7 +5,6 @@ import SwiftUI
 @MainActor
 public final class CreateTaskViewModel {
     public var title: String = ""
-    public var description: String = ""
     public var dueDate: Date = Date().addingTimeInterval(86400 * 7)
     public var selectedCommitteeId: UUID? = nil
     
@@ -61,7 +60,7 @@ public final class CreateTaskViewModel {
             assigneeId: currentUserId,
             committeeId: selectedCommitteeId,
             title: title.trimmingCharacters(in: .whitespacesAndNewlines),
-            description: description.trimmingCharacters(in: .whitespacesAndNewlines),
+            description: "",
             isCompleted: false,
             dueDate: dueDate,
             createdAt: Date()

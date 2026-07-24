@@ -64,7 +64,8 @@ public struct MembersView: View {
                 .scrollIndicators(.hidden)
                 .contentMargins(.bottom, 100, for: .scrollContent)
                 .background(Theme.backgroundPrimary)
-                .refreshable {
+                .tint(Theme.accent)
+        .refreshable {
                     await viewModel.loadMembers()
                 }
             }

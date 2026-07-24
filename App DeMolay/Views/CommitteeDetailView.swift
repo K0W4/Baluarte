@@ -177,9 +177,7 @@ public struct CommitteeDetailView: View {
                     ZStack {
                         Color.black.opacity(0.2).ignoresSafeArea()
                         ProgressView()
-                            .padding()
-                            .background(Theme.backgroundSecondary)
-                            .cornerRadius(8)
+                            .tint(Theme.accent)
                     }
                 }
             }

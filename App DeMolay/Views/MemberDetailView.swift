@@ -18,7 +18,7 @@ public struct MemberDetailView: View {
                     DatePicker("Data de Nascimento", selection: $viewModel.birthdate, displayedComponents: .date)
                         .environment(\.locale, Locale(identifier: "pt_BR"))
                         
-                    TextField("CID (Opcional)", text: $viewModel.cid)
+                    TextField("ID (Opcional)", text: $viewModel.cid)
                 } header: {
                     Text("Dados Pessoais")
                 }
@@ -122,9 +122,7 @@ public struct MemberDetailView: View {
                     ZStack {
                         Color.black.opacity(0.2).ignoresSafeArea()
                         ProgressView()
-                            .padding()
-                            .background(Theme.backgroundSecondary)
-                            .cornerRadius(8)
+                            .tint(Theme.accent)
                     }
                 }
             }

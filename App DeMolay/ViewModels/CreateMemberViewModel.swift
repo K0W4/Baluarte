@@ -20,7 +20,7 @@ public final class CreateMemberViewModel {
     
     public var roles: [String] {
         if isMason {
-            return ["Membro", "Consultor", "Presidente do Conselho Consultivo"]
+            return ["Membro", "Consultor", "Presidente do Conselho"]
         } else if isSenior {
             return ["Membro", "Consultor"]
         } else {

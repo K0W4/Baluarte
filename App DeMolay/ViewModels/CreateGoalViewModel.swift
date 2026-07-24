@@ -5,7 +5,6 @@ import SwiftUI
 @MainActor
 public final class CreateGoalViewModel {
     public var title: String = ""
-    public var description: String = ""
     public var targetValue: String = ""
     public var targetDate: Date = Date().addingTimeInterval(86400 * 30) // 30 dias de default
     
@@ -41,7 +40,7 @@ public final class CreateGoalViewModel {
             id: UUID(),
             chapterId: chapterId,
             title: title.trimmingCharacters(in: .whitespacesAndNewlines),
-            description: description.isEmpty ? nil : description,
+            description: nil,
             currentValue: 0,
             targetValue: target,
             targetDate: targetDate,

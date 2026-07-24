@@ -5,7 +5,6 @@ import SwiftUI
 @MainActor
 public final class CreateCommitteeViewModel {
     public var name: String = ""
-    public var description: String = ""
     
     public var isLoading: Bool = false
     public var isFetchingMembers: Bool = false

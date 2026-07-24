@@ -18,13 +18,25 @@ public final class CreateEventViewModel {
     public let eventTypes = ["Reunião Ritualística", "Reunião Administrativa", "Congresso", "Filantropia", "Monetário", "Outro"]
     
     public var isValid: Bool {
-        !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
+        !notes.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
     
-    public init(eventService: EventServiceProtocol = Services.event, chapterId: UUID = Constants.testChapterId, initialDate: Date = Date()) {
+    public init(eventService: EventServiceProtocol = Services.event, chapterId: UUID = Constants.testChapterId, initialDate: Date? = nil) {
         self.eventService = eventService
         self.chapterId = chapterId
-        self.scheduledDate = initialDate
+        self.scheduledDate = initialDate ?? Self.nextSaturdayAt13()
+    }
+    
+    public static func nextSaturdayAt13() -> Date {
+        let calendar = Calendar.current
+        let now = Date()
+        let weekday = calendar.component(.weekday, from: now)
+        var daysToAdd = 7 - weekday
+        if daysToAdd <= 0 { daysToAdd += 7 }
+        
+        let nextSaturday = calendar.date(byAdding: .day, value: daysToAdd, to: now)!
+        return calendar.date(bySettingHour: 13, minute: 0, second: 0, of: nextSaturday)!
     }
     
     public func saveEvent() async -> Bool {

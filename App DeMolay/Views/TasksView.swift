@@ -45,7 +45,8 @@ public struct TasksView: View {
                             .padding(Spacing.screenEdgePadding)
                         }
                         .scrollIndicators(.hidden)
-                        .refreshable { await viewModel.loadData() }
+                        .tint(Theme.accent)
+        .refreshable { await viewModel.loadData() }
                     } else {
                         contentList
                             .safeAreaInset(edge: .top, spacing: 0) {
@@ -172,6 +173,7 @@ public struct TasksView: View {
                                     .font(Typography.headline)
                                 Spacer()
                                 Image(systemName: !isExpanded ? "chevron.down" : "chevron.right")
+                                    .foregroundColor(Theme.accent)
                             }
                             .foregroundColor(Theme.textPrimary)
                             .padding(.horizontal, Spacing.screenEdgePadding)
@@ -204,6 +206,7 @@ public struct TasksView: View {
         .scrollContentBackground(.hidden)
         .scrollIndicators(.hidden)
         .contentMargins(.bottom, 100, for: .scrollContent)
+        .tint(Theme.accent)
         .refreshable {
             await viewModel.loadData()
         }
@@ -219,6 +222,7 @@ public struct TasksView: View {
                     .font(Typography.headline)
                 Spacer()
                 Image(systemName: isExpanded.wrappedValue ? "chevron.down" : "chevron.right")
+                    .foregroundColor(Theme.accent)
             }
             .foregroundColor(Theme.textPrimary)
             .padding(.horizontal, Spacing.screenEdgePadding)

@@ -59,7 +59,8 @@ public struct CalendarView: View {
                     .disabled(Calendar.current.isDateInToday(viewModel.selectedDate) && Calendar.current.isDate(viewModel.currentMonth, equalTo: Date(), toGranularity: .month))
                 }
             }
-            .refreshable {
+            .tint(Theme.accent)
+        .refreshable {
                 await viewModel.loadEvents()
             }
             .task {

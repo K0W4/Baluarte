@@ -4,7 +4,7 @@ public struct CreateEventView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel: CreateEventViewModel
     
-    public init(initialDate: Date = Date()) {
+    public init(initialDate: Date? = nil) {
         self._viewModel = State(initialValue: CreateEventViewModel(initialDate: initialDate))
     }
     
@@ -20,14 +20,27 @@ public struct CreateEventView: View {
                         }
                     }
                     
-                    DatePicker("Data e Hora", selection: $viewModel.scheduledDate)
-                        .environment(\.locale, Locale(identifier: "pt_BR"))
+                    HStack {
+                        Text("Data")
+                        Spacer()
+                        DatePicker("", selection: $viewModel.scheduledDate, displayedComponents: .date)
+                            .labelsHidden()
+                            .environment(\.locale, Locale(identifier: "pt_BR"))
+                    }
+                    
+                    HStack {
+                        Text("Horário")
+                        Spacer()
+                        DatePicker("", selection: $viewModel.scheduledDate, displayedComponents: .hourAndMinute)
+                            .labelsHidden()
+                            .environment(\.locale, Locale(identifier: "pt_BR"))
+                    }
                 } header: {
                     Text("Informações Básicas")
                 }
                 
                 Section {
-                    TextField("Observações (Opcional)", text: $viewModel.notes, axis: .vertical)
+                    TextField("Detalhes do evento...", text: $viewModel.notes, axis: .vertical)
                         .lineLimit(3...6)
                 } header: {
                     Text("Detalhes")
@@ -71,9 +84,7 @@ public struct CreateEventView: View {
                     ZStack {
                         Color.black.opacity(0.2).ignoresSafeArea()
                         ProgressView()
-                            .padding()
-                            .background(Theme.backgroundSecondary)
-                            .cornerRadius(8)
+                            .tint(Theme.accent)
                     }
                 }
             }

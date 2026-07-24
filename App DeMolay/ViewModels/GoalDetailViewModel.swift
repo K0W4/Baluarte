@@ -5,7 +5,6 @@ import SwiftUI
 @MainActor
 public final class GoalDetailViewModel {
     public var title: String
-    public var description: String
     public var currentValue: String
     public var targetValue: String
     public var targetDate: Date
@@ -37,7 +36,6 @@ public final class GoalDetailViewModel {
         let normalizedTarget = formatter.string(from: NSNumber(value: targetInputDouble)) ?? String(targetInputDouble)
         
         return goal.title != title ||
-               (goal.description ?? "") != description ||
                normalizedCurrent != currentString ||
                normalizedTarget != targetString ||
                (goal.targetDate ?? Date()) != targetDate
@@ -48,7 +46,6 @@ public final class GoalDetailViewModel {
         self.goalService = goalService
         
         self.title = goal.title
-        self.description = goal.description ?? ""
         
         let formatter = NumberFormatter()
         formatter.minimumFractionDigits = 0
@@ -81,7 +78,7 @@ public final class GoalDetailViewModel {
         
         var updatedGoal = goal
         updatedGoal.title = title.trimmingCharacters(in: .whitespacesAndNewlines)
-        updatedGoal.description = description.isEmpty ? nil : description
+        updatedGoal.description = nil
         updatedGoal.currentValue = current
         updatedGoal.targetValue = target
         updatedGoal.targetDate = targetDate

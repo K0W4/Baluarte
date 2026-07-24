@@ -14,18 +14,11 @@ public struct CreateGoalView: View {
                     
                     TextField("Valor Alvo (ex: 50.0)", text: $viewModel.targetValue)
                         .keyboardType(.decimalPad)
-                } header: {
-                    Text("Informações Básicas")
-                }
-                
-                Section {
-                    TextField("Descrição (Opcional)", text: $viewModel.description, axis: .vertical)
-                        .lineLimit(3...6)
                         
                     DatePicker("Data Limite", selection: $viewModel.targetDate, displayedComponents: .date)
                         .environment(\.locale, Locale(identifier: "pt_BR"))
                 } header: {
-                    Text("Detalhes e Prazo")
+                    Text("Informações Básicas")
                 }
                 
                 if let errorMessage = viewModel.errorMessage {
@@ -66,9 +59,7 @@ public struct CreateGoalView: View {
                     ZStack {
                         Color.black.opacity(0.2).ignoresSafeArea()
                         ProgressView()
-                            .padding()
-                            .background(Theme.backgroundSecondary)
-                            .cornerRadius(8)
+                            .tint(Theme.accent)
                     }
                 }
             }

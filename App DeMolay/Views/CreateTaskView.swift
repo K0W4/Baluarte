@@ -11,18 +11,10 @@ public struct CreateTaskView: View {
             Form {
                 Section {
                     TextField("Título da Tarefa", text: $viewModel.title)
-                } header: {
-                    Text("Informações Básicas")
-                }
-                
-                Section {
-                    TextField("Descrição", text: $viewModel.description, axis: .vertical)
-                        .lineLimit(3...6)
-                        
-                    DatePicker("Prazo Limite", selection: $viewModel.dueDate, displayedComponents: [.date, .hourAndMinute])
+                    DatePicker("Prazo", selection: $viewModel.dueDate, displayedComponents: .date)
                         .environment(\.locale, Locale(identifier: "pt_BR"))
                 } header: {
-                    Text("Detalhes e Prazo")
+                    Text("Informações Básicas")
                 }
                 
                 Section {
@@ -84,9 +76,7 @@ public struct CreateTaskView: View {
                     ZStack {
                         Color.black.opacity(0.2).ignoresSafeArea()
                         ProgressView()
-                            .padding()
-                            .background(Theme.backgroundSecondary)
-                            .cornerRadius(8)
+                            .tint(Theme.accent)
                     }
                 }
             }
