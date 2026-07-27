@@ -95,8 +95,17 @@ public struct HomeView: View {
             .background(Theme.backgroundPrimary)
             .navigationTitle(viewModel.currentUser != nil ? "Olá, \(viewModel.currentUser!.fullName.split(separator: " ").first ?? "Irmão")!" : "Olá, Irmão!")
             .toolbarTitleDisplayMode(.inlineLarge)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink(destination: ProfileView()) {
+                        Image(systemName: "person.fill")
+                            .foregroundColor(Theme.accent)
+                    }
+
+                }
+            }
             .tint(Theme.accent)
-        .refreshable {
+            .refreshable {
                 await viewModel.loadData()
             }
             .task {

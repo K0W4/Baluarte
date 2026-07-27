@@ -6,7 +6,7 @@ public struct Chapter: Codable, Identifiable, Hashable {
     public var number: Int
     public var currentTermStart: Date?
     public var currentTermEnd: Date?
-    public var createdAt: Date
+    public var createdAt: Date?
     
     enum CodingKeys: String, CodingKey {
         case id, name, number

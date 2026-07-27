@@ -32,13 +32,16 @@ Este é o nosso **Plano de Implementação Mestre**, na ordem exata de produçã
 - [x] Alterações de acordo com a revisão
 - [x] Integração do banco com o projeto
 
-### Épico 4: Ecossistema Apple e Inteligência
-- [ ] Análise para implementação de AppIntents e Widgets
-- [ ] Implementação de AppIntents e Widgets
-- [ ] Análise para implementação de FoundationModels
-- [ ] Implementação de FoundationModels e CoreML
+### Épico 4: Ecossistema Apple e Inteligência ✅
+*(Concluído)*
+- [x] Análise e Implementação de AppIntents (Siri & Atalhos)
+- [x] Análise e Implementação de Widgets (WidgetKit)
+- [x] Análise para implementação de FoundationModels
+- [x] Implementação de FoundationModels e CoreML
 
 ### Épico 5: Identidade e Lançamento
-- [ ] Feature de login
-- [ ] Onboarding
+*(Em andamento)*
+- [ ] Onboarding (Introdução e Primeiros Passos do Usuário)
+- [ ] Feature de Login (Sign in with Apple & Integração Supabase)
+- [ ] Criação e Gestão de Perfil do Usuário
 - [ ] Publicação na AppStore

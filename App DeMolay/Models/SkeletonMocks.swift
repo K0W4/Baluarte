@@ -71,3 +71,46 @@ public extension Member {
         ]
     }
 }
+
+extension DisplayedAnalysis {
+    static var skeletonList: [DisplayedAnalysis] {
+        [
+            DisplayedAnalysis(
+                rawAnalysis: RawAnalysis(category: .membership, severity: .info, contextData: [:], fallbackTitle: "", fallbackMessage: ""),
+                generatedTitle: "Analisando Gestão",
+                generatedMessage: "Por favor aguarde, processando os dados e gerando insights inteligentes para o seu Capítulo.",
+                actionLabel: "Ver Membros"
+            ),
+            DisplayedAnalysis(
+                rawAnalysis: RawAnalysis(category: .membership, severity: .warning, contextData: [:], fallbackTitle: "", fallbackMessage: ""),
+                generatedTitle: "Buscando Padrões",
+                generatedMessage: "Aguardando o processamento da Apple Intelligence para exibir esta análise.",
+                actionLabel: nil
+            ),
+            DisplayedAnalysis(
+                rawAnalysis: RawAnalysis(category: .membership, severity: .info, contextData: [:], fallbackTitle: "", fallbackMessage: ""),
+                generatedTitle: "Calculando Idades",
+                generatedMessage: "Analisando a faixa etária do Capítulo para encontrar o perfil ideal de novos iniciáticos.",
+                actionLabel: "Ver Membros"
+            ),
+            DisplayedAnalysis(
+                rawAnalysis: RawAnalysis(category: .structure, severity: .actionRequired, contextData: [:], fallbackTitle: "", fallbackMessage: ""),
+                generatedTitle: "Avaliando Estrutura",
+                generatedMessage: "Verificando se todas as comissões obrigatórias estão funcionando como deveriam.",
+                actionLabel: "Criar Comissão"
+            ),
+            DisplayedAnalysis(
+                rawAnalysis: RawAnalysis(category: .structure, severity: .warning, contextData: [:], fallbackTitle: "", fallbackMessage: ""),
+                generatedTitle: "Desempenho Geral",
+                generatedMessage: "Analisando o fluxo de tarefas entregues pelas comissões este semestre.",
+                actionLabel: nil
+            ),
+            DisplayedAnalysis(
+                rawAnalysis: RawAnalysis(category: .structure, severity: .info, contextData: [:], fallbackTitle: "", fallbackMessage: ""),
+                generatedTitle: "Recomendação Estratégica",
+                generatedMessage: "Procurando áreas onde a criação de uma nova comissão pode otimizar as atividades do Capítulo.",
+                actionLabel: "Criar Comissão"
+            )
+        ]
+    }
+}

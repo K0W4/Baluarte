@@ -6,6 +6,7 @@ struct ContentView: View {
         case calendar
         case members
         case tasks
+        case analysis
     }
     
     @State private var selectedTab: Tab = .home
@@ -35,6 +36,12 @@ struct ContentView: View {
                     Label("Tarefas", systemImage: "checklist")
                 }
                 .tag(Tab.tasks)
+            
+            AnalysisView()
+                .tabItem {
+                    Label("Análise", systemImage: "apple.intelligence")
+                }
+                .tag(Tab.analysis)
         }
         .tint(Theme.accent)
     }

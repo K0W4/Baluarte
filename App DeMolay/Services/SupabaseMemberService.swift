@@ -19,6 +19,17 @@ public final class SupabaseMemberService: MemberServiceProtocol {
         return response
     }
     
+    public func fetchMember(id: UUID) async throws -> Member? {
+        let response: [Member] = try await client
+            .from("member")
+            .select()
+            .eq("id", value: id)
+            .execute()
+            .value
+        
+        return response.first
+    }
+    
     public func createMember(_ member: Member) async throws {
         try await client
             .from("member")

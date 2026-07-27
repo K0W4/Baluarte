@@ -2,7 +2,7 @@ import Foundation
 
 public struct Member: Codable, Identifiable, Hashable {
     public let id: UUID
-    public let chapterId: UUID
+    public var chapterId: UUID?
     public var fullName: String
     public var role: String?
     public var isActive: Bool
