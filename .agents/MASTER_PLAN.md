@@ -41,7 +41,9 @@ Este é o nosso **Plano de Implementação Mestre**, na ordem exata de produçã
 
 ### Épico 5: Identidade e Lançamento
 *(Em andamento)*
-- [ ] Onboarding (Introdução e Primeiros Passos do Usuário)
-- [ ] Feature de Login (Sign in with Apple & Integração Supabase)
-- [ ] Criação e Gestão de Perfil do Usuário
+- [x] Onboarding (Introdução e Primeiros Passos do Usuário)
+- [x] Feature de Login (Sign in with Apple, Email & Integração Supabase)
+- [x] Criação e Gestão de Perfil do Usuário
+- [x] Estrutura e Gestão de Capítulos (Criação e Associação)
 - [ ] Publicação na AppStore
+- [ ] Refinamentos de UI/UX Pós-Lançamento (Bugs e Otimizações)
