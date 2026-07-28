@@ -173,4 +173,42 @@ public final class AuthViewModel {
             self.state = .unauthenticated
         }
     }
+    
+    @MainActor
+    public func leaveChapter() async {
+        guard case let .authenticated(user, member) = self.state, var currentMember = member else { return }
+        
+        self.state = .loading
+        do {
+            currentMember.chapterId = nil
+            try await memberService.updateMember(currentMember)
+            
+            self.state = .authenticated(user, currentMember)
+            UserDefaultsManager.shared.currentChapterId = nil
+        } catch {
+            self.errorMessage = error.localizedDescription
+            self.state = .authenticated(user, member)
+        }
+    }
+    
+    @MainActor
+    public func deleteAccount() async {
+        guard let userId = currentUserId else { return }
+        
+        self.state = .loading
+        do {
+            // Apaga os dados do membro no banco (Soft Delete do ponto de vista de Auth)
+            try await memberService.deleteMember(memberId: userId)
+            
+            // Faz o sign out para deslogar da sessão local
+            try await authService.signOut()
+            
+            self.state = .unauthenticated
+            UserDefaultsManager.shared.currentUserId = nil
+            UserDefaultsManager.shared.currentChapterId = nil
+        } catch {
+            self.errorMessage = error.localizedDescription
+            self.state = .unauthenticated // Força o sign out mesmo se falhar a deleção por segurança local
+        }
+    }
 }

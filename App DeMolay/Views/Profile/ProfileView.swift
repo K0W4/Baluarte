@@ -4,6 +4,8 @@ import Auth
 struct ProfileView: View {
     @Environment(AuthViewModel.self) private var authViewModel
     @State private var viewModel = ProfileViewModel()
+    @State private var showLeaveChapterAlert = false
+    @State private var showDeleteAccountAlert = false
     
     var body: some View {
         NavigationStack {
@@ -47,19 +49,45 @@ struct ProfileView: View {
                             
                             Spacer(minLength: 40)
                             
-                            // Logout Button
-                            Button(action: {
-                                Task {
-                                    await authViewModel.signOut()
+                            // Ações da Conta
+                            VStack(spacing: Spacing.md) {
+                                Button(action: {
+                                    showLeaveChapterAlert = true
+                                }) {
+                                    Text("Sair do Capítulo")
+                                        .font(Typography.headline)
+                                        .frame(maxWidth: .infinity)
+                                        .frame(height: 50)
+                                        .background(Theme.backgroundSecondary)
+                                        .foregroundColor(Theme.textPrimary)
+                                        .clipShape(RoundedRectangle(cornerRadius: 12))
                                 }
-                            }) {
-                                Text("Sair da Conta")
-                                    .font(Typography.headline)
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: 50)
-                                    .background(Theme.backgroundSecondary)
-                                    .foregroundColor(Theme.destructive)
-                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                                
+                                Button(action: {
+                                    Task {
+                                        await authViewModel.signOut()
+                                    }
+                                }) {
+                                    Text("Sair da Conta")
+                                        .font(Typography.headline)
+                                        .frame(maxWidth: .infinity)
+                                        .frame(height: 50)
+                                        .background(Theme.backgroundSecondary)
+                                        .foregroundColor(Theme.textPrimary)
+                                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                                }
+                                
+                                Button(action: {
+                                    showDeleteAccountAlert = true
+                                }) {
+                                    Text("Excluir Conta")
+                                        .font(Typography.headline)
+                                        .frame(maxWidth: .infinity)
+                                        .frame(height: 50)
+                                        .background(Theme.backgroundSecondary)
+                                        .foregroundColor(Theme.destructive)
+                                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                                }
                             }
                             .padding(.horizontal, Spacing.screenEdgePadding)
                             .padding(.bottom, Spacing.xl)
@@ -69,6 +97,26 @@ struct ProfileView: View {
             }
             .navigationTitle("Perfil")
             .navigationBarTitleDisplayMode(.inline)
+            .alert("Sair do Capítulo", isPresented: $showLeaveChapterAlert) {
+                Button("Cancelar", role: .cancel) { }
+                Button("Sair", role: .destructive) {
+                    Task {
+                        await authViewModel.leaveChapter()
+                    }
+                }
+            } message: {
+                Text("Tem certeza que deseja sair do seu Capítulo atual? Você precisará ser aprovado novamente ao entrar em um novo.")
+            }
+            .alert("Excluir Conta", isPresented: $showDeleteAccountAlert) {
+                Button("Cancelar", role: .cancel) { }
+                Button("Excluir", role: .destructive) {
+                    Task {
+                        await authViewModel.deleteAccount()
+                    }
+                }
+            } message: {
+                Text("Esta ação é irreversível. Todos os seus dados serão apagados e você perderá o acesso ao app.")
+            }
         }
     }
 }

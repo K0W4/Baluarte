@@ -1,17 +1,14 @@
 import Foundation
+import NaturalLanguage
 
 final class AnalysisTranslationService: AnalysisTranslationServiceProtocol {
     
-    // Na fase atual de desenvolvimento (Pré-iOS 18 SDK completo ou sem API do Supabase),
-    // usaremos um mock determinístico que simula a IA gerando o texto humanizado.
-    // Futuramente, esta classe fará a requisição para a Edge Function ou usará o framework `LanguageModel` (Apple Intelligence).
+    // Utilizando o framework NaturalLanguage da Apple (Foundation Models clássicos)
+    // para extrair sentimento, entidades e adaptar a mensagem dinamicamente.
     
     func translate(analysis: RawAnalysis) async throws -> DisplayedAnalysis {
-        // Simula o tempo de latência de uma chamada de rede ou processamento de LLM local
-        try await Task.sleep(nanoseconds: 1_000_000_000) // 1 segundo
-        
         let generatedTitle: String
-        let generatedMessage: String
+        var generatedMessage: String
         var suggestedAction: String?
         
         switch analysis.category {
@@ -35,8 +32,22 @@ final class AnalysisTranslationService: AnalysisTranslationServiceProtocol {
             }
         case .calendar:
             if let event = analysis.contextData["upcomingEvent"] {
-                generatedTitle = "Planeje o Sucesso"
-                generatedMessage = "O **\(event)** já está no horizonte! Planejar essa data com antecedência garante uma atividade memorável e muito mais presença das nossas famílias."
+                // Aplicação de ML (NaturalLanguage Foundation Models): 
+                // 1. Sentimento
+                let sentimentScore = analyzeSentiment(for: event)
+                let isPositive = sentimentScore >= 0.0
+                // 2. Word Embeddings (Representação Vetorial Densa - Foundation Model)
+                let isCerimonial = isRelatedToCeremony(event)
+                
+                if isCerimonial {
+                    generatedTitle = "Foco na Ritualística"
+                    generatedMessage = "O **\(event)** é um evento solene. Garantir a excelência na ritualística é o que define nosso Capítulo!"
+                } else {
+                    generatedTitle = isPositive ? "Grande Evento à Vista" : "Planeje o Sucesso"
+                    let prefix = isPositive ? "Temos uma excelente oportunidade chegando:" : "Fique atento ao nosso calendário:"
+                    generatedMessage = "\(prefix) O **\(event)** já está no horizonte! Planejar essa data com antecedência garante uma atividade memorável."
+                }
+                
                 suggestedAction = "Criar Evento"
             } else {
                 generatedTitle = analysis.fallbackTitle
@@ -73,5 +84,36 @@ final class AnalysisTranslationService: AnalysisTranslationServiceProtocol {
             generatedMessage: generatedMessage,
             actionLabel: suggestedAction
         )
+    }
+    
+    // Função auxiliar que utiliza os modelos base (Foundation/CoreML integrados) do NaturalLanguage
+    private func analyzeSentiment(for text: String) -> Double {
+        let tagger = NLTagger(tagSchemes: [.sentimentScore])
+        tagger.string = text
+        let (sentiment, _) = tagger.tag(at: text.startIndex, unit: .paragraph, scheme: .sentimentScore)
+        
+        if let scoreStr = sentiment?.rawValue, let score = Double(scoreStr) {
+            return score
+        }
+        return 0.0
+    }
+    
+    // Função auxiliar que utiliza Word Embeddings (Foundation Model embutido no iOS)
+    // para medir a distância vetorial semântica entre duas palavras.
+    private func isRelatedToCeremony(_ text: String) -> Bool {
+        guard let embedding = NLEmbedding.wordEmbedding(for: .portuguese) else { return false }
+        
+        let targetWords = ["Iniciação", "Elevação", "Instalação", "Cerimônia", "Ritualística"]
+        
+        for word in text.components(separatedBy: .whitespaces) {
+            for target in targetWords {
+                // Mede a distância no espaço vetorial (0 = idêntico, 2 = opostos)
+                let distance = embedding.distance(between: word.lowercased(), and: target.lowercased())
+                if distance < 0.8 { // Limiar de similaridade semântica
+                    return true
+                }
+            }
+        }
+        return false
     }
 }
