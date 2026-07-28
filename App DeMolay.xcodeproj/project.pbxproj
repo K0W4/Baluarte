@@ -54,13 +54,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		9336B2173019115700EF2616 /* Exceptions for "App DeMolay" folder in "App DeMolay" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"App-DeMolay-Info.plist",
-			);
-			target = 932EA17D3006CB3D00CD22BF /* App DeMolay */;
-		};
 		9353B3F330127E3100D754B7 /* Exceptions for "AppDeMolayWidgets" folder in "AppDeMolayWidgetsExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -84,7 +77,6 @@
 		932EA1803006CB3D00CD22BF /* App DeMolay */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				9336B2173019115700EF2616 /* Exceptions for "App DeMolay" folder in "App DeMolay" target */,
 				9353B4013012817900D754B7 /* Exceptions for "App DeMolay" folder in "AppDeMolayWidgetsExtension" target */,
 			);
 			path = "App DeMolay";

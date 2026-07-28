@@ -93,23 +93,26 @@ public struct CreateCommitteeView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancelar") {
-                        dismiss()
+                    Button(action: { dismiss() }) {
+                        Image(systemName: "xmark")
+                            .font(.body.bold())
+                            .foregroundColor(Theme.accent)
                     }
-                    .foregroundColor(Theme.accent)
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Salvar") {
+                    Button(action: {
                         Task {
                             let success = await viewModel.saveCommittee()
                             if success {
                                 dismiss()
                             }
                         }
+                    }) {
+                        Image(systemName: "paperplane.fill")
+                            .font(.body.bold())
+                            .foregroundColor(viewModel.isValid ? Theme.accent : Theme.textSecondary.opacity(0.5))
                     }
-                    .font(.body.bold())
-                    .foregroundColor(viewModel.isValid ? Theme.accent : Theme.textSecondary.opacity(0.5))
                     .disabled(!viewModel.isValid || viewModel.isLoading)
                 }
             }
@@ -119,7 +122,7 @@ public struct CreateCommitteeView: View {
             .overlay {
                 if viewModel.isLoading {
                     ZStack {
-                        Color.black.opacity(0.2).ignoresSafeArea()
+                        Color.black.opacity(0.2)
                         ProgressView()
                             .tint(Theme.accent)
                     }

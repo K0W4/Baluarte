@@ -1,6 +1,6 @@
 # App DeMolay
 
-> Aplicativo de gestão inteligente e gamificada para Capítulos da Ordem DeMolay.
+> Smart, gamified, and AI-powered management application for DeMolay Chapters.
 
 [![Swift](https://img.shields.io/badge/Swift-5.9-orange.svg)](https://swift.org)
 [![iOS](https://img.shields.io/badge/iOS-17.0%2B-blue.svg)](https://developer.apple.com/ios/)
@@ -8,74 +8,76 @@
 [![Architecture](https://img.shields.io/badge/Architecture-MVVM-lightgrey.svg)]()
 [![Design](https://img.shields.io/badge/Design-Heuristics%20%7C%20WCAG-blueviolet.svg)]()
 
-## 📖 Visão Geral
+## 📖 Overview
 
-O **App DeMolay** foi desenhado para revolucionar a gestão capitular, fornecendo ferramentas modernas e preditivas para o controle de presença (Roster), calendário de eventos, gestão financeira e engajamento dos membros através de um sistema de acompanhamento de metas.
+**App DeMolay** was designed to revolutionize Chapter management by providing modern, predictive tools for attendance tracking (Roster), event scheduling, financial management, and member engagement through a gamified goal-tracking system. 
 
-O projeto foi construído focando em princípios de escalabilidade e design centrado no usuário, utilizando tecnologias de ponta do ecossistema Apple e mantendo uma arquitetura que permitirá uma expansão suave e futura para o Android.
+Built with scalability, privacy, and user-centered design in mind, it leverages cutting-edge Apple ecosystem technologies—including on-device Foundation Models for intelligent insights—while maintaining an architecture that allows for smooth expansion.
 
-## ✨ Principais Funcionalidades
+## ✨ Key Features
 
-* **🔒 Autenticação Robusta:** Login seguro e controle de permissões baseadas em cargos via Supabase.
-* **📅 Calendário Inteligente:** Gestão visual de reuniões, rituais e eventos.
-* **📊 Gestão de Metas:** Acompanhamento gamificado de objetivos (financeiros, iniciações, etc.) com cálculo automático de progressão.
-* **📜 Roster (Lista de Presença):** Visão geral e controle de frequência de todos os membros ativos.
-* **🤖 Inteligência Artificial (CoreML) - Em breve:** Leitura preditiva de documentos e atas utilizando Inteligência Artificial on-device.
+* **🔒 Robust Authentication:** Secure login and role-based permissions powered by Supabase.
+* **📅 Smart Calendar & App Intents:** Visual management for meetings and rituals. Integrated with Home Screen Widgets and Siri Shortcuts for quick attendance confirmation.
+* **🤖 Artificial Intelligence (Foundation Models):** Utilizes Apple's native `NaturalLanguage` framework (Word Embeddings & Sentiment Analysis) running 100% on-device to generate contextual, privacy-preserving management insights based on Chapter events.
+* **📊 Gamified Goals:** Track Chapter objectives (finances, initiations, etc.) with automatic progression calculations and dynamic UI feedback.
+* **📜 Member Roster:** Comprehensive overview and attendance tracking for all active members.
+* **📱 Beautiful iOS Native UI:** Crafted using SwiftUI with custom design system components, micro-animations, and full accessibility support (WCAG).
 
-## 🛠️ Stack Tecnológico e Arquitetura
+## 🛠️ Tech Stack & Architecture
 
-O projeto segue estritamente o padrão **MVVM** (Model-View-ViewModel) utilizando o novo sistema de observação da Apple (iOS 17+).
+The project strictly follows the **MVVM** (Model-View-ViewModel) pattern utilizing Apple's modern observation system (iOS 17+).
 
-* **Linguagem:** Swift
+* **Language:** Swift
 * **UI Framework:** SwiftUI
-* **Design System:** Componentes e tokens padronizados e injetáveis. Desenvolvido com base em **Heurísticas de Nielsen**, **Acessibilidade WCAG**, e forte **Psicologia aplicada a UX**.
-* **Gerenciamento de Estado:** `@Observable` (Substituindo o antigo `@ObservableObject`).
-* **Injeção de Dependência:** Protocolos (Services) injetados via `@Environment`, permitindo testes isolados via Mocks.
-* **Backend:** Supabase (PostgreSQL, PostgREST) configurado como BaaS.
+* **Design System:** Standardized, injectable components and tokens. Built upon **Nielsen's Heuristics**, **WCAG Accessibility**, and **UX Psychology**.
+* **State Management:** `@Observable` macro.
+* **Dependency Injection:** Protocol-oriented Services injected via `@Environment`, enabling isolated unit testing via Mocks.
+* **Backend:** Supabase (PostgreSQL, PostgREST) configured as BaaS with strict Row Level Security (RLS) policies.
 * **Package Manager:** Swift Package Manager (SPM).
 
-## 🚀 Como Começar (Getting Started)
+## 🚀 Getting Started
 
-### Pré-requisitos
-* macOS Sonoma (14.0) ou superior.
-* Xcode 15 ou superior.
-* Conta ativa no Supabase (para o banco de dados).
+### Prerequisites
+* macOS Sonoma (14.0) or higher.
+* Xcode 15 or higher.
+* Active Supabase project (for the database backend).
 
-### Instalação
+### Installation
 
-1. Clone o repositório:
+1. Clone the repository:
 ```bash
-git clone https://github.com/YOUR_USERNAME/app-demolay.git
+git clone https://github.com/K0W4/app-demolay.git
 ```
 
-2. Abra o arquivo do projeto:
+2. Open the project in Xcode:
 ```bash
 cd app-demolay
 open "App DeMolay.xcodeproj"
 ```
 
-3. O Swift Package Manager fará o download automático do SDK do Supabase.
-4. Selecione o simulador desejado (ex: iPhone 15 Pro) e clique em **Run** (`Cmd + R`).
+3. Let Swift Package Manager automatically resolve and download the Supabase SDK.
+4. Select your preferred iOS simulator (e.g., iPhone 15 Pro) and hit **Run** (`Cmd + R`).
 
-## 🗄️ Estrutura do Banco de Dados (Supabase)
+## 🗄️ Database Structure (Supabase)
 
-A aplicação consome uma API gerada dinamicamente pelo Supabase, baseada no seguinte schema:
+The application consumes a dynamically generated API via Supabase, based on the following unified schema:
 
-- `chapter`
-- `member`
-- `event`
-- `goal` (Metas com porcentagem de progressão)
-- `committee`
+- `chapter`: Core chapter information.
+- `member`: Members profiles and roles.
+- `event`: Calendar events (supports public anonymous reading for Widgets).
+- `goal`: Gamified targets with progression tracking.
+- `task`: Delegated activities with deadlines.
+- `committee`: Groups and chairmen assignments.
 
-> **Nota de Segurança:** As tabelas utilizam RLS (Row Level Security) para garantir que os membros acessem apenas as informações relacionadas ao seu respectivo Capítulo. Os dados também são tratados para segurança máxima e criptografia local.
+> **Security Note:** All tables utilize **Row Level Security (RLS)** to ensure members only access data related to their own Chapter. We prioritize user privacy, relying on Apple's local Neural Engine for AI processing to avoid sending sensitive Chapter data to third-party servers.
 
-## 📐 Filosofia de Desenvolvimento e Design
+## 📐 Development & Design Philosophy
 
-Desenvolvido sob rígidos princípios de engenharia e design de produto:
-- **KISS & YAGNI:** Priorização absoluta de soluções nativas do iOS (Minimum Viable Code). Nenhuma biblioteca de terceiros é utilizada a menos que seja estritamente necessária.
-- **Test-Driven:** Arquitetura desacoplada via protocolos, pronta para testes unitários.
-- **UX/UI Profundo:** Uso de micro-animações, contrastes semânticos, esqueletos de carregamento e tipografia fluida para gerar engajamento. As interfaces são desenhadas considerando a redução da carga cognitiva (Lei de Hick) e acessibilidade em primeiro plano.
+Developed under strict software engineering and product design principles:
+- **KISS & YAGNI:** Absolute prioritization of native iOS solutions (Minimum Viable Code). No third-party libraries are used unless strictly necessary.
+- **Test-Driven:** Decoupled architecture via protocols, ready for comprehensive unit testing.
+- **Deep UX/UI:** Extensive use of semantic contrast, loading skeletons, and fluid typography to drive engagement. Interfaces are designed to reduce cognitive load (Hick's Law) while putting accessibility at the forefront.
 
-## 📄 Licença
+## 📄 License
 
-Este projeto é desenvolvido para uso interno por Capítulos da Ordem DeMolay. Todos os direitos reservados.
+This project is developed for internal management use by DeMolay Chapters. All rights reserved.
