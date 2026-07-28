@@ -8,8 +8,12 @@ public struct ChapterBriefingIntent: AppIntent {
     public init() {}
     
     public func perform() async throws -> some IntentResult & ProvidesDialog {
-        let events = try? await Services.event.fetchEvents(for: Constants.testChapterId)
-        let tasks = try? await Services.task.fetchTasks(forChapter: Constants.testChapterId)
+        guard let chapterId = UserDefaultsManager.shared.currentChapterId else {
+            return .result(dialog: "Você precisa estar autenticado para ver o resumo do Capítulo.")
+        }
+        
+        let events = try? await Services.event.fetchEvents(for: chapterId)
+        let tasks = try? await Services.task.fetchTasks(forChapter: chapterId)
         
         let pendingTasks = tasks?.filter { !$0.isCompleted } ?? []
         

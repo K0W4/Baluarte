@@ -13,6 +13,20 @@ public final class AuthViewModel {
     public var state: AuthState = .loading
     public var errorMessage: String?
     
+    public var currentChapterId: UUID? {
+        if case let .authenticated(_, member) = state {
+            return member?.chapterId
+        }
+        return nil
+    }
+    
+    public var currentUserId: UUID? {
+        if case let .authenticated(user, _) = state {
+            return user.id
+        }
+        return nil
+    }
+    
     private let authService: AuthServiceProtocol
     private let memberService: MemberServiceProtocol
     
@@ -30,8 +44,12 @@ public final class AuthViewModel {
             let session = try await authService.getCurrentSession()
             let member = try await memberService.fetchMember(id: session.user.id)
             self.state = .authenticated(session.user, member)
+            UserDefaultsManager.shared.currentUserId = session.user.id
+            UserDefaultsManager.shared.currentChapterId = member?.chapterId
         } catch {
             self.state = .unauthenticated
+            UserDefaultsManager.shared.currentUserId = nil
+            UserDefaultsManager.shared.currentChapterId = nil
         }
     }
     
@@ -49,13 +67,19 @@ public final class AuthViewModel {
                         let user = try await self.authService.signInWithApple(idToken: credentials.idToken, nonce: credentials.nonce)
                         let member = try await self.memberService.fetchMember(id: user.id)
                         self.state = .authenticated(user, member)
+                        UserDefaultsManager.shared.currentUserId = user.id
+                        UserDefaultsManager.shared.currentChapterId = member?.chapterId
                     } catch {
                         self.state = .unauthenticated
                         self.errorMessage = error.localizedDescription
+                        UserDefaultsManager.shared.currentUserId = nil
+                        UserDefaultsManager.shared.currentChapterId = nil
                     }
                 case .failure(let error):
                     self.state = .unauthenticated
                     self.errorMessage = error.localizedDescription
+                    UserDefaultsManager.shared.currentUserId = nil
+                    UserDefaultsManager.shared.currentChapterId = nil
                 }
             }
         }
@@ -68,9 +92,13 @@ public final class AuthViewModel {
             let user = try await authService.signInWithEmail(email: email, password: password)
             let member = try await memberService.fetchMember(id: user.id)
             self.state = .authenticated(user, member)
+            UserDefaultsManager.shared.currentUserId = user.id
+            UserDefaultsManager.shared.currentChapterId = member?.chapterId
         } catch {
             self.errorMessage = error.localizedDescription
             self.state = .unauthenticated
+            UserDefaultsManager.shared.currentUserId = nil
+            UserDefaultsManager.shared.currentChapterId = nil
         }
     }
     
@@ -79,11 +107,14 @@ public final class AuthViewModel {
         self.state = .loading
         do {
             let user = try await authService.signUpWithEmail(email: email, password: password)
-            // No cadastro por e-mail, o usuário também não tem member profile ainda.
             self.state = .authenticated(user, nil)
+            UserDefaultsManager.shared.currentUserId = user.id
+            UserDefaultsManager.shared.currentChapterId = nil
         } catch {
             self.errorMessage = error.localizedDescription
             self.state = .unauthenticated
+            UserDefaultsManager.shared.currentUserId = nil
+            UserDefaultsManager.shared.currentChapterId = nil
         }
     }
     
@@ -121,6 +152,8 @@ public final class AuthViewModel {
                 try await memberService.createMember(updatedMember)
             }
             self.state = .authenticated(user, updatedMember)
+            UserDefaultsManager.shared.currentUserId = user.id
+            UserDefaultsManager.shared.currentChapterId = updatedMember.chapterId
         } catch {
             self.errorMessage = error.localizedDescription
             self.state = .authenticated(user, member)
@@ -133,6 +166,8 @@ public final class AuthViewModel {
         do {
             try await authService.signOut()
             self.state = .unauthenticated
+            UserDefaultsManager.shared.currentUserId = nil
+            UserDefaultsManager.shared.currentChapterId = nil
         } catch {
             self.errorMessage = error.localizedDescription
             self.state = .unauthenticated

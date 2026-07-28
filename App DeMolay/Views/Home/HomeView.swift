@@ -1,6 +1,7 @@
 import SwiftUI
 
 public struct HomeView: View {
+    @Environment(AuthViewModel.self) private var authViewModel
     @State private var viewModel = HomeViewModel()
     @State private var showingCreateEvent = false
     @State private var showingCreateGoal = false
@@ -42,7 +43,7 @@ public struct HomeView: View {
                     EventsSection(
                         events: displayEvents,
                         isLoading: viewModel.isLoading,
-                        currentUserId: viewModel.currentUserId,
+                        currentUserId: viewModel.currentUserId ?? UUID(),
                         onConfirmAttendance: { eventId in
                             if !viewModel.isLoading {
                                 Task { await viewModel.confirmAttendance(eventId: eventId) }
@@ -109,30 +110,42 @@ public struct HomeView: View {
                 await viewModel.loadData()
             }
             .task {
+                viewModel.currentUserId = authViewModel.currentUserId
+                viewModel.currentChapterId = authViewModel.currentChapterId
                 await viewModel.loadData()
             }
             .onAppear {
+                viewModel.currentUserId = authViewModel.currentUserId
+                viewModel.currentChapterId = authViewModel.currentChapterId
                 Task { await viewModel.loadData(showLoading: false) }
             }
             .sheet(isPresented: $showingCreateEvent, onDismiss: {
                 Task { await viewModel.loadData() }
             }) {
-                CreateEventView()
+                if let chapterId = authViewModel.currentChapterId {
+                    CreateEventView(chapterId: chapterId)
+                }
             }
             .sheet(isPresented: $showingCreateGoal, onDismiss: {
                 Task { await viewModel.loadData() }
             }) {
-                CreateGoalView()
+                if let chapterId = authViewModel.currentChapterId {
+                    CreateGoalView(chapterId: chapterId)
+                }
             }
             .sheet(isPresented: $showingCreateCommittee, onDismiss: {
                 Task { await viewModel.loadData() }
             }) {
-                CreateCommitteeView()
+                if let chapterId = authViewModel.currentChapterId {
+                    CreateCommitteeView(chapterId: chapterId)
+                }
             }
             .sheet(item: $selectedEvent, onDismiss: {
                 Task { await viewModel.loadData() }
             }) { event in
-                EventDetailView(event: event)
+                if let currentUserId = authViewModel.currentUserId {
+                    EventDetailView(event: event, currentUserId: currentUserId)
+                }
             }
             .sheet(item: $selectedGoal, onDismiss: {
                 Task { await viewModel.loadData() }
@@ -142,7 +155,9 @@ public struct HomeView: View {
             .sheet(item: $selectedCommittee, onDismiss: {
                 Task { await viewModel.loadData() }
             }) { committee in
-                CommitteeDetailView(committee: committee)
+                if let currentUserId = authViewModel.currentUserId, let currentChapterId = authViewModel.currentChapterId {
+                    CommitteeDetailView(committee: committee, chapterId: currentChapterId, currentUserId: currentUserId)
+                }
             }
         }
     }

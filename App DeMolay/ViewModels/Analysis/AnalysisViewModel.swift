@@ -40,7 +40,7 @@ final class AnalysisViewModel {
     }
     
     @MainActor
-    func fetchAnalyses(chapterId: UUID = Constants.testChapterId) async {
+    func fetchAnalyses(chapterId: UUID) async {
         self.isLoading = true
         self.errorMessage = nil
         

@@ -19,7 +19,7 @@ public final class CreateGoalViewModel {
         Double(targetValue.replacingOccurrences(of: ",", with: ".")) != nil
     }
     
-    public init(goalService: GoalServiceProtocol = Services.goal, chapterId: UUID = Constants.testChapterId) {
+    public init(chapterId: UUID, goalService: GoalServiceProtocol = Services.goal) {
         self.goalService = goalService
         self.chapterId = chapterId
     }

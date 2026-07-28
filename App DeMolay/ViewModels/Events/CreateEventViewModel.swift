@@ -22,7 +22,7 @@ public final class CreateEventViewModel {
         !notes.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
     
-    public init(eventService: EventServiceProtocol = Services.event, chapterId: UUID = Constants.testChapterId, initialDate: Date? = nil) {
+    public init(chapterId: UUID, eventService: EventServiceProtocol = Services.event, initialDate: Date? = nil) {
         self.eventService = eventService
         self.chapterId = chapterId
         self.scheduledDate = initialDate ?? Self.nextSaturdayAt13()

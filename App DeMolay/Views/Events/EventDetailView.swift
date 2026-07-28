@@ -5,8 +5,8 @@ public struct EventDetailView: View {
     @State private var viewModel: EventDetailViewModel
     @State private var showingDeleteAlert = false
     
-    public init(event: Event) {
-        self._viewModel = State(initialValue: EventDetailViewModel(event: event))
+    public init(event: Event, currentUserId: UUID) {
+        self._viewModel = State(initialValue: EventDetailViewModel(event: event, currentUserId: currentUserId))
     }
     
     public var body: some View {

@@ -26,14 +26,16 @@ public final class TasksViewModel {
         self.committeeService = committeeService
     }
 
-    public var currentUserId: UUID = Constants.testUserId
+    public var currentUserId: UUID?
+    public var currentChapterId: UUID?
 
     public func loadData(showLoading: Bool = true) async {
         if showLoading { isLoading = true }
         errorMessage = nil
         do {
-            async let tasks = taskService.fetchTasks(forChapter: Constants.testChapterId)
-            async let comms = committeeService.fetchCommittees(for: Constants.testChapterId)
+            guard let chapterId = currentChapterId else { return }
+            async let tasks = taskService.fetchTasks(forChapter: chapterId)
+            async let comms = committeeService.fetchCommittees(for: chapterId)
             let (fetchedTasks, fetchedCommittees) = try await (tasks, comms)
             allTasks = fetchedTasks
             committees = fetchedCommittees

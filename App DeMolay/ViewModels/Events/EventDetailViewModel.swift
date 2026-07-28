@@ -38,7 +38,7 @@ public final class EventDetailViewModel {
         event.confirmedAttendees?.contains(currentUserId) ?? false
     }
     
-    public init(event: Event, eventService: EventServiceProtocol = Services.event, memberService: MemberServiceProtocol = Services.member, currentUserId: UUID = Constants.testUserId) {
+    public init(event: Event, currentUserId: UUID, eventService: EventServiceProtocol = Services.event, memberService: MemberServiceProtocol = Services.member) {
         self.event = event
         self.eventService = eventService
         self.memberService = memberService

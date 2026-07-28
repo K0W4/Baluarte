@@ -1,6 +1,7 @@
 import SwiftUI
 
 public struct CalendarView: View {
+    @Environment(AuthViewModel.self) private var authViewModel
     @State private var viewModel = CalendarViewModel()
     @State private var monthTransitionDirection: Edge = .trailing
     @State private var showingCreateEvent = false
@@ -64,9 +65,13 @@ public struct CalendarView: View {
                 await viewModel.loadEvents()
             }
             .task {
+                viewModel.currentUserId = authViewModel.currentUserId
+                viewModel.currentChapterId = authViewModel.currentChapterId
                 await viewModel.loadEvents()
             }
             .onAppear {
+                viewModel.currentUserId = authViewModel.currentUserId
+                viewModel.currentChapterId = authViewModel.currentChapterId
                 Task {
                     await viewModel.loadEvents(showLoading: false)
                 }
@@ -74,12 +79,16 @@ public struct CalendarView: View {
             .sheet(isPresented: $showingCreateEvent, onDismiss: {
                 Task { await viewModel.loadEvents() }
             }) {
-                CreateEventView(initialDate: viewModel.selectedDate)
+                if let chapterId = authViewModel.currentChapterId {
+                    CreateEventView(chapterId: chapterId, initialDate: viewModel.selectedDate)
+                }
             }
             .sheet(item: $selectedEvent, onDismiss: {
                 Task { await viewModel.loadEvents() }
             }) { event in
-                EventDetailView(event: event)
+                if let currentUserId = authViewModel.currentUserId {
+                    EventDetailView(event: event, currentUserId: currentUserId)
+                }
             }
         }
     }

@@ -4,8 +4,8 @@ public struct CreateEventView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel: CreateEventViewModel
     
-    public init(initialDate: Date? = nil) {
-        self._viewModel = State(initialValue: CreateEventViewModel(initialDate: initialDate))
+    public init(chapterId: UUID, initialDate: Date? = nil) {
+        self._viewModel = State(initialValue: CreateEventViewModel(chapterId: chapterId, initialDate: initialDate))
     }
     
     public var body: some View {
@@ -93,5 +93,5 @@ public struct CreateEventView: View {
 }
 
 #Preview {
-    CreateEventView()
+    CreateEventView(chapterId: UUID())
 }

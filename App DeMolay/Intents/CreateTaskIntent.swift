@@ -13,13 +13,14 @@ public struct CreateTaskIntent: AppIntent {
     public init() {}
     
     public func perform() async throws -> some IntentResult & ProvidesDialog {
-        let userId = Constants.testUserId
+        guard let chapterId = UserDefaultsManager.shared.currentChapterId,
+              let userId = UserDefaultsManager.shared.currentUserId else {
+            return .result(dialog: "Você precisa estar autenticado para criar uma tarefa.")
+        }
         
-        // Em um app real, o chapterId viria do perfil do usuário. 
-        // Estamos usando o testChapterId provisoriamente como no resto do app.
         let newTask = ChapterTask(
             id: UUID(),
-            chapterId: Constants.testChapterId,
+            chapterId: chapterId,
             creatorId: userId,
             assigneeId: nil,
             committeeId: nil,

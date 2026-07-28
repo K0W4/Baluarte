@@ -17,7 +17,7 @@ struct ChapterSelectionView: View {
                             .font(Typography.largeTitle)
                             .foregroundColor(Theme.textPrimary)
                         
-                        Text("Para aproveitar o App DeMolay, você precisa estar vinculado a um Capítulo.")
+                        Text("Para aproveitar o Baluarte, você precisa estar vinculado a um Capítulo.")
                             .font(Typography.body)
                             .foregroundColor(Theme.textSecondary)
                     }

@@ -14,13 +14,13 @@ struct LoginView: View {
                     
                     // Logo and Title
                     VStack(spacing: Spacing.md) {
-                        Image(systemName: "shield.lefthalf.filled")
+                        Image("LaunchIcon")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 80, height: 80)
-                            .foregroundColor(Theme.accent)
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
                         
-                        Text("App DeMolay")
+                        Text("Baluarte")
                             .font(Typography.largeTitle)
                             .foregroundColor(Theme.textPrimary)
                     }

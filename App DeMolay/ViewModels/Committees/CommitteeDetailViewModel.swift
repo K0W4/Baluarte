@@ -39,6 +39,8 @@ public final class CommitteeDetailViewModel {
     
     public init(
         committee: Committee,
+        chapterId: UUID,
+        currentUserId: UUID,
         committeeService: CommitteeServiceProtocol = Services.committee,
         memberService: MemberServiceProtocol = Services.member,
         taskService: TaskServiceProtocol = Services.task
@@ -58,7 +60,7 @@ public final class CommitteeDetailViewModel {
         errorMessage = nil
         do {
             async let fetchMembers = memberService.fetchMembers(for: committee.chapterId)
-            async let fetchTasks = taskService.fetchTasks(forChapter: Constants.testChapterId)
+            async let fetchTasks = taskService.fetchTasks(forChapter: committee.chapterId)
             
             let (members, tasks) = try await (fetchMembers, fetchTasks)
             

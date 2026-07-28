@@ -6,8 +6,12 @@ struct WidgetDataManager {
     
     private let baseURL = SupabaseSecrets.projectURL
     private let apiKey = SupabaseSecrets.anonKey
-    private let currentUserId = Constants.testUserId.uuidString
-    private let chapterId = Constants.testChapterId.uuidString
+    private var currentUserId: String? {
+        UserDefaults(suiteName: "group.com.kowa.baluarte")?.string(forKey: "currentUserId")
+    }
+    private var chapterId: String? {
+        UserDefaults(suiteName: "group.com.kowa.baluarte")?.string(forKey: "currentChapterId")
+    }
     
     private var defaultHeaders: [String: String] {
         [
@@ -48,7 +52,7 @@ struct WidgetDataManager {
     }
     
     func fetchUpcomingEvents() async throws -> [Event] {
-        // Fetch events for chapter
+        guard let chapterId = self.chapterId else { return [] }
         let url = URL(string: "\(baseURL)/rest/v1/event?chapter_id=eq.\(chapterId)&select=*")!
         var request = URLRequest(url: url)
         request.cachePolicy = .reloadIgnoringLocalCacheData
@@ -72,7 +76,7 @@ struct WidgetDataManager {
     }
     
     func fetchPendingTasks() async throws -> [ChapterTask] {
-        // Fetch tasks for the chapter
+        guard let chapterId = self.chapterId else { return [] }
         let url = URL(string: "\(baseURL)/rest/v1/task?chapter_id=eq.\(chapterId)&select=*")!
         var request = URLRequest(url: url)
         request.cachePolicy = .reloadIgnoringLocalCacheData
@@ -87,6 +91,8 @@ struct WidgetDataManager {
         
         let decoder = getSupabaseDecoder()
         let allTasks = try decoder.decode([ChapterTask].self, from: data)
+        
+        guard let currentUserId = self.currentUserId else { return [] }
         
         let myTasks = allTasks.filter { task in
             (!task.isCompleted) &&
@@ -114,7 +120,7 @@ struct WidgetDataManager {
         guard let event = events.first else { return }
         
         var attendees = event.confirmedAttendees ?? []
-        guard let userUUID = UUID(uuidString: currentUserId) else { return }
+        guard let currentUserId = self.currentUserId, let userUUID = UUID(uuidString: currentUserId) else { return }
         
         if attendees.contains(userUUID) {
             attendees.removeAll { $0 == userUUID }

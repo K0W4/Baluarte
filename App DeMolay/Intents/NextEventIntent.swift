@@ -9,7 +9,11 @@ public struct NextEventIntent: AppIntent {
     public init() {}
     
     public func perform() async throws -> some IntentResult & ProvidesDialog & ShowsSnippetView {
-        let events = try await Services.event.fetchEvents(for: Constants.testChapterId)
+        guard let chapterId = UserDefaultsManager.shared.currentChapterId else {
+            return .result(dialog: "Você precisa estar autenticado para ver o próximo evento.")
+        }
+        
+        let events = try await Services.event.fetchEvents(for: chapterId)
         let upcomingEvents = events.filter { $0.scheduledDate > Date() }.sorted { $0.scheduledDate < $1.scheduledDate }
         
         guard let nextEvent = upcomingEvents.first else {

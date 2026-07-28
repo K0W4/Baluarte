@@ -23,6 +23,8 @@ public final class MembersViewModel {
 
     private let memberService: MemberServiceProtocol
 
+    public var currentChapterId: UUID?
+    
     public init(memberService: MemberServiceProtocol = Services.member) {
         self.memberService = memberService
     }
@@ -31,8 +33,9 @@ public final class MembersViewModel {
         isLoading = true
         errorMessage = nil
         do {
-            let mockChapterId = Constants.testChapterId
-            allMembers = try await memberService.fetchMembers(for: mockChapterId)
+            if let chapterId = currentChapterId {
+                allMembers = try await memberService.fetchMembers(for: chapterId)
+            }
         } catch {
             if error is CancellationError { 
                 withAnimation(.easeInOut(duration: 0.3)) { self.isLoading = false }

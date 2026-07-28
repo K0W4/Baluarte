@@ -2,9 +2,11 @@ import SwiftUI
 
 public struct CreateGoalView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var viewModel = CreateGoalViewModel()
+    @State private var viewModel: CreateGoalViewModel
     
-    public init() {}
+    public init(chapterId: UUID) {
+        _viewModel = State(initialValue: CreateGoalViewModel(chapterId: chapterId))
+    }
     
     public var body: some View {
         NavigationStack {
@@ -68,5 +70,5 @@ public struct CreateGoalView: View {
 }
 
 #Preview {
-    CreateGoalView()
+    CreateGoalView(chapterId: UUID())
 }

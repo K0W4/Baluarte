@@ -1,6 +1,7 @@
 import SwiftUI
 
 public struct TasksView: View {
+    @Environment(AuthViewModel.self) private var authViewModel
     @State private var viewModel = TasksViewModel()
     @State private var taskToDelete: ChapterTask?
     @State private var showingCreateTask = false
@@ -102,15 +103,21 @@ public struct TasksView: View {
                 }
             }
             .task {
+                viewModel.currentUserId = authViewModel.currentUserId
+                viewModel.currentChapterId = authViewModel.currentChapterId
                 await viewModel.loadData()
             }
             .onAppear {
+                viewModel.currentUserId = authViewModel.currentUserId
+                viewModel.currentChapterId = authViewModel.currentChapterId
                 Task { await viewModel.loadData(showLoading: false) }
             }
             .sheet(isPresented: $showingCreateTask, onDismiss: {
                 Task { await viewModel.loadData() }
             }) {
-                CreateTaskView()
+                if let chapterId = authViewModel.currentChapterId, let currentUserId = authViewModel.currentUserId {
+                    CreateTaskView(chapterId: chapterId, currentUserId: currentUserId)
+                }
             }
         }
     }

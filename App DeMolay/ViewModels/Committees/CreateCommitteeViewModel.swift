@@ -42,9 +42,9 @@ public final class CreateCommitteeViewModel {
     }
     
     public init(
+        chapterId: UUID,
         committeeService: CommitteeServiceProtocol = Services.committee,
-        memberService: MemberServiceProtocol = Services.member,
-        chapterId: UUID = Constants.testChapterId
+        memberService: MemberServiceProtocol = Services.member
     ) {
         self.committeeService = committeeService
         self.memberService = memberService

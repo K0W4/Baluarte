@@ -2,9 +2,11 @@ import SwiftUI
 
 public struct CreateMemberView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var viewModel = CreateMemberViewModel()
+    @State private var viewModel: CreateMemberViewModel
     
-    public init() {}
+    public init(chapterId: UUID) {
+        _viewModel = State(initialValue: CreateMemberViewModel(chapterId: chapterId))
+    }
     
     public var body: some View {
         NavigationStack {
@@ -107,5 +109,5 @@ public struct CreateMemberView: View {
 }
 
 #Preview {
-    CreateMemberView()
+    CreateMemberView(chapterId: UUID())
 }

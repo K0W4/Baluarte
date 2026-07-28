@@ -20,7 +20,8 @@ struct EventProvider: AppIntentTimelineProvider {
             let events = try await WidgetDataManager.shared.fetchUpcomingEvents()
             nextEvent = events.first
             if let attendees = nextEvent?.confirmedAttendees,
-               let userUUID = UUID(uuidString: Constants.testUserId.uuidString) {
+               let userIdString = UserDefaults(suiteName: "group.com.kowa.baluarte")?.string(forKey: "currentUserId"),
+               let userUUID = UUID(uuidString: userIdString) {
                 isConfirmed = attendees.contains(userUUID)
             }
         } catch {

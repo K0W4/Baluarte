@@ -2,9 +2,11 @@ import SwiftUI
 
 public struct CreateCommitteeView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var viewModel = CreateCommitteeViewModel()
+    @State private var viewModel: CreateCommitteeViewModel
     
-    public init() {}
+    public init(chapterId: UUID) {
+        _viewModel = State(initialValue: CreateCommitteeViewModel(chapterId: chapterId))
+    }
     
     public var body: some View {
         NavigationStack {
@@ -128,5 +130,5 @@ public struct CreateCommitteeView: View {
 }
 
 #Preview {
-    CreateCommitteeView()
+    CreateCommitteeView(chapterId: UUID())
 }

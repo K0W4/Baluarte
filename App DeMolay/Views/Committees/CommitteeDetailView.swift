@@ -6,8 +6,8 @@ public struct CommitteeDetailView: View {
     @State private var showingDeleteAlert = false
     @State private var showingAddMember = false
     
-    public init(committee: Committee) {
-        self._viewModel = State(initialValue: CommitteeDetailViewModel(committee: committee))
+    public init(committee: Committee, chapterId: UUID, currentUserId: UUID) {
+        self._viewModel = State(initialValue: CommitteeDetailViewModel(committee: committee, chapterId: chapterId, currentUserId: currentUserId))
     }
     
     public var body: some View {

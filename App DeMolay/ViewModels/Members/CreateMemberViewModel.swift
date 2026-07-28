@@ -40,7 +40,7 @@ public final class CreateMemberViewModel {
         }
     }
     
-    public init(memberService: MemberServiceProtocol = Services.member, chapterId: UUID = Constants.testChapterId) {
+    public init(chapterId: UUID, memberService: MemberServiceProtocol = Services.member) {
         self.memberService = memberService
         self.chapterId = chapterId
     }

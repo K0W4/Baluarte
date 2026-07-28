@@ -2,9 +2,11 @@ import SwiftUI
 
 public struct CreateTaskView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var viewModel = CreateTaskViewModel()
+    @State private var viewModel: CreateTaskViewModel
     
-    public init() {}
+    public init(chapterId: UUID, currentUserId: UUID) {
+        _viewModel = State(initialValue: CreateTaskViewModel(chapterId: chapterId, currentUserId: currentUserId))
+    }
     
     public var body: some View {
         NavigationStack {
@@ -85,5 +87,5 @@ public struct CreateTaskView: View {
 }
 
 #Preview {
-    CreateTaskView()
+    CreateTaskView(chapterId: UUID(), currentUserId: UUID())
 }

@@ -24,10 +24,10 @@ public final class CreateTaskViewModel {
     }
     
     public init(
+        chapterId: UUID,
+        currentUserId: UUID,
         taskService: TaskServiceProtocol = Services.task,
-        committeeService: CommitteeServiceProtocol = Services.committee,
-        chapterId: UUID = Constants.testChapterId,
-        currentUserId: UUID = Constants.testUserId
+        committeeService: CommitteeServiceProtocol = Services.committee
     ) {
         self.taskService = taskService
         self.committeeService = committeeService

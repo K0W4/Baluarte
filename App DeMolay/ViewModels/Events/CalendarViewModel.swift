@@ -13,7 +13,8 @@ public final class CalendarViewModel {
     public var errorMessage: String?
 
     private let eventService: EventServiceProtocol
-    private let currentUserId = Constants.testUserId
+    public var currentUserId: UUID?
+    public var currentChapterId: UUID?
 
     public init(eventService: EventServiceProtocol = Services.event) {
         self.eventService = eventService
@@ -23,8 +24,9 @@ public final class CalendarViewModel {
         if showLoading { isLoading = true }
         errorMessage = nil
         do {
-            let mockChapterId = Constants.testChapterId
-            events = try await eventService.fetchEvents(for: mockChapterId)
+            if let chapterId = currentChapterId {
+                events = try await eventService.fetchEvents(for: chapterId)
+            }
         } catch {
             if error is CancellationError { 
                 withAnimation(.easeInOut(duration: 0.3)) { self.isLoading = false }
@@ -49,29 +51,30 @@ public final class CalendarViewModel {
     }
 
     public func isUserConfirmed(for event: Event) -> Bool {
-        return event.confirmedAttendees?.contains(currentUserId) ?? false
+        guard let userId = currentUserId else { return false }
+        return event.confirmedAttendees?.contains(userId) ?? false
     }
 
     public func confirmAttendance(eventId: UUID) async {
-        guard let index = events.firstIndex(where: { $0.id == eventId }) else { return }
+        guard let index = events.firstIndex(where: { $0.id == eventId }), let userId = currentUserId else { return }
         let originalAttendees = events[index].confirmedAttendees
 
         var attendees = events[index].confirmedAttendees ?? []
-        let isRemoving = attendees.contains(currentUserId)
+        let isRemoving = attendees.contains(userId)
         if isRemoving {
-            attendees.removeAll { $0 == currentUserId }
+            attendees.removeAll { $0 == userId }
             HapticManager.shared.impact(style: .rigid)
         } else {
-            attendees.append(currentUserId)
+            attendees.append(userId)
             HapticManager.shared.impact(style: .medium)
         }
         events[index].confirmedAttendees = attendees
 
         do {
             if isRemoving {
-                try await eventService.removeAttendance(eventId: eventId, userId: currentUserId)
+                try await eventService.removeAttendance(eventId: eventId, userId: userId)
             } else {
-                try await eventService.confirmAttendance(eventId: eventId, userId: currentUserId)
+                try await eventService.confirmAttendance(eventId: eventId, userId: userId)
             }
         } catch {
             if error is CancellationError { return }

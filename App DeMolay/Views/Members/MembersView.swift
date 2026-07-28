@@ -1,6 +1,7 @@
 import SwiftUI
 
 public struct MembersView: View {
+    @Environment(AuthViewModel.self) private var authViewModel
     @State private var viewModel = MembersViewModel()
     @State private var showingCreateMember = false
     @State private var selectedMember: Member?
@@ -84,12 +85,15 @@ public struct MembersView: View {
             }
             .searchable(text: $viewModel.searchText, prompt: "Buscar membro ou cargo")
             .task {
+                viewModel.currentChapterId = authViewModel.currentChapterId
                 await viewModel.loadMembers()
             }
             .sheet(isPresented: $showingCreateMember, onDismiss: {
                 Task { await viewModel.loadMembers() }
             }) {
-                CreateMemberView()
+                if let chapterId = authViewModel.currentChapterId {
+                    CreateMemberView(chapterId: chapterId)
+                }
             }
             .sheet(item: $selectedMember, onDismiss: {
                 Task { await viewModel.loadMembers() }

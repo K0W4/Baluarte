@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct AnalysisView: View {
+    @Environment(AuthViewModel.self) private var authViewModel
     @State private var viewModel = AnalysisViewModel()
     @State private var showingCreateEvent = false
     @State private var showingCreateCommittee = false
@@ -90,7 +91,9 @@ struct AnalysisView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
                         Task {
-                            await viewModel.fetchAnalyses()
+                            if let chapterId = authViewModel.currentChapterId {
+                                await viewModel.fetchAnalyses(chapterId: chapterId)
+                            }
                         }
                     }) {
                         Image(systemName: "arrow.clockwise")
@@ -98,19 +101,31 @@ struct AnalysisView: View {
                 }
             }
             .task {
-                if viewModel.displayedAnalyses.isEmpty {
-                    await viewModel.fetchAnalyses()
+                if viewModel.displayedAnalyses.isEmpty, let chapterId = authViewModel.currentChapterId {
+                    await viewModel.fetchAnalyses(chapterId: chapterId)
                 }
             }
             .sheet(isPresented: $showingCreateEvent, onDismiss: {
-                Task { await viewModel.fetchAnalyses() }
+                Task { 
+                    if let chapterId = authViewModel.currentChapterId {
+                        await viewModel.fetchAnalyses(chapterId: chapterId)
+                    }
+                }
             }) {
-                CreateEventView()
+                if let chapterId = authViewModel.currentChapterId {
+                    CreateEventView(chapterId: chapterId)
+                }
             }
             .sheet(isPresented: $showingCreateCommittee, onDismiss: {
-                Task { await viewModel.fetchAnalyses() }
+                Task { 
+                    if let chapterId = authViewModel.currentChapterId {
+                        await viewModel.fetchAnalyses(chapterId: chapterId)
+                    }
+                }
             }) {
-                CreateCommitteeView()
+                if let chapterId = authViewModel.currentChapterId {
+                    CreateCommitteeView(chapterId: chapterId)
+                }
             }
             .sheet(isPresented: $showingMembers) {
                 MembersView()

@@ -28,7 +28,8 @@ public final class HomeViewModel {
     private let taskService: TaskServiceProtocol
     private let memberService: MemberServiceProtocol
 
-    public let currentUserId = Constants.testUserId
+    public var currentUserId: UUID?
+    public var currentChapterId: UUID?
 
     public init(
         eventService: EventServiceProtocol = Services.event,
@@ -73,11 +74,11 @@ public final class HomeViewModel {
         let originalAttendees = events[index].confirmedAttendees
 
         var attendees = events[index].confirmedAttendees ?? []
-        let isRemoving = attendees.contains(currentUserId)
-        if isRemoving {
+        let isRemoving = currentUserId != nil && attendees.contains(currentUserId!)
+        if isRemoving, let currentUserId = currentUserId {
             attendees.removeAll { $0 == currentUserId }
             HapticManager.shared.impact(style: .rigid)
-        } else {
+        } else if let currentUserId = currentUserId {
             attendees.append(currentUserId)
             HapticManager.shared.impact(style: .medium)
         }
@@ -85,9 +86,13 @@ public final class HomeViewModel {
 
         do {
             if isRemoving {
-                try await eventService.removeAttendance(eventId: eventId, userId: currentUserId)
+                if let currentUserId = currentUserId {
+                    try await eventService.removeAttendance(eventId: eventId, userId: currentUserId)
+                }
             } else {
-                try await eventService.confirmAttendance(eventId: eventId, userId: currentUserId)
+                if let currentUserId = currentUserId {
+                    try await eventService.confirmAttendance(eventId: eventId, userId: currentUserId)
+                }
             }
         } catch {
             if error is CancellationError { return }
@@ -100,12 +105,13 @@ public final class HomeViewModel {
         errorMessage = nil
 
         do {
-            let mockChapterId = Constants.testChapterId
-            async let fetchedEvents = eventService.fetchEvents(for: mockChapterId)
-            async let fetchedGoals = goalService.fetchGoals(for: mockChapterId)
-            async let fetchedCommittees = committeeService.fetchCommittees(for: mockChapterId)
-            async let fetchedTasks = taskService.fetchTasks(forChapter: mockChapterId)
-            async let fetchedMembers = memberService.fetchMembers(for: mockChapterId)
+            guard let currentUserId = currentUserId, let currentChapterId = currentChapterId else { return }
+            
+            async let fetchedEvents = eventService.fetchEvents(for: currentChapterId)
+            async let fetchedGoals = goalService.fetchGoals(for: currentChapterId)
+            async let fetchedCommittees = committeeService.fetchCommittees(for: currentChapterId)
+            async let fetchedTasks = taskService.fetchTasks(forChapter: currentChapterId)
+            async let fetchedMembers = memberService.fetchMembers(for: currentChapterId)
 
             events = try await fetchedEvents
             goals = try await fetchedGoals
@@ -115,6 +121,14 @@ public final class HomeViewModel {
             let allMembers = try await fetchedMembers
             currentUser = allMembers.first { $0.id == currentUserId }
         } catch {
+            // Se falhou por Foreign Key ou qualquer outra coisa do Chapter, vamos tentar recriar o Test Chapter silenciosamente
+            if String(describing: error).contains("23503") || String(describing: error).contains("PGRST") || events.isEmpty {
+                if let currentChapterId = currentChapterId {
+                    let defaultChapter = Chapter(id: currentChapterId, name: "Meu Capítulo", number: 1)
+                    _ = try? await Services.chapter.createChapter(defaultChapter)
+                }
+            }
+            
             if error is CancellationError { 
                 withAnimation(.easeInOut(duration: 0.3)) { self.isLoading = false }
                 return 
