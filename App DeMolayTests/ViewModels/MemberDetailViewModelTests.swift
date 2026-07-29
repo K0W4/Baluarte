@@ -48,12 +48,10 @@ struct MemberDetailViewModelTests {
         
         viewModel.fullName = "Valid"
         
-        // Cannot be active and senior at the same time
         viewModel.isActive = true
         viewModel.isSenior = true
         #expect(viewModel.isValid == false)
         
-        // At least one must be true
         viewModel.isActive = false
         viewModel.isSenior = false
         viewModel.isMason = false
@@ -64,7 +62,6 @@ struct MemberDetailViewModelTests {
     func testRolesLogic() {
         let viewModel = MemberDetailViewModel(member: sampleMember)
         
-        // Default roles
         #expect(viewModel.roles.contains("Mestre Conselheiro") == true)
         
         viewModel.isMason = true

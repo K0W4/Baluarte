@@ -5,7 +5,6 @@ public final class TestMockEventService: EventServiceProtocol {
     public var shouldThrowError = false
     public var eventsToReturn: [Event] = []
     
-    // Call counters
     public var fetchEventsCallCount = 0
     public var createEventCallCount = 0
     public var confirmAttendanceCallCount = 0

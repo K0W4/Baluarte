@@ -135,7 +135,6 @@ struct CommitteeDetailViewModelTests {
         taskService.shouldThrowError = true
         await viewModel.toggleTaskCompletion(taskId: taskId)
         
-        // It failed, so it rolled back to false
         #expect(viewModel.committeeTasks[0].isCompleted == false)
         #expect(viewModel.errorMessage != nil)
     }

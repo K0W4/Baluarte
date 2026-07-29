@@ -89,19 +89,14 @@ struct HomeViewModelTests {
         
         await viewModel.loadData()
         
-        // Setup mock to fail
         taskService.shouldThrowError = true
         
-        // Initial state
         #expect(viewModel.tasks.first?.isCompleted == false)
         
-        // Execute toggle
         await viewModel.toggleTaskCompletion(taskId: taskId)
         
-        // Verify call was made
         #expect(taskService.toggleTaskCompletionCallCount == 1)
         
-        // It failed, so it should have rolled back to false
         #expect(viewModel.tasks.first?.isCompleted == false)
     }
     
@@ -122,13 +117,10 @@ struct HomeViewModelTests {
         
         await viewModel.loadData()
         
-        // Execute toggle
         await viewModel.toggleTaskCompletion(taskId: taskId)
         
-        // Verify call was made
         #expect(taskService.toggleTaskCompletionCallCount == 1)
         
-        // It succeeded, so it should stay true
         #expect(viewModel.tasks.first?.isCompleted == true)
     }
     
@@ -156,7 +148,6 @@ struct HomeViewModelTests {
         
         #expect(eventService.confirmAttendanceCallCount == 1)
         
-        // Rolled back
         #expect(viewModel.events.first?.confirmedAttendees?.contains(viewModel.currentUserId) == false)
     }
 }

@@ -5,7 +5,6 @@ public final class TestMockCommitteeService: CommitteeServiceProtocol {
     public var shouldThrowError = false
     public var committeesToReturn: [Committee] = []
     
-    // Call counters
     public var fetchCommitteesCallCount = 0
     public var createCommitteeCallCount = 0
     public var updateCommitteeCallCount = 0

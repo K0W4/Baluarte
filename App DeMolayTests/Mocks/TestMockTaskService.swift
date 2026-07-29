@@ -5,7 +5,6 @@ public final class TestMockTaskService: TaskServiceProtocol {
     public var shouldThrowError = false
     public var tasksToReturn: [ChapterTask] = []
     
-    // Call counters
     public var fetchTasksCallCount = 0
     public var toggleTaskCompletionCallCount = 0
     public var deleteTaskCallCount = 0

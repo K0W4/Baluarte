@@ -65,3 +65,7 @@ App DeMolay/
 * **Minimum Viable Code**: Produza a quantidade mínima de código necessária para resolver o problema com clareza e segurança. Evite over-engineering.
 * **Sem Comentários no Código**: O código deve ser autoexplicativo através de nomes claros de variáveis, funções e tipos. Não utilize comentários inline (`//`), exceto para `MARK:` de organização em arquivos extensos.
 * **Atualizações Otimistas**: Para operações de toggle ou atualização rápida na UI (ex: marcar tarefa como concluída), aplique a mudança visual imediatamente e reverta caso a API falhe.
+
+## 7. Controle de Versão (Git)
+
+* **Commits em Inglês**: Todas as mensagens de commit (git commit) devem ser obrigatoriamente escritas em **Inglês**, seguindo o padrão Conventional Commits (ex: feat:, fix:, refactor:, chore:). Apesar das interações no chat e documentações estarem em Português (pt-BR), o histórico do Git deve ser mantido em inglês para manter o padrão universal de desenvolvimento.

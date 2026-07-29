@@ -5,7 +5,6 @@ public final class TestMockGoalService: GoalServiceProtocol {
     public var shouldThrowError = false
     public var goalsToReturn: [Goal] = []
     
-    // Call counters
     public var fetchGoalsCallCount = 0
     public var updateProgressCallCount = 0
     public var createGoalCallCount = 0

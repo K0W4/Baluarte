@@ -1,9 +1,3 @@
-//
-//  AppDeMolayWidgetsBundle.swift
-//  AppDeMolayWidgets
-//
-//  Created by Gabriel Kowaleski on 23/07/26.
-//
 
 import WidgetKit
 import SwiftUI

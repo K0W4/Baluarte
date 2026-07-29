@@ -5,7 +5,6 @@ public final class TestMockMemberService: MemberServiceProtocol {
     public var shouldThrowError = false
     public var membersToReturn: [Member] = []
     
-    // Call counters
     public var fetchMembersCallCount = 0
     public var createMemberCallCount = 0
     public var updateMemberCallCount = 0

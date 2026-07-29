@@ -1,6 +1,5 @@
 import Foundation
 
-// A lightweight data manager for the Widget to avoid linking the entire Supabase SDK
 struct WidgetDataManager {
     static let shared = WidgetDataManager()
     
@@ -12,19 +11,25 @@ struct WidgetDataManager {
     private var chapterId: String? {
         UserDefaults(suiteName: "group.com.kowa.baluarte")?.string(forKey: "currentChapterId")
     }
+    private var accessToken: String? {
+        UserDefaults(suiteName: "group.com.kowa.baluarte")?.string(forKey: "accessToken")
+    }
     
     private var defaultHeaders: [String: String] {
-        [
+        var headers = [
             "apikey": apiKey,
-            "Authorization": "Bearer \(apiKey)",
             "Content-Type": "application/json"
         ]
+        if let token = accessToken {
+            headers["Authorization"] = "Bearer \(token)"
+        } else {
+            headers["Authorization"] = "Bearer \(apiKey)"
+        }
+        return headers
     }
     
     private func getSupabaseDecoder() -> JSONDecoder {
         let decoder = JSONDecoder()
-        // DO NOT USE .convertFromSnakeCase because Event and ChapterTask already have explicit snake_case CodingKeys
-        // decoder.keyDecodingStrategy = .convertFromSnakeCase
         
         decoder.dateDecodingStrategy = .custom { decoder in
             let container = try decoder.singleValueContainer()
@@ -37,7 +42,6 @@ struct WidgetDataManager {
             let withoutFractions = ISO8601DateFormatter()
             if let date = withoutFractions.date(from: dateString) { return date }
             
-            // Supabase fallback without timezone (timestamp without time zone)
             let fallback = DateFormatter()
             fallback.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
             fallback.timeZone = TimeZone(abbreviation: "UTC")
@@ -104,7 +108,6 @@ struct WidgetDataManager {
     }
     
     func confirmAttendance(eventId: String) async throws {
-        // 1. Fetch current event attendees
         let fetchUrl = URL(string: "\(baseURL)/rest/v1/event?id=eq.\(eventId)&select=*")!
         var fetchRequest = URLRequest(url: fetchUrl)
         fetchRequest.allHTTPHeaderFields = defaultHeaders
@@ -128,7 +131,6 @@ struct WidgetDataManager {
             attendees.append(userUUID)
         }
             
-        // 2. Update event attendees
             let updateUrl = URL(string: "\(baseURL)/rest/v1/event?id=eq.\(eventId)")!
             var updateRequest = URLRequest(url: updateUrl)
             updateRequest.httpMethod = "PATCH"
@@ -145,7 +147,6 @@ struct WidgetDataManager {
     }
     
     func toggleTaskCompletion(taskId: String) async throws {
-        // 1. Fetch current task
         let fetchUrl = URL(string: "\(baseURL)/rest/v1/task?id=eq.\(taskId)&select=*")!
         var fetchRequest = URLRequest(url: fetchUrl)
         fetchRequest.allHTTPHeaderFields = defaultHeaders
@@ -160,7 +161,6 @@ struct WidgetDataManager {
         let tasks = try decoder.decode([ChapterTask].self, from: data)
         guard let task = tasks.first else { return }
         
-        // 2. Toggle and update
         let updateUrl = URL(string: "\(baseURL)/rest/v1/task?id=eq.\(taskId)")!
         var updateRequest = URLRequest(url: updateUrl)
         updateRequest.httpMethod = "PATCH"
