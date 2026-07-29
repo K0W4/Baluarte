@@ -21,7 +21,7 @@ public final class ChapterSelectionViewModel {
         do {
             self.chapters = try await chapterService.fetchChapters()
         } catch {
-            self.errorMessage = error.localizedDescription
+            self.errorMessage = AppError.from(error).userMessage
         }
         self.isLoading = false
     }
@@ -38,7 +38,7 @@ public final class ChapterSelectionViewModel {
         do {
             self.chapters = try await chapterService.searchChapters(query: query)
         } catch {
-            self.errorMessage = error.localizedDescription
+            self.errorMessage = AppError.from(error).userMessage
         }
         self.isLoading = false
     }

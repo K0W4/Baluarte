@@ -92,6 +92,9 @@ public struct EventCard: View {
             .buttonStyle(PrimaryButtonStyle())
             .accessibilityLabel(isUserConfirmed ? "Cancelar presença no evento \(event.title)" : "Confirmar presença no evento \(event.title)")
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(event.title), \(event.eventType), \(dateString), \(event.confirmedAttendees?.count ?? 0) presenças")
+        .accessibilityHint("Toque para ver detalhes do evento")
         .padding(Spacing.md)
         .background(Theme.cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))

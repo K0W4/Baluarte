@@ -2,7 +2,6 @@ import SwiftUI
 
 struct OnboardingView: View {
     @State private var currentPage = 0
-    // Será substituída pela lógica de navegação real para o Login posteriormente
     var onFinish: (() -> Void)? = nil
     
     private let pages: [OnboardingPage] = [
@@ -29,38 +28,55 @@ struct OnboardingView: View {
     ]
     
     var body: some View {
-        ZStack {
-            Theme.backgroundPrimary.ignoresSafeArea()
-            
-            VStack {
-                TabView(selection: $currentPage) {
-                    ForEach(0..<pages.count, id: \.self) { index in
-                        OnboardingSlideView(page: pages[index])
-                            .tag(index)
-                    }
-                }
-                .tabViewStyle(.page(indexDisplayMode: .always))
-                .indexViewStyle(.page(backgroundDisplayMode: .always))
-                .animation(.easeInOut, value: currentPage)
+        NavigationStack {
+            ZStack {
+                Theme.backgroundPrimary.ignoresSafeArea()
                 
-                Button(action: {
-                    let generator = UIImpactFeedbackGenerator(style: .medium)
-                    generator.impactOccurred()
+                VStack {
+                    Text("Passo \(currentPage + 1) de \(pages.count)")
+                        .font(Typography.caption1)
+                        .foregroundColor(Theme.textSecondary)
+                        .padding(.top, Spacing.md)
                     
-                    if currentPage < pages.count - 1 {
-                        withAnimation {
-                            currentPage += 1
+                    TabView(selection: $currentPage) {
+                        ForEach(0..<pages.count, id: \.self) { index in
+                            OnboardingSlideView(page: pages[index])
+                                .tag(index)
                         }
-                    } else {
-                        onFinish?()
                     }
-                }) {
-                    Text(currentPage < pages.count - 1 ? "Próximo" : "Começar Agora")
-                        .frame(maxWidth: .infinity)
+                    .tabViewStyle(.page(indexDisplayMode: .always))
+                    .indexViewStyle(.page(backgroundDisplayMode: .always))
+                    .animation(.easeInOut, value: currentPage)
+                    
+                    Button(action: {
+                        let generator = UIImpactFeedbackGenerator(style: .medium)
+                        generator.impactOccurred()
+                        
+                        if currentPage < pages.count - 1 {
+                            withAnimation {
+                                currentPage += 1
+                            }
+                        } else {
+                            onFinish?()
+                        }
+                    }) {
+                        Text(currentPage < pages.count - 1 ? "Próximo" : "Começar Agora")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(PrimaryButtonStyle())
+                    .padding(.horizontal, Spacing.screenEdgePadding)
+                    .padding(.bottom, Spacing.xl)
                 }
-                .buttonStyle(PrimaryButtonStyle())
-                .padding(.horizontal, Spacing.screenEdgePadding)
-                .padding(.bottom, Spacing.xl)
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    if currentPage < pages.count - 1 {
+                        Button("Pular") {
+                            onFinish?()
+                        }
+                        .foregroundColor(Theme.textSecondary)
+                    }
+                }
             }
         }
     }

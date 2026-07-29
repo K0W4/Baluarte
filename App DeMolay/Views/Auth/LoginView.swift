@@ -50,11 +50,11 @@ struct LoginView: View {
                             }) {
                                 HStack(spacing: 8) {
                                     Image(systemName: "applelogo")
-                                        .font(.system(size: 20))
+                                        .font(Typography.title3)
                                         .foregroundColor(Theme.textPrimary)
                                     
                                     Text("Continuar com Apple")
-                                        .font(.system(size: 18, weight: .semibold))
+                                        .font(Typography.headline)
                                         .foregroundColor(Theme.textPrimary)
                                 }
                                 .frame(maxWidth: .infinity)

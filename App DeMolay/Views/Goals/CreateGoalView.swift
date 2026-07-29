@@ -4,6 +4,9 @@ public struct CreateGoalView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel: CreateGoalViewModel
     
+    enum FocusField { case title, description, targetValue }
+    @FocusState private var focusedField: FocusField?
+    
     public init(chapterId: UUID) {
         _viewModel = State(initialValue: CreateGoalViewModel(chapterId: chapterId))
     }
@@ -13,8 +16,14 @@ public struct CreateGoalView: View {
             Form {
                 Section {
                     TextField("Título da Meta", text: $viewModel.title)
+                        .focused($focusedField, equals: .title)
+                        .submitLabel(.next)
+                        .onSubmit { focusedField = .targetValue }
                     
                     TextField("Valor Alvo (ex: 50.0)", text: $viewModel.targetValue)
+                        .focused($focusedField, equals: .targetValue)
+                        .submitLabel(.done)
+                        .onSubmit { focusedField = nil }
                         .keyboardType(.decimalPad)
                         
                     DatePicker("Data Limite", selection: $viewModel.targetDate, displayedComponents: .date)

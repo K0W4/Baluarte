@@ -5,6 +5,7 @@ struct ChapterSelectionView: View {
     @State private var viewModel = ChapterSelectionViewModel()
     @State private var showCreateChapter = false
     @State private var searchText = ""
+    @State private var showSignOutAlert = false
     
     var body: some View {
         NavigationStack {
@@ -96,6 +97,22 @@ struct ChapterSelectionView: View {
             CreateChapterView {
                 Task {
                     await viewModel.fetchChapters()
+                }
+            }
+        }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button("Sair") {
+                    showSignOutAlert = true
+                }
+                .foregroundColor(Theme.destructive)
+            }
+        }
+        .alert("Deseja sair da conta?", isPresented: $showSignOutAlert) {
+            Button("Cancelar", role: .cancel) { }
+            Button("Sair", role: .destructive) {
+                Task {
+                    await authViewModel.signOut()
                 }
             }
         }

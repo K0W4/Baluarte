@@ -4,6 +4,9 @@ public struct CreateCommitteeView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel: CreateCommitteeViewModel
     
+    enum FocusField { case name }
+    @FocusState private var focusedField: FocusField?
+    
     public init(chapterId: UUID) {
         _viewModel = State(initialValue: CreateCommitteeViewModel(chapterId: chapterId))
     }
@@ -13,6 +16,9 @@ public struct CreateCommitteeView: View {
             Form {
                 Section {
                     TextField("Nome da Comissão", text: $viewModel.name)
+                        .focused($focusedField, equals: .name)
+                        .submitLabel(.done)
+                        .onSubmit { focusedField = nil }
                 } header: {
                     Text("Informações Básicas")
                 }
@@ -117,6 +123,7 @@ public struct CreateCommitteeView: View {
                 }
             }
             .task {
+                focusedField = .name
                 await viewModel.loadMembers()
             }
             .overlay {

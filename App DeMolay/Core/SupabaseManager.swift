@@ -11,7 +11,7 @@ public final class SupabaseManager {
     
     private init() {
         guard let url = URL(string: SupabaseSecrets.projectURL) else {
-            fatalError("URL do Supabase inválida")
+            preconditionFailure("SupabaseSecrets.projectURL contém uma URL inválida. Verifique a configuração.")
         }
         self.supabaseURL = url
         self.client = SupabaseClient(

@@ -11,6 +11,14 @@ public final class HomeViewModel {
     public var tasks: [ChapterTask] = []
     public var currentUser: Member?
 
+    public var greetingTitle: String {
+        guard let user = currentUser,
+              let firstName = user.fullName.split(separator: " ").first else {
+            return "Olá, Irmão!"
+        }
+        return "Olá, \(firstName)!"
+    }
+
     public var upcomingEvents: [Event] {
         let calendar = Calendar.current
         let startOfToday = calendar.startOfDay(for: Date())
@@ -74,25 +82,23 @@ public final class HomeViewModel {
         let originalAttendees = events[index].confirmedAttendees
 
         var attendees = events[index].confirmedAttendees ?? []
-        let isRemoving = currentUserId != nil && attendees.contains(currentUserId!)
-        if isRemoving, let currentUserId = currentUserId {
-            attendees.removeAll { $0 == currentUserId }
+        guard let userId = currentUserId else { return }
+        let isRemoving = attendees.contains(userId)
+        
+        if isRemoving {
+            attendees.removeAll { $0 == userId }
             HapticManager.shared.impact(style: .rigid)
-        } else if let currentUserId = currentUserId {
-            attendees.append(currentUserId)
+        } else {
+            attendees.append(userId)
             HapticManager.shared.impact(style: .medium)
         }
         events[index].confirmedAttendees = attendees
 
         do {
             if isRemoving {
-                if let currentUserId = currentUserId {
-                    try await eventService.removeAttendance(eventId: eventId, userId: currentUserId)
-                }
+                try await eventService.removeAttendance(eventId: eventId, userId: userId)
             } else {
-                if let currentUserId = currentUserId {
-                    try await eventService.confirmAttendance(eventId: eventId, userId: currentUserId)
-                }
+                try await eventService.confirmAttendance(eventId: eventId, userId: userId)
             }
         } catch {
             if error is CancellationError { return }
@@ -133,8 +139,7 @@ public final class HomeViewModel {
                 withAnimation(.easeInOut(duration: 0.3)) { self.isLoading = false }
                 return 
             }
-            print("❌ Supabase Error: \(error)")
-            errorMessage = error.localizedDescription
+            errorMessage = AppError.from(error).userMessage
         }
 
         if showLoading {

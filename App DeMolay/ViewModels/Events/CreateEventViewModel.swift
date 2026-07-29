@@ -62,8 +62,7 @@ public final class CreateEventViewModel {
             return true
         } catch {
             if error is CancellationError { return false }
-            print("❌ Erro no Supabase (Create Event): \(error)")
-            errorMessage = "Erro ao criar o evento: \(error.localizedDescription)"
+            errorMessage = AppError.from(error).userMessage
             isLoading = false
             return false
         }

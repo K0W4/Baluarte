@@ -32,8 +32,7 @@ public final class CalendarViewModel {
                 withAnimation(.easeInOut(duration: 0.3)) { self.isLoading = false }
                 return 
             }
-            print("❌ Supabase Error (Calendar): \(error)")
-            errorMessage = error.localizedDescription
+            errorMessage = AppError.from(error).userMessage
         }
         if showLoading {
             withAnimation(.easeInOut(duration: 0.3)) {
@@ -96,7 +95,6 @@ public final class CalendarViewModel {
             }
         } catch {
             if error is CancellationError { return }
-            print("❌ Supabase Error: \(error)")
             errorMessage = "Não foi possível adicionar ao calendário."
         }
     }

@@ -4,6 +4,7 @@ public struct ProgressRingCard: View {
     let goal: Goal
     @State private var animatedProgress: Double = 0
     @State private var showShadowDot: Bool = false
+    @State private var isAnimating: Bool = false
     
     private let lineWidth: CGFloat = 16
     private let size: CGFloat = 120
@@ -91,6 +92,7 @@ public struct ProgressRingCard: View {
                 }
             }
             .frame(width: size, height: size)
+            .scaleEffect(isAnimating ? 1.05 : 1.0)
             
             VStack(spacing: Spacing.xxs) {
                 Text(goal.title)
@@ -121,6 +123,12 @@ public struct ProgressRingCard: View {
                     }
                 }
             }
+            if goal.progressPercentage >= 1.0 {
+                isAnimating = true
+                withAnimation(.spring(response: 0.4, dampingFraction: 0.4)) {
+                    isAnimating = false
+                }
+            }
         }
         .onChange(of: goal.progressPercentage) { _, newValue in
             showShadowDot = false
@@ -133,10 +141,17 @@ public struct ProgressRingCard: View {
                     }
                 }
             }
+            if newValue >= 1.0 {
+                isAnimating = true
+                withAnimation(.spring(response: 0.4, dampingFraction: 0.4)) {
+                    isAnimating = false
+                }
+            }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Meta \(goal.title), \(progressPercentageValue) por cento completo, \(formattedCurrent) de \(formattedTarget)")
+        .accessibilityLabel("\(goal.title), \(progressPercentageValue) por cento")
         .accessibilityValue("\(progressPercentageValue) por cento")
+        .accessibilityHint("Toque para ver detalhes da meta")
     }
 }
 

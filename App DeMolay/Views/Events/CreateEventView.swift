@@ -4,6 +4,9 @@ public struct CreateEventView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel: CreateEventViewModel
     
+    enum FocusField { case title, notes }
+    @FocusState private var focusedField: FocusField?
+    
     public init(chapterId: UUID, initialDate: Date? = nil) {
         self._viewModel = State(initialValue: CreateEventViewModel(chapterId: chapterId, initialDate: initialDate))
     }
@@ -13,6 +16,9 @@ public struct CreateEventView: View {
             Form {
                 Section {
                     TextField("Título do Evento", text: $viewModel.title)
+                        .focused($focusedField, equals: .title)
+                        .submitLabel(.next)
+                        .onSubmit { focusedField = .notes }
                     
                     Picker("Tipo", selection: $viewModel.eventType) {
                         ForEach(viewModel.eventTypes, id: \.self) { type in
@@ -41,6 +47,9 @@ public struct CreateEventView: View {
                 
                 Section {
                     TextField("Detalhes do evento...", text: $viewModel.notes, axis: .vertical)
+                        .focused($focusedField, equals: .notes)
+                        .submitLabel(.done)
+                        .onSubmit { focusedField = nil }
                         .lineLimit(3...6)
                 } header: {
                     Text("Detalhes")

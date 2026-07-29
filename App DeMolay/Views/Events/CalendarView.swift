@@ -294,6 +294,25 @@ private struct DayCell: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(accessibilityDateLabel)
+    }
+    
+    private var accessibilityDateLabel: String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "pt_BR")
+        formatter.dateStyle = .full
+        let dateString = formatter.string(from: date)
+        
+        var states: [String] = []
+        if isSelected { states.append("selecionado") }
+        if hasEvents { states.append("com eventos") }
+        if calendar.isDateInToday(date) { states.append("hoje") }
+        
+        if states.isEmpty {
+            return dateString
+        } else {
+            return "\(dateString), \(states.joined(separator: ", "))"
+        }
     }
 }
 

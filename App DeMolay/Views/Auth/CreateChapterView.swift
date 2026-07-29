@@ -7,6 +7,9 @@ struct CreateChapterView: View {
     @State private var chapterNumber: String = ""
     @State private var viewModel = CreateChapterViewModel()
     
+    enum FocusField { case name, number }
+    @FocusState private var focusedField: FocusField?
+    
     var onSuccess: (() -> Void)?
     
     var body: some View {
@@ -14,10 +17,16 @@ struct CreateChapterView: View {
             Form {
                 Section(header: Text("Informações do Capítulo")) {
                     TextField("Nome do Capítulo", text: $chapterName)
+                        .focused($focusedField, equals: .name)
+                        .submitLabel(.next)
+                        .onSubmit { focusedField = .number }
                         .textContentType(.organizationName)
                         .autocorrectionDisabled()
                     
                     TextField("Número do Capítulo", text: $chapterNumber)
+                        .focused($focusedField, equals: .number)
+                        .submitLabel(.done)
+                        .onSubmit { focusedField = nil }
                         .keyboardType(.numberPad)
                 }
             }

@@ -1,44 +1,25 @@
 import Foundation
 import Supabase
 
-public final class SupabaseCommitteeService: CommitteeServiceProtocol {
-    private var client: SupabaseClient {
-        SupabaseManager.shared.client
+public final class SupabaseCommitteeService: BaseSupabaseService<Committee>, CommitteeServiceProtocol {
+    
+    public init() {
+        super.init(tableName: "committee")
     }
     
-    public init() {}
-    
     public func fetchCommittees(for chapterId: UUID) async throws -> [Committee] {
-        let response: [Committee] = try await client
-            .from("committee")
-            .select()
-            .eq("chapter_id", value: chapterId)
-            .execute()
-            .value
-        
-        return response
+        try await fetchAll(chapterId: chapterId)
     }
     
     public func createCommittee(_ committee: Committee) async throws {
-        try await client
-            .from("committee")
-            .insert(committee)
-            .execute()
+        try await create(committee)
     }
     
     public func updateCommittee(_ committee: Committee) async throws {
-        try await client
-            .from("committee")
-            .update(committee)
-            .eq("id", value: committee.id)
-            .execute()
+        try await update(committee)
     }
     
     public func deleteCommittee(committeeId: UUID) async throws {
-        try await client
-            .from("committee")
-            .delete()
-            .eq("id", value: committeeId)
-            .execute()
+        try await delete(id: committeeId)
     }
 }

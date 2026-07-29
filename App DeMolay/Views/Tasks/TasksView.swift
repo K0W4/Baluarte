@@ -5,6 +5,7 @@ public struct TasksView: View {
     @State private var viewModel = TasksViewModel()
     @State private var taskToDelete: ChapterTask?
     @State private var showingCreateTask = false
+    @State private var showToast = false
 
     @State private var isCompletedExpanded = true
     @State private var isIndividualExpanded = true
@@ -119,6 +120,7 @@ public struct TasksView: View {
                     CreateTaskView(chapterId: chapterId, currentUserId: currentUserId)
                 }
             }
+            .toast(isPresented: $showToast, message: "Tarefa atualizada com sucesso!")
         }
     }
 
@@ -242,7 +244,12 @@ public struct TasksView: View {
     private func taskRow(for task: ChapterTask) -> some View {
         TaskCard(task: task) {
             if !viewModel.isLoading {
-                Task { await viewModel.toggleTaskCompletion(task: task) }
+                Task {
+                    await viewModel.toggleTaskCompletion(task: task)
+                    if !task.isCompleted {
+                        showToast = true
+                    }
+                }
             }
         }
         .skeleton(isLoading: viewModel.isLoading)

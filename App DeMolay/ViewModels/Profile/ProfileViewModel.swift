@@ -17,7 +17,7 @@ public final class ProfileViewModel {
         do {
             try await authService.signOut()
         } catch {
-            self.errorMessage = error.localizedDescription
+            self.errorMessage = AppError.from(error).userMessage
             self.isLoading = false
         }
     }

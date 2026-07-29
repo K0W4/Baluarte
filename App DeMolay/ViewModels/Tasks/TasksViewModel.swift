@@ -44,8 +44,7 @@ public final class TasksViewModel {
                 withAnimation(.easeInOut(duration: 0.3)) { self.isLoading = false }
                 return 
             }
-            print("❌ Supabase Error (Tasks): \(error)")
-            errorMessage = error.localizedDescription
+            errorMessage = AppError.from(error).userMessage
         }
         if showLoading {
             withAnimation(.easeInOut(duration: 0.3)) {

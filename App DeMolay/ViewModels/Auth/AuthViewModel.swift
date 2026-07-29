@@ -71,13 +71,13 @@ public final class AuthViewModel {
                         UserDefaultsManager.shared.currentChapterId = member?.chapterId
                     } catch {
                         self.state = .unauthenticated
-                        self.errorMessage = error.localizedDescription
+                        self.errorMessage = AppError.from(error).userMessage
                         UserDefaultsManager.shared.currentUserId = nil
                         UserDefaultsManager.shared.currentChapterId = nil
                     }
                 case .failure(let error):
                     self.state = .unauthenticated
-                    self.errorMessage = error.localizedDescription
+                    self.errorMessage = AppError.from(error).userMessage
                     UserDefaultsManager.shared.currentUserId = nil
                     UserDefaultsManager.shared.currentChapterId = nil
                 }
@@ -95,7 +95,7 @@ public final class AuthViewModel {
             UserDefaultsManager.shared.currentUserId = user.id
             UserDefaultsManager.shared.currentChapterId = member?.chapterId
         } catch {
-            self.errorMessage = error.localizedDescription
+            self.errorMessage = AppError.from(error).userMessage
             self.state = .unauthenticated
             UserDefaultsManager.shared.currentUserId = nil
             UserDefaultsManager.shared.currentChapterId = nil
@@ -111,7 +111,7 @@ public final class AuthViewModel {
             UserDefaultsManager.shared.currentUserId = user.id
             UserDefaultsManager.shared.currentChapterId = nil
         } catch {
-            self.errorMessage = error.localizedDescription
+            self.errorMessage = AppError.from(error).userMessage
             self.state = .unauthenticated
             UserDefaultsManager.shared.currentUserId = nil
             UserDefaultsManager.shared.currentChapterId = nil
@@ -155,7 +155,7 @@ public final class AuthViewModel {
             UserDefaultsManager.shared.currentUserId = user.id
             UserDefaultsManager.shared.currentChapterId = updatedMember.chapterId
         } catch {
-            self.errorMessage = error.localizedDescription
+            self.errorMessage = AppError.from(error).userMessage
             self.state = .authenticated(user, member)
         }
     }
@@ -169,7 +169,7 @@ public final class AuthViewModel {
             UserDefaultsManager.shared.currentUserId = nil
             UserDefaultsManager.shared.currentChapterId = nil
         } catch {
-            self.errorMessage = error.localizedDescription
+            self.errorMessage = AppError.from(error).userMessage
             self.state = .unauthenticated
         }
     }
@@ -186,7 +186,7 @@ public final class AuthViewModel {
             self.state = .authenticated(user, currentMember)
             UserDefaultsManager.shared.currentChapterId = nil
         } catch {
-            self.errorMessage = error.localizedDescription
+            self.errorMessage = AppError.from(error).userMessage
             self.state = .authenticated(user, member)
         }
     }
@@ -207,7 +207,7 @@ public final class AuthViewModel {
             UserDefaultsManager.shared.currentUserId = nil
             UserDefaultsManager.shared.currentChapterId = nil
         } catch {
-            self.errorMessage = error.localizedDescription
+            self.errorMessage = AppError.from(error).userMessage
             self.state = .unauthenticated // Força o sign out mesmo se falhar a deleção por segurança local
         }
     }

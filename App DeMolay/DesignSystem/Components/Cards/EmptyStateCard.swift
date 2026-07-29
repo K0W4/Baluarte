@@ -82,6 +82,8 @@ public struct EmptyStateCard: View {
             }
             .buttonStyle(PrimaryButtonStyle())
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(cardType.title). \(cardType.subtitle)")
         .padding(Spacing.md)
         .background(Theme.cardBackground)
         .clipShape(.rect(cornerRadius: 16))

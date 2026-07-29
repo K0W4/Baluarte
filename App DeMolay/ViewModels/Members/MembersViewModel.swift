@@ -41,8 +41,7 @@ public final class MembersViewModel {
                 withAnimation(.easeInOut(duration: 0.3)) { self.isLoading = false }
                 return 
             }
-            print("❌ Supabase Error (Members): \(error)")
-            errorMessage = error.localizedDescription
+            errorMessage = AppError.from(error).userMessage
         }
         withAnimation(.easeInOut(duration: 0.3)) {
             isLoading = false

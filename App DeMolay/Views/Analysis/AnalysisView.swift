@@ -10,7 +10,7 @@ struct AnalysisView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color(UIColor.systemGroupedBackground)
+                Theme.backgroundPrimary
                     .ignoresSafeArea()
                 
                 ScrollView(showsIndicators: false) {
@@ -19,6 +19,7 @@ struct AnalysisView: View {
                             Image(systemName: "apple.intelligence")
                                 .font(.system(size: 40))
                                 .foregroundStyle(Theme.accent)
+                                .accessibilityLabel("Inteligência Apple")
                             
                             Text("Painel Estratégico")
                                 .font(Typography.title2)
@@ -43,7 +44,7 @@ struct AnalysisView: View {
                             if displayGrouped.isEmpty && !viewModel.isLoading {
                                 VStack(spacing: Spacing.sm) {
                                     Image(systemName: "checkmark.seal.fill")
-                                        .font(.system(size: 50))
+                                        .font(Typography.largeTitle)
                                         .foregroundColor(Theme.success)
                                     Text("Tudo em ordem!")
                                         .font(Typography.headline)

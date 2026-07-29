@@ -19,7 +19,7 @@ public class ChapterService: ChapterServiceProtocol {
         return try await client
             .from("chapter")
             .select()
-            .ilike("name", value: "%\(query)%")
+            .ilike("name", pattern: "%\(query)%")
             .order("name", ascending: true)
             .execute()
             .value

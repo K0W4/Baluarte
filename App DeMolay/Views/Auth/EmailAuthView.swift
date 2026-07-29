@@ -10,6 +10,9 @@ struct EmailAuthView: View {
     @State private var confirmPassword = ""
     @State private var isLoading = false
     
+    enum FocusField { case email, password, confirmPassword }
+    @FocusState private var focusedField: FocusField?
+    
     var body: some View {
         ZStack {
             Theme.backgroundPrimary.ignoresSafeArea()
@@ -34,6 +37,9 @@ struct EmailAuthView: View {
                                 .foregroundColor(Theme.textPrimary)
                             
                             TextField("Digite seu e-mail", text: $email)
+                                .focused($focusedField, equals: .email)
+                                .submitLabel(.next)
+                                .onSubmit { focusedField = .password }
                                 .keyboardType(.emailAddress)
                                 .textInputAutocapitalization(.never)
                                 .autocorrectionDisabled()
@@ -49,6 +55,15 @@ struct EmailAuthView: View {
                                 .foregroundColor(Theme.textPrimary)
                             
                             SecureField("Digite sua senha", text: $password)
+                                .focused($focusedField, equals: .password)
+                                .submitLabel(isSignUp ? .next : .done)
+                                .onSubmit {
+                                    if isSignUp {
+                                        focusedField = .confirmPassword
+                                    } else {
+                                        focusedField = nil
+                                    }
+                                }
                                 .padding()
                                 .background(Theme.backgroundSecondary)
                                 .cornerRadius(8)
@@ -62,6 +77,9 @@ struct EmailAuthView: View {
                                     .foregroundColor(Theme.textPrimary)
                                 
                                 SecureField("Confirme sua senha", text: $confirmPassword)
+                                    .focused($focusedField, equals: .confirmPassword)
+                                    .submitLabel(.done)
+                                    .onSubmit { focusedField = nil }
                                     .padding()
                                     .background(Theme.backgroundSecondary)
                                     .cornerRadius(8)

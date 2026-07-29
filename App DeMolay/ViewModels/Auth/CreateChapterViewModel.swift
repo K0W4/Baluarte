@@ -28,7 +28,7 @@ public final class CreateChapterViewModel {
             self.isLoading = false
             return insertedChapter
         } catch {
-            self.errorMessage = error.localizedDescription
+            self.errorMessage = AppError.from(error).userMessage
             self.isLoading = false
             throw error
         }

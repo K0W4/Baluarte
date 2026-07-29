@@ -2,52 +2,29 @@ import Foundation
 import Supabase
 import WidgetKit
 
-public final class SupabaseEventService: EventServiceProtocol {
-    private var client: SupabaseClient {
-        SupabaseManager.shared.client
+public final class SupabaseEventService: BaseSupabaseService<Event>, EventServiceProtocol {
+    
+    public init() {
+        super.init(tableName: "event")
     }
     
-    public init() {}
-    
     public func fetchEvents(for chapterId: UUID) async throws -> [Event] {
-        let response: [Event] = try await client
-            .from("event")
-            .select()
-            .eq("chapter_id", value: chapterId)
-            .execute()
-            .value
-        
-        return response
+        try await fetchAll(chapterId: chapterId)
     }
     
     public func createEvent(_ event: Event) async throws {
-        try await client
-            .from("event")
-            .insert(event)
-            .execute()
-        WidgetCenter.shared.reloadAllTimelines()
+        try await create(event)
     }
     
     public func updateEvent(_ event: Event) async throws {
-        try await client
-            .from("event")
-            .update(event)
-            .eq("id", value: event.id)
-            .execute()
-        WidgetCenter.shared.reloadAllTimelines()
+        try await update(event)
     }
     
     public func deleteEvent(eventId: UUID) async throws {
-        try await client
-            .from("event")
-            .delete()
-            .eq("id", value: eventId)
-            .execute()
-        WidgetCenter.shared.reloadAllTimelines()
+        try await delete(id: eventId)
     }
     
     public func confirmAttendance(eventId: UUID, userId: UUID) async throws {
-        // Fetch current event to update the array
         let event: Event = try await client
             .from("event")
             .select()
@@ -69,7 +46,7 @@ public final class SupabaseEventService: EventServiceProtocol {
                 .update(UpdateAttendees(confirmed_attendees: attendees))
                 .eq("id", value: eventId)
                 .execute()
-            WidgetCenter.shared.reloadAllTimelines()
+            WidgetManager.shared.reloadTimelines()
         }
     }
     
@@ -95,7 +72,7 @@ public final class SupabaseEventService: EventServiceProtocol {
                 .update(UpdateAttendees(confirmed_attendees: attendees))
                 .eq("id", value: eventId)
                 .execute()
-            WidgetCenter.shared.reloadAllTimelines()
+            WidgetManager.shared.reloadTimelines()
         }
     }
 }

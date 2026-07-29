@@ -1,24 +1,24 @@
 import Foundation
 
 private enum SkeletonIds {
-    static let event1 = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
-    static let event2 = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
-    static let goal1 = UUID(uuidString: "00000000-0000-0000-0000-000000000011")!
-    static let goal2 = UUID(uuidString: "00000000-0000-0000-0000-000000000012")!
-    static let goal3 = UUID(uuidString: "00000000-0000-0000-0000-000000000013")!
-    static let committee1 = UUID(uuidString: "00000000-0000-0000-0000-000000000021")!
-    static let committee2 = UUID(uuidString: "00000000-0000-0000-0000-000000000022")!
-    static let task1 = UUID(uuidString: "00000000-0000-0000-0000-000000000031")!
-    static let task2 = UUID(uuidString: "00000000-0000-0000-0000-000000000032")!
-    static let task3 = UUID(uuidString: "00000000-0000-0000-0000-000000000033")!
-    static let task4 = UUID(uuidString: "00000000-0000-0000-0000-000000000034")!
-    static let member1 = UUID(uuidString: "00000000-0000-0000-0000-000000000041")!
-    static let member2 = UUID(uuidString: "00000000-0000-0000-0000-000000000042")!
-    static let member3 = UUID(uuidString: "00000000-0000-0000-0000-000000000043")!
-    static let member4 = UUID(uuidString: "00000000-0000-0000-0000-000000000044")!
-    static let member5 = UUID(uuidString: "00000000-0000-0000-0000-000000000045")!
-    static let chapter = UUID(uuidString: "00000000-0000-0000-0000-000000000099")!
-    static let creator = UUID(uuidString: "00000000-0000-0000-0000-000000000098")!
+    static let event1 = UUID(uuidString: "00000000-0000-0000-0000-000000000001") ?? UUID()
+    static let event2 = UUID(uuidString: "00000000-0000-0000-0000-000000000002") ?? UUID()
+    static let goal1 = UUID(uuidString: "00000000-0000-0000-0000-000000000011") ?? UUID()
+    static let goal2 = UUID(uuidString: "00000000-0000-0000-0000-000000000012") ?? UUID()
+    static let goal3 = UUID(uuidString: "00000000-0000-0000-0000-000000000013") ?? UUID()
+    static let committee1 = UUID(uuidString: "00000000-0000-0000-0000-000000000021") ?? UUID()
+    static let committee2 = UUID(uuidString: "00000000-0000-0000-0000-000000000022") ?? UUID()
+    static let task1 = UUID(uuidString: "00000000-0000-0000-0000-000000000031") ?? UUID()
+    static let task2 = UUID(uuidString: "00000000-0000-0000-0000-000000000032") ?? UUID()
+    static let task3 = UUID(uuidString: "00000000-0000-0000-0000-000000000033") ?? UUID()
+    static let task4 = UUID(uuidString: "00000000-0000-0000-0000-000000000034") ?? UUID()
+    static let member1 = UUID(uuidString: "00000000-0000-0000-0000-000000000041") ?? UUID()
+    static let member2 = UUID(uuidString: "00000000-0000-0000-0000-000000000042") ?? UUID()
+    static let member3 = UUID(uuidString: "00000000-0000-0000-0000-000000000043") ?? UUID()
+    static let member4 = UUID(uuidString: "00000000-0000-0000-0000-000000000044") ?? UUID()
+    static let member5 = UUID(uuidString: "00000000-0000-0000-0000-000000000045") ?? UUID()
+    static let chapter = UUID(uuidString: "00000000-0000-0000-0000-000000000099") ?? UUID()
+    static let creator = UUID(uuidString: "00000000-0000-0000-0000-000000000098") ?? UUID()
 }
 
 public extension Event {

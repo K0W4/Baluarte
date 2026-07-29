@@ -94,13 +94,14 @@ public struct HomeView: View {
             .scrollIndicators(.hidden)
             .contentMargins(.bottom, 100, for: .scrollContent)
             .background(Theme.backgroundPrimary)
-            .navigationTitle(viewModel.currentUser != nil ? "Olá, \(viewModel.currentUser!.fullName.split(separator: " ").first ?? "Irmão")!" : "Olá, Irmão!")
+            .navigationTitle(viewModel.greetingTitle)
             .toolbarTitleDisplayMode(.inlineLarge)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink(destination: ProfileView()) {
                         Image(systemName: "person.fill")
                             .foregroundColor(Theme.accent)
+                            .accessibilityLabel("Meu Perfil")
                     }
 
                 }

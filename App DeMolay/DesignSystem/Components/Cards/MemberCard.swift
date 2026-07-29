@@ -44,7 +44,8 @@ public struct MemberCard: View {
                 .foregroundColor(Theme.accent)
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(member.fullName), \(member.role ?? "Sem cargo")")
+        .accessibilityLabel("\(member.fullName), \(member.role ?? "Sem cargo"), \(member.isActive ? "Ativo" : "Inativo")")
+        .accessibilityHint("Toque para ver detalhes do membro")
         .padding(Spacing.md)
         .background(Theme.cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))

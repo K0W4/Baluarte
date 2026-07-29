@@ -34,6 +34,8 @@ struct AnalysisCard: View {
             }
         }
         .frame(maxHeight: .infinity, alignment: .top)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(analysis.title), gravidade \(severityString), \(analysis.message)")
         .padding(Spacing.md)
         .background(Theme.cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
@@ -50,6 +52,14 @@ struct AnalysisCard: View {
         case .calendar: return "calendar.badge.exclamationmark"
         case .engagement: return "chart.line.uptrend.xyaxis"
         case .financial: return "dollarsign.circle.fill"
+        }
+    }
+    
+    private var severityString: String {
+        switch analysis.severity {
+        case .info: return "Informativo"
+        case .warning: return "Atenção"
+        case .actionRequired: return "Ação Necessária"
         }
     }
 }

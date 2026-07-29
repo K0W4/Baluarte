@@ -1,22 +1,15 @@
 import Foundation
 import Supabase
+import WidgetKit
 
-public final class SupabaseGoalService: GoalServiceProtocol {
-    private var client: SupabaseClient {
-        SupabaseManager.shared.client
+public final class SupabaseGoalService: BaseSupabaseService<Goal>, GoalServiceProtocol {
+    
+    public init() {
+        super.init(tableName: "goal")
     }
     
-    public init() {}
-    
     public func fetchGoals(for chapterId: UUID) async throws -> [Goal] {
-        let response: [Goal] = try await client
-            .from("goal")
-            .select()
-            .eq("chapter_id", value: chapterId)
-            .execute()
-            .value
-        
-        return response
+        try await fetchAll(chapterId: chapterId)
     }
     
     public func updateProgress(goalId: UUID, newCurrentValue: Double) async throws {
@@ -29,28 +22,18 @@ public final class SupabaseGoalService: GoalServiceProtocol {
             .update(UpdateProgress(current_value: newCurrentValue))
             .eq("id", value: goalId)
             .execute()
+        WidgetManager.shared.reloadTimelines()
     }
     
     public func createGoal(_ goal: Goal) async throws {
-        try await client
-            .from("goal")
-            .insert(goal)
-            .execute()
+        try await create(goal)
     }
     
     public func updateGoal(_ goal: Goal) async throws {
-        try await client
-            .from("goal")
-            .update(goal)
-            .eq("id", value: goal.id)
-            .execute()
+        try await update(goal)
     }
     
     public func deleteGoal(goalId: UUID) async throws {
-        try await client
-            .from("goal")
-            .delete()
-            .eq("id", value: goalId)
-            .execute()
+        try await delete(id: goalId)
     }
 }

@@ -55,13 +55,9 @@ struct ProfileView: View {
                                     showLeaveChapterAlert = true
                                 }) {
                                     Text("Sair do Capítulo")
-                                        .font(Typography.headline)
                                         .frame(maxWidth: .infinity)
-                                        .frame(height: 50)
-                                        .background(Theme.backgroundSecondary)
-                                        .foregroundColor(Theme.textPrimary)
-                                        .clipShape(RoundedRectangle(cornerRadius: 12))
                                 }
+                                .buttonStyle(PrimaryButtonStyle())
                                 
                                 Button(action: {
                                     Task {
@@ -69,25 +65,18 @@ struct ProfileView: View {
                                     }
                                 }) {
                                     Text("Sair da Conta")
-                                        .font(Typography.headline)
                                         .frame(maxWidth: .infinity)
-                                        .frame(height: 50)
-                                        .background(Theme.backgroundSecondary)
-                                        .foregroundColor(Theme.textPrimary)
-                                        .clipShape(RoundedRectangle(cornerRadius: 12))
                                 }
+                                .buttonStyle(PrimaryButtonStyle())
                                 
                                 Button(action: {
                                     showDeleteAccountAlert = true
                                 }) {
                                     Text("Excluir Conta")
-                                        .font(Typography.headline)
                                         .frame(maxWidth: .infinity)
-                                        .frame(height: 50)
-                                        .background(Theme.backgroundSecondary)
                                         .foregroundColor(Theme.destructive)
-                                        .clipShape(RoundedRectangle(cornerRadius: 12))
                                 }
+                                .buttonStyle(PrimaryButtonStyle())
                             }
                             .padding(.horizontal, Spacing.screenEdgePadding)
                             .padding(.bottom, Spacing.xl)

@@ -10,6 +10,10 @@ struct CompleteProfileView: View {
     @State private var isMason: Bool = false
     @State private var isLoading = false
     
+    enum FocusField { case fullName, cid }
+    @FocusState private var focusedField: FocusField?
+    @State private var showSignOutAlert = false
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -35,6 +39,9 @@ struct CompleteProfileView: View {
                                     .foregroundColor(Theme.textPrimary)
                                 
                                 TextField("Digite seu nome completo", text: $fullName)
+                                    .focused($focusedField, equals: .fullName)
+                                    .submitLabel(.next)
+                                    .onSubmit { focusedField = .cid }
                                     .textContentType(.name)
                                     .padding()
                                     .background(Theme.backgroundSecondary)
@@ -48,11 +55,22 @@ struct CompleteProfileView: View {
                                 .foregroundColor(Theme.textPrimary)
                             
                             TextField("Digite seu ID", text: $cid)
+                                .focused($focusedField, equals: .cid)
+                                .submitLabel(.done)
+                                .onSubmit { focusedField = nil }
                                 .keyboardType(.numberPad)
                                 .padding()
                                 .background(Theme.backgroundSecondary)
                                 .cornerRadius(8)
                                 .foregroundColor(Theme.textPrimary)
+                                .onChange(of: cid) { oldValue, newValue in
+                                    let filtered = newValue.filter { $0.isNumber }
+                                    if filtered.count > 7 {
+                                        cid = String(filtered.prefix(7))
+                                    } else if cid != filtered {
+                                        cid = filtered
+                                    }
+                                }
                         }
                         
                         VStack(alignment: .leading, spacing: Spacing.xs) {
@@ -139,6 +157,22 @@ struct CompleteProfileView: View {
                     .disabled(fullName.isEmpty || cid.isEmpty || isLoading || (!isActive && !isSenior && !isMason))
                 }
                 .padding(Spacing.screenEdgePadding)
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Sair") {
+                        showSignOutAlert = true
+                    }
+                    .foregroundColor(Theme.destructive)
+                }
+            }
+            .alert("Deseja sair da conta?", isPresented: $showSignOutAlert) {
+                Button("Cancelar", role: .cancel) { }
+                Button("Sair", role: .destructive) {
+                    Task {
+                        await authViewModel.signOut()
+                    }
+                }
             }
         }
     }

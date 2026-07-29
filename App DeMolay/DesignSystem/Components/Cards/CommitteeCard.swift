@@ -3,11 +3,13 @@ import SwiftUI
 public struct CommitteeCard: View {
     let committee: Committee
     let tasks: [ChapterTask]
+    let completedTasksCount: Int
     let onTaskToggled: ((UUID) -> Void)?
     
     public init(committee: Committee, tasks: [ChapterTask], onTaskToggled: ((UUID) -> Void)? = nil) {
         self.committee = committee
         self.tasks = tasks.filter { !$0.isCompleted }
+        self.completedTasksCount = tasks.filter { $0.isCompleted }.count
         self.onTaskToggled = onTaskToggled
     }
     private var iconName: String {
@@ -100,6 +102,9 @@ public struct CommitteeCard: View {
                 }
             }
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(committee.name), \(tasks.count) tarefas pendentes, \(completedTasksCount) tarefas concluídas")
+        .accessibilityHint("Toque para ver detalhes da comissão")
         .padding(Spacing.md)
         .background(Theme.cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))

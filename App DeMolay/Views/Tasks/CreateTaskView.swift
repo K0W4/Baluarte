@@ -4,6 +4,9 @@ public struct CreateTaskView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel: CreateTaskViewModel
     
+    enum FocusField { case title }
+    @FocusState private var focusedField: FocusField?
+    
     public init(chapterId: UUID, currentUserId: UUID) {
         _viewModel = State(initialValue: CreateTaskViewModel(chapterId: chapterId, currentUserId: currentUserId))
     }
@@ -13,6 +16,9 @@ public struct CreateTaskView: View {
             Form {
                 Section {
                     TextField("Título da Tarefa", text: $viewModel.title)
+                        .focused($focusedField, equals: .title)
+                        .submitLabel(.done)
+                        .onSubmit { focusedField = nil }
                     DatePicker("Prazo", selection: $viewModel.dueDate, displayedComponents: .date)
                         .environment(\.locale, Locale(identifier: "pt_BR"))
                 } header: {
@@ -74,6 +80,7 @@ public struct CreateTaskView: View {
                 }
             }
             .task {
+                focusedField = .title
                 await viewModel.loadCommittees()
             }
             .overlay {

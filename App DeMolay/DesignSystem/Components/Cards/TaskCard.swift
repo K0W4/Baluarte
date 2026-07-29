@@ -25,6 +25,7 @@ public struct TaskCard: View {
             .buttonStyle(.plain)
             .frame(width: 44, height: 44)
             .accessibilityLabel(task.isCompleted ? "Desmarcar tarefa \(task.title)" : "Marcar tarefa \(task.title) como concluída")
+            .accessibilityHint("Toque para alternar o status da tarefa")
             
             VStack(alignment: .leading, spacing: task.isCompleted ? 0 : Spacing.sm) {
                 HStack(alignment: .top, spacing: Spacing.xs) {
@@ -50,6 +51,7 @@ public struct TaskCard: View {
                 }
             }
         }
+        .accessibilityLabel("\(task.title), \(task.isCompleted ? "concluída" : "pendente")\(task.dueDate != nil ? ", até \(formatDate(task.dueDate ?? Date()))" : "")")
         .padding(Spacing.sm)
         .background(Theme.cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))

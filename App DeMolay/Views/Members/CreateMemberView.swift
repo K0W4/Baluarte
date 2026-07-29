@@ -4,6 +4,9 @@ public struct CreateMemberView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel: CreateMemberViewModel
     
+    enum FocusField { case fullName, cid }
+    @FocusState private var focusedField: FocusField?
+    
     public init(chapterId: UUID) {
         _viewModel = State(initialValue: CreateMemberViewModel(chapterId: chapterId))
     }
@@ -13,10 +16,24 @@ public struct CreateMemberView: View {
             Form {
                 Section {
                     TextField("Nome Completo", text: $viewModel.fullName)
+                        .focused($focusedField, equals: .fullName)
+                        .submitLabel(.next)
+                        .onSubmit { focusedField = .cid }
                         .textContentType(.name)
                     
                     TextField("ID (Opcional)", text: $viewModel.cid)
+                        .focused($focusedField, equals: .cid)
+                        .submitLabel(.done)
+                        .onSubmit { focusedField = nil }
                         .keyboardType(.numberPad)
+                        .onChange(of: viewModel.cid) { oldValue, newValue in
+                            let filtered = newValue.filter { $0.isNumber }
+                            if filtered.count > 7 {
+                                viewModel.cid = String(filtered.prefix(7))
+                            } else if viewModel.cid != filtered {
+                                viewModel.cid = filtered
+                            }
+                        }
                     
                     DatePicker("Data de Nascimento", selection: $viewModel.birthdate, displayedComponents: .date)
                         .environment(\.locale, Locale(identifier: "pt_BR"))
