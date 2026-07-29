@@ -256,7 +256,7 @@ private struct GoalsSection: View {
                             } label: {
                                 VStack(spacing: Spacing.lg) {
                                     ZStack {
-                                        Image(systemName: "checklist.checked")
+                                        Image(systemName: "checkmark.seal.fill")
                                             .font(.system(size: 120, weight: .light))
                                             .foregroundColor(Theme.success)
                                     }

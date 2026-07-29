@@ -30,6 +30,11 @@ struct AnalysisView: View {
                         }
                         .padding(.top, Spacing.xl)
                         
+                        if let chapterId = authViewModel.currentChapterId {
+                            SmartSummaryCard(chapterId: chapterId)
+                                .padding(.horizontal, Spacing.screenEdgePadding)
+                        }
+                        
                         if let error = viewModel.errorMessage {
                             Text(error)
                                 .foregroundColor(Theme.destructive)
