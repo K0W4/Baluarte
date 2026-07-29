@@ -81,6 +81,7 @@ public struct MembersView: View {
                         Image(systemName: "plus")
                             .foregroundColor(Theme.accent)
                     }
+                    .accessibilityLabel("Adicionar novo membro")
                 }
             }
             .searchable(text: $viewModel.searchText, prompt: "Buscar membro ou cargo")

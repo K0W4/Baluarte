@@ -28,4 +28,13 @@ public struct UserDefaultsManager: @unchecked Sendable {
             defaults.set(newValue?.uuidString, forKey: "currentUserId")
         }
     }
+    
+    public var accessToken: String? {
+        get {
+            return defaults.string(forKey: "accessToken")
+        }
+        nonmutating set {
+            defaults.set(newValue, forKey: "accessToken")
+        }
+    }
 }

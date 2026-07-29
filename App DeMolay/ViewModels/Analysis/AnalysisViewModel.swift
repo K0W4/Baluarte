@@ -29,7 +29,6 @@ final class AnalysisViewModel {
     
     var groupedAnalyses: [(key: AnalysisCategory, value: [DisplayedAnalysis])] {
         let grouped = Dictionary(grouping: displayedAnalyses, by: { $0.category })
-        // Ordenar as categorias para sempre aparecerem em uma ordem lógica
         let order: [AnalysisCategory] = [.membership, .structure, .calendar, .engagement, .financial]
         return order.compactMap { category in
             if let analyses = grouped[category], !analyses.isEmpty {
@@ -51,14 +50,12 @@ final class AnalysisViewModel {
             
             let (members, events, committees) = try await (fetchMembers, fetchEvents, fetchCommittees)
             
-            // 1. Geração Offline dos Dados Matemáticos
             let rawAnalyses = try await analyticsService.generateAnalysis(
                 members: members,
                 events: events,
                 committees: committees
             )
             
-            // 2. Tradução via Foundation Models (IA Generativa)
             var newDisplayed: [DisplayedAnalysis] = []
             
             for raw in rawAnalyses {

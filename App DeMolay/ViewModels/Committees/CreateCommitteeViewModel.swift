@@ -79,7 +79,6 @@ public final class CreateCommitteeViewModel {
         isLoading = true
         errorMessage = nil
         
-        // Na prática, a tabela de membros da comissão será salva após a criação da comissão.
         let newCommittee = Committee(
             id: UUID(),
             chapterId: chapterId,

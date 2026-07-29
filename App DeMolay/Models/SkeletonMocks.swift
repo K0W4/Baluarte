@@ -33,9 +33,9 @@ public extension Event {
 public extension Goal {
     static var skeletonList: [Goal] {
         [
-            Goal(id: SkeletonIds.goal1, chapterId: SkeletonIds.chapter, title: "Meta Exemplo Longa", description: "Carregando...", currentValue: 50, targetValue: 100, targetDate: Date(), isCompleted: false, completedAt: nil, createdAt: Date()),
-            Goal(id: SkeletonIds.goal2, chapterId: SkeletonIds.chapter, title: "Segunda Meta", description: "Carregando...", currentValue: 30, targetValue: 100, targetDate: Date(), isCompleted: false, completedAt: nil, createdAt: Date()),
-            Goal(id: SkeletonIds.goal3, chapterId: SkeletonIds.chapter, title: "Terceira Meta", description: "Carregando...", currentValue: 70, targetValue: 100, targetDate: Date(), isCompleted: false, completedAt: nil, createdAt: Date())
+            Goal(id: SkeletonIds.goal1, chapterId: SkeletonIds.chapter, title: "Meta Exemplo Longa", currentValue: 50, targetValue: 100, targetDate: Date(), isCompleted: false, completedAt: nil, createdAt: Date()),
+            Goal(id: SkeletonIds.goal2, chapterId: SkeletonIds.chapter, title: "Segunda Meta", currentValue: 30, targetValue: 100, targetDate: Date(), isCompleted: false, completedAt: nil, createdAt: Date()),
+            Goal(id: SkeletonIds.goal3, chapterId: SkeletonIds.chapter, title: "Terceira Meta", currentValue: 70, targetValue: 100, targetDate: Date(), isCompleted: false, completedAt: nil, createdAt: Date())
         ]
     }
 }

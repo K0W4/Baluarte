@@ -46,10 +46,12 @@ public final class AuthViewModel {
             self.state = .authenticated(session.user, member)
             UserDefaultsManager.shared.currentUserId = session.user.id
             UserDefaultsManager.shared.currentChapterId = member?.chapterId
+            UserDefaultsManager.shared.accessToken = session.accessToken
         } catch {
             self.state = .unauthenticated
             UserDefaultsManager.shared.currentUserId = nil
             UserDefaultsManager.shared.currentChapterId = nil
+            UserDefaultsManager.shared.accessToken = nil
         }
     }
     
@@ -67,19 +69,23 @@ public final class AuthViewModel {
                         let user = try await self.authService.signInWithApple(idToken: credentials.idToken, nonce: credentials.nonce)
                         let member = try await self.memberService.fetchMember(id: user.id)
                         self.state = .authenticated(user, member)
+                        let session = try await self.authService.getCurrentSession()
                         UserDefaultsManager.shared.currentUserId = user.id
                         UserDefaultsManager.shared.currentChapterId = member?.chapterId
+                        UserDefaultsManager.shared.accessToken = session.accessToken
                     } catch {
                         self.state = .unauthenticated
                         self.errorMessage = AppError.from(error).userMessage
                         UserDefaultsManager.shared.currentUserId = nil
                         UserDefaultsManager.shared.currentChapterId = nil
+                        UserDefaultsManager.shared.accessToken = nil
                     }
                 case .failure(let error):
                     self.state = .unauthenticated
                     self.errorMessage = AppError.from(error).userMessage
                     UserDefaultsManager.shared.currentUserId = nil
                     UserDefaultsManager.shared.currentChapterId = nil
+                    UserDefaultsManager.shared.accessToken = nil
                 }
             }
         }
@@ -92,13 +98,16 @@ public final class AuthViewModel {
             let user = try await authService.signInWithEmail(email: email, password: password)
             let member = try await memberService.fetchMember(id: user.id)
             self.state = .authenticated(user, member)
+            let session = try await authService.getCurrentSession()
             UserDefaultsManager.shared.currentUserId = user.id
             UserDefaultsManager.shared.currentChapterId = member?.chapterId
+            UserDefaultsManager.shared.accessToken = session.accessToken
         } catch {
             self.errorMessage = AppError.from(error).userMessage
             self.state = .unauthenticated
             UserDefaultsManager.shared.currentUserId = nil
             UserDefaultsManager.shared.currentChapterId = nil
+            UserDefaultsManager.shared.accessToken = nil
         }
     }
     
@@ -108,13 +117,16 @@ public final class AuthViewModel {
         do {
             let user = try await authService.signUpWithEmail(email: email, password: password)
             self.state = .authenticated(user, nil)
+            let session = try await authService.getCurrentSession()
             UserDefaultsManager.shared.currentUserId = user.id
             UserDefaultsManager.shared.currentChapterId = nil
+            UserDefaultsManager.shared.accessToken = session.accessToken
         } catch {
             self.errorMessage = AppError.from(error).userMessage
             self.state = .unauthenticated
             UserDefaultsManager.shared.currentUserId = nil
             UserDefaultsManager.shared.currentChapterId = nil
+            UserDefaultsManager.shared.accessToken = nil
         }
     }
     
@@ -185,6 +197,7 @@ public final class AuthViewModel {
             self.state = .unauthenticated
             UserDefaultsManager.shared.currentUserId = nil
             UserDefaultsManager.shared.currentChapterId = nil
+            UserDefaultsManager.shared.accessToken = nil
         } catch {
             self.errorMessage = AppError.from(error).userMessage
             self.state = .unauthenticated
@@ -214,15 +227,14 @@ public final class AuthViewModel {
         
         self.state = .loading
         do {
-            // Apaga os dados do membro no banco (Soft Delete do ponto de vista de Auth)
             try await memberService.deleteMember(memberId: userId)
             
-            // Faz o sign out para deslogar da sessão local
             try await authService.signOut()
             
             self.state = .unauthenticated
             UserDefaultsManager.shared.currentUserId = nil
             UserDefaultsManager.shared.currentChapterId = nil
+            UserDefaultsManager.shared.accessToken = nil
         } catch {
             self.errorMessage = AppError.from(error).userMessage
             self.state = .unauthenticated // Força o sign out mesmo se falhar a deleção por segurança local

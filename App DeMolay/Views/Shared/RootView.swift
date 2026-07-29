@@ -39,7 +39,6 @@ struct RootView: View {
                             .transition(.opacity)
                     }
                 } else {
-                    // Usuário logado mas sem perfil de membro ainda (primeiro login)
                     CompleteProfileView()
                         .transition(.opacity)
                 }

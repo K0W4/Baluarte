@@ -3,15 +3,11 @@ import Foundation
 import FoundationModels // Framework nativo da Apple (iOS 18+) para Generative AI
 #endif
 
-/// Serviço responsável por acessar o Apple Intelligence nativamente e de forma performática.
-/// Utiliza o "System-Level Foundation Model" provido pelo próprio iOS, economizando Gigabytes no tamanho final do app.
 public final class AppleIntelligenceService: IntelligenceServiceProtocol {
     
     public init() {}
     
     public func generateSmartSummary(context: IntelligenceContext) -> AsyncThrowingStream<String, Error> {
-        // Resolve a restrição de isolamento Swift 6 (Actor Isolation) do buildPrompt() 
-        // executando-o imediatamente antes de enviar para a Task desanexada
         let prompt = context.buildPrompt()
         
         return AsyncThrowingStream { continuation in
@@ -40,7 +36,6 @@ public final class AppleIntelligenceService: IntelligenceServiceProtocol {
                 }
                 #endif
                 
-                // Fallback amigável caso seja rodado em dispositivos sem hardware compatível (ex: < 8GB RAM) ou sem o framework
                 let fallbacks = [
                     "A inteligência Apple avaliou seu cenário usando o Foundation Model nativo do iOS.",
                     "Percebi que os eventos estão próximos e há tarefas críticas para o Capítulo.",

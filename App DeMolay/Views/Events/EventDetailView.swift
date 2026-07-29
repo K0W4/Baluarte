@@ -107,6 +107,7 @@ public struct EventDetailView: View {
                 
                 Section {
                     Button(action: {
+                        HapticManager.shared.notification(type: .warning)
                         showingDeleteAlert = true
                     }) {
                         Text("Excluir evento")
@@ -119,7 +120,7 @@ public struct EventDetailView: View {
                 if let errorMessage = viewModel.errorMessage {
                     Section {
                         Text(errorMessage)
-                            .foregroundColor(.red)
+                            .foregroundColor(Theme.destructive)
                             .font(Typography.caption1)
                     }
                 }
@@ -139,10 +140,12 @@ public struct EventDetailView: View {
                             .font(.body.weight(.semibold))
                     }
                     .foregroundColor(Theme.accent)
+                    .accessibilityLabel("Fechar")
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
+                        HapticManager.shared.impact(style: .medium)
                         Task {
                             let success = await viewModel.saveChanges()
                             if success { dismiss() }
@@ -154,6 +157,7 @@ public struct EventDetailView: View {
                     .font(.body.bold())
                     .foregroundColor(viewModel.isValid && viewModel.hasChanges ? Theme.accent : Theme.textSecondary.opacity(0.5))
                     .disabled(!viewModel.isValid || !viewModel.hasChanges || viewModel.isLoading)
+                    .accessibilityLabel("Salvar alterações")
                 }
             }
             .alert("Excluir evento", isPresented: $showingDeleteAlert) {
@@ -170,9 +174,17 @@ public struct EventDetailView: View {
             .overlay {
                 if viewModel.isLoading {
                     ZStack {
-                        Color.black.opacity(0.2).ignoresSafeArea()
-                        ProgressView()
-                            .tint(Theme.accent)
+                        Color.black.opacity(0.3).ignoresSafeArea()
+                        VStack(spacing: Spacing.sm) {
+                            ProgressView()
+                                .tint(Theme.accent)
+                            Text("Salvando...")
+                                .font(Typography.subheadline)
+                                .foregroundColor(Theme.textSecondary)
+                        }
+                        .padding(Spacing.lg)
+                        .background(.regularMaterial)
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
                     }
                 }
             }

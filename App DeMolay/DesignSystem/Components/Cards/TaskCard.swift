@@ -52,6 +52,7 @@ public struct TaskCard: View {
             }
         }
         .accessibilityLabel("\(task.title), \(task.isCompleted ? "concluída" : "pendente")\(task.dueDate != nil ? ", até \(formatDate(task.dueDate ?? Date()))" : "")")
+        .accessibilityAddTraits(.isButton)
         .padding(Spacing.sm)
         .background(Theme.cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))

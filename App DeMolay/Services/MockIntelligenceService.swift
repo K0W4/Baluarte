@@ -1,7 +1,5 @@
 import Foundation
 
-/// Mock Service que simula a geração de um texto por um Foundation Model token a token.
-/// Utilizado para desenvolvimento e testes unitários.
 public final class MockIntelligenceService: IntelligenceServiceProtocol {
     public init() {}
     
@@ -12,7 +10,6 @@ public final class MockIntelligenceService: IntelligenceServiceProtocol {
                 let tokens = mockResponse.components(separatedBy: " ")
                 
                 for token in tokens {
-                    // Simula atraso da NPU (100ms) para cada token
                     try? await Task.sleep(nanoseconds: 100_000_000) 
                     continuation.yield(token + " ")
                 }

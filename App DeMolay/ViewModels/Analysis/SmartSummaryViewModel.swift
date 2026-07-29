@@ -43,7 +43,6 @@ public final class SmartSummaryViewModel {
             let stream = intelligenceService.generateSmartSummary(context: context)
             
             for try await token in stream {
-                // Efeito nativo "Typing" token a token
                 self.generatedSummary += token
             }
             

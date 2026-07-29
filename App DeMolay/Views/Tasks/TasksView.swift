@@ -9,7 +9,7 @@ public struct TasksView: View {
 
     @State private var isCompletedExpanded = true
     @State private var isIndividualExpanded = true
-    @State private var expandedCommittees: Set<UUID> = []
+    @State private var collapsedCommittees: Set<UUID> = []
 
     public init() {}
 
@@ -85,6 +85,7 @@ public struct TasksView: View {
                     }) {
                         Image(systemName: "plus").foregroundColor(Theme.accent)
                     }
+                    .accessibilityLabel("Criar nova tarefa")
                 }
             }
             .alert("Excluir tarefa", isPresented: Binding(
@@ -154,9 +155,9 @@ public struct TasksView: View {
 
             ForEach(sortedCommitteeIds, id: \.self) { committeeId in
                 if let tasks = viewModel.displayCommitteeTasks[committeeId], !tasks.isEmpty {
-                    let isExpanded = expandedCommittees.contains(committeeId)
+                    let isCollapsed = collapsedCommittees.contains(committeeId)
                     Section {
-                        if !isExpanded {
+                        if !isCollapsed {
                             ForEach(tasks) { task in
                                 taskRow(for: task)
                             }
@@ -165,10 +166,10 @@ public struct TasksView: View {
                         let title = viewModel.isLoading ? "Carregando comissão..." : viewModel.committeeName(for: committeeId)
                         Button(action: {
                             withAnimation {
-                                if expandedCommittees.contains(committeeId) {
-                                    expandedCommittees.remove(committeeId)
+                                if collapsedCommittees.contains(committeeId) {
+                                    collapsedCommittees.remove(committeeId)
                                 } else {
-                                    expandedCommittees.insert(committeeId)
+                                    collapsedCommittees.insert(committeeId)
                                 }
                             }
                         }) {
@@ -176,7 +177,7 @@ public struct TasksView: View {
                                 Text(title)
                                     .font(Typography.headline)
                                 Spacer()
-                                Image(systemName: !isExpanded ? "chevron.down" : "chevron.right")
+                                Image(systemName: !isCollapsed ? "chevron.down" : "chevron.right")
                                     .foregroundColor(Theme.accent)
                             }
                             .foregroundColor(Theme.textPrimary)

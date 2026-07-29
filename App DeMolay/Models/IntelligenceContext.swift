@@ -1,7 +1,5 @@
 import Foundation
 
-/// Estrutura responsável por coletar e formatar o contexto do Capítulo 
-/// para servir de prompt ao Foundation Model.
 public struct IntelligenceContext: Sendable {
     public let events: [Event]
     public let tasks: [ChapterTask]
@@ -14,7 +12,6 @@ public struct IntelligenceContext: Sendable {
     }
 
     
-    /// Constrói o texto otimizado para o Small Language Model entender o cenário atual
     public func buildPrompt() -> String {
         var prompt = "Analise os dados do Capítulo DeMolay abaixo. Responda com EXATAMENTE 2 a 3 frases curtas e motivadoras. Máximo 150 palavras. Não repita informações.\n\n"
         

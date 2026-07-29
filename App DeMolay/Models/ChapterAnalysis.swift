@@ -1,6 +1,5 @@
 import Foundation
 
-/// Representa a categoria de uma análise
 enum AnalysisCategory: String, Codable {
     case membership = "membership"
     case structure = "structure"
@@ -9,23 +8,19 @@ enum AnalysisCategory: String, Codable {
     case financial = "financial"
 }
 
-/// Nível de importância para destacar na UI
 enum AnalysisSeverity: String, Codable {
     case info = "info"
     case warning = "warning"
     case actionRequired = "actionRequired"
 }
 
-/// A estrutura de dados bruta gerada pelo motor determinístico nativo (Offline).
 struct RawAnalysis: Identifiable, Hashable {
     let id: UUID
     let category: AnalysisCategory
     let severity: AnalysisSeverity
     
-    // Dados de contexto passados para a IA traduzir (em JSON ou prompt)
     let contextData: [String: String]
     
-    // Mensagem de fallback caso a IA falhe ou não haja internet
     let fallbackTitle: String
     let fallbackMessage: String
     
@@ -39,7 +34,6 @@ struct RawAnalysis: Identifiable, Hashable {
     }
 }
 
-/// A estrutura final humanizada pela Inteligência Artificial.
 struct DisplayedAnalysis: Identifiable, Hashable {
     let id: UUID
     let rawAnalysisId: UUID

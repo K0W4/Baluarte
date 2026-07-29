@@ -56,7 +56,6 @@ struct CreateChapterView: View {
                                 onSuccess?()
                                 dismiss()
                             } catch {
-                                // Erro já tratado na ViewModel
                             }
                         }
                     }) {

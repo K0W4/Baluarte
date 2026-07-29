@@ -3,8 +3,6 @@ import NaturalLanguage
 
 final class AnalysisTranslationService: AnalysisTranslationServiceProtocol {
     
-    // Utilizando o framework NaturalLanguage da Apple (Foundation Models clássicos)
-    // para extrair sentimento, entidades e adaptar a mensagem dinamicamente.
     
     func translate(analysis: RawAnalysis) async throws -> DisplayedAnalysis {
         let generatedTitle: String
@@ -32,11 +30,8 @@ final class AnalysisTranslationService: AnalysisTranslationServiceProtocol {
             }
         case .calendar:
             if let event = analysis.contextData["upcomingEvent"] {
-                // Aplicação de ML (NaturalLanguage Foundation Models): 
-                // 1. Sentimento
                 let sentimentScore = analyzeSentiment(for: event)
                 let isPositive = sentimentScore >= 0.0
-                // 2. Word Embeddings (Representação Vetorial Densa - Foundation Model)
                 let isCerimonial = isRelatedToCeremony(event)
                 
                 if isCerimonial {
@@ -86,7 +81,6 @@ final class AnalysisTranslationService: AnalysisTranslationServiceProtocol {
         )
     }
     
-    // Função auxiliar que utiliza os modelos base (Foundation/CoreML integrados) do NaturalLanguage
     private func analyzeSentiment(for text: String) -> Double {
         let tagger = NLTagger(tagSchemes: [.sentimentScore])
         tagger.string = text
@@ -98,8 +92,6 @@ final class AnalysisTranslationService: AnalysisTranslationServiceProtocol {
         return 0.0
     }
     
-    // Função auxiliar que utiliza Word Embeddings (Foundation Model embutido no iOS)
-    // para medir a distância vetorial semântica entre duas palavras.
     private func isRelatedToCeremony(_ text: String) -> Bool {
         guard let embedding = NLEmbedding.wordEmbedding(for: .portuguese) else { return false }
         
@@ -107,7 +99,6 @@ final class AnalysisTranslationService: AnalysisTranslationServiceProtocol {
         
         for word in text.components(separatedBy: .whitespaces) {
             for target in targetWords {
-                // Mede a distância no espaço vetorial (0 = idêntico, 2 = opostos)
                 let distance = embedding.distance(between: word.lowercased(), and: target.lowercased())
                 if distance < 0.8 { // Limiar de similaridade semântica
                     return true

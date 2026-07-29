@@ -136,7 +136,6 @@ public final class HomeViewModel {
             let allMembers = try await fetchedMembers
             currentUser = allMembers.first { $0.id == currentUserId }
         } catch {
-            // Se falhou por Foreign Key ou qualquer outra coisa do Chapter, vamos tentar recriar o Test Chapter silenciosamente
             if String(describing: error).contains("23503") || String(describing: error).contains("PGRST") || events.isEmpty {
                 if let currentChapterId = currentChapterId {
                     let defaultChapter = Chapter(id: currentChapterId, name: "Meu Capítulo", number: 1)

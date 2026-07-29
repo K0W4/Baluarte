@@ -43,7 +43,6 @@ public final class CreateTaskViewModel {
         } catch {
             if error is CancellationError { return }
             isFetchingCommittees = false
-            // Ignorar falha, apenas não mostraremos comissões
         }
     }
     

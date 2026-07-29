@@ -26,6 +26,16 @@ public struct CompletedGoalsView: View {
         return sortedKeys.map { ($0, dict[$0]!) }
     }
     
+    private func formatSemesterKey(_ key: String) -> String {
+        let components = key.split(separator: ".")
+        guard components.count == 2,
+              let year = components.first,
+              let semester = components.last else {
+            return key
+        }
+        return "\(semester)º Semestre de \(year)"
+    }
+    
     public var body: some View {
         NavigationStack {
             ScrollView {
@@ -37,7 +47,7 @@ public struct CompletedGoalsView: View {
                     } else {
                         ForEach(groupedGoals, id: \.0) { section in
                             VStack(alignment: .leading, spacing: Spacing.md) {
-                                Text(section.0)
+                                Text(formatSemesterKey(section.0))
                                     .font(Typography.headline)
                                     .foregroundColor(Theme.textPrimary)
                                     .padding(.horizontal, Spacing.screenEdgePadding)

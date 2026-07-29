@@ -104,6 +104,7 @@ struct AnalysisView: View {
                     }) {
                         Image(systemName: "arrow.clockwise")
                     }
+                    .accessibilityLabel("Atualizar análises")
                 }
             }
             .task {

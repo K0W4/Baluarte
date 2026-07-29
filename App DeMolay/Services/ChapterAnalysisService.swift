@@ -8,7 +8,6 @@ struct MandatoryDay {
 
 final class ChapterAnalysisService: ChapterAnalysisServiceProtocol {
     
-    // Comissões Obrigatórias do Supremo Conselho
     private let mandatoryCommittees = [
         "Hospitalaria",
         "Entretenimento",
@@ -17,7 +16,6 @@ final class ChapterAnalysisService: ChapterAnalysisServiceProtocol {
         "Sindicância" // (Incremento de Novos)
     ]
     
-    // Dias Obrigatórios do Supremo Conselho
     private let mandatoryDays = [
         MandatoryDay(name: "Dia Devocional", month: 3),
         MandatoryDay(name: "Dia em Memória a Jacques DeMolay", month: 3),
@@ -35,19 +33,14 @@ final class ChapterAnalysisService: ChapterAnalysisServiceProtocol {
         let now = Date()
         let calendar = Calendar.current
         
-        // 1. Membership: Renovação de Quadro (Maioridade)
         analyses.append(contentsOf: analyzeMembership(members: members, calendar: calendar, now: now))
         
-        // 2. Structure: Comissões Obrigatórias
         analyses.append(contentsOf: analyzeCommittees(committees: committees))
         
-        // 3. Calendar & NLP (Foundation Models): Dias Obrigatórios
         analyses.append(contentsOf: analyzeEventsWithNLP(events: events, calendar: calendar, now: now))
         
-        // 4. Engagement: Faltas Consecutivas
         analyses.append(contentsOf: analyzeEngagement(members: members, events: events, now: now))
         
-        // 5. Financial: Planejamento Financeiro e Taxas
         analyses.append(contentsOf: analyzeFinancial(calendar: calendar, now: now))
         
         return analyses
@@ -88,7 +81,6 @@ final class ChapterAnalysisService: ChapterAnalysisServiceProtocol {
         let currentCommitteeNames = committees.map { $0.name.lowercased() }
         
         for mandatory in mandatoryCommittees {
-            // Checagem flexível caso tenham digitado "Comissão de Finanças"
             let exists = currentCommitteeNames.contains { $0.contains(mandatory.lowercased()) }
             if !exists {
                 results.append(RawAnalysis(
@@ -103,13 +95,11 @@ final class ChapterAnalysisService: ChapterAnalysisServiceProtocol {
         return results
     }
     
-    // Aplicação Prática de Foundation Models (NaturalLanguage / NLP)
     private func analyzeEventsWithNLP(events: [Event], calendar: Calendar, now: Date) -> [RawAnalysis] {
         var results: [RawAnalysis] = []
         let currentMonth = calendar.component(.month, from: now)
         let isFirstSemester = currentMonth <= 6
         
-        // Verifica quais dias obrigatórios caem no semestre atual
         let semesterMandatoryDays = mandatoryDays.filter { day in
             let dayIsFirstSemester = day.month <= 6
             return dayIsFirstSemester == isFirstSemester
@@ -142,34 +132,25 @@ final class ChapterAnalysisService: ChapterAnalysisServiceProtocol {
     
     // MARK: - NLP Engine (Apple Foundation Models)
     
-    /// Utiliza os modelos nativos de processamento de linguagem natural (NLEmbedding)
-    /// para entender se um evento cobre o dia obrigatório sem precisar de match exato.
-    /// Ex: "Homenagem as nossas mães" dará match com "Dia das Mães" graças ao Foundation Model.
     private func matchesSemantically(text: String, target: String) -> Bool {
-        // Fallback básico caso o modelo falhe em carregar
         let basicMatch = text.lowercased().contains(target.lowercased())
         if basicMatch { return true }
         
-        // Carrega o Foundation Model de Embeddings para Sentenças em Português
         guard let embedding = NLEmbedding.sentenceEmbedding(for: .portuguese) else {
             return false // Se o modelo não estiver no on-device, cai no false (já que o basicMatch falhou)
         }
         
-        // Calcula a distância semântica (0.0 = idêntico, 2.0 = totalmente oposto)
         let distance = embedding.distance(between: text.lowercased(), and: target.lowercased())
         
-        // Uma distância abaixo de 0.65 indica uma correlação mais estrita (evita falsos positivos)
         return distance < 0.65
     }
     
     // MARK: - Frequência e Engajamento
     
     private func analyzeEngagement(members: [Member], events: [Event], now: Date) -> [RawAnalysis] {
-        // Filtra eventos que já ocorreram, ordenados do mais recente para o mais antigo
         let pastEvents = events.filter { $0.scheduledDate < now }
                                .sorted { $0.scheduledDate > $1.scheduledDate }
         
-        // Precisamos de pelo menos 3 eventos passados para uma análise justa de "consecutivas"
         guard pastEvents.count >= 3 else { return [] }
         let lastThreeEvents = Array(pastEvents.prefix(3))
         
@@ -206,7 +187,6 @@ final class ChapterAnalysisService: ChapterAnalysisServiceProtocol {
         var results: [RawAnalysis] = []
         let currentMonth = calendar.component(.month, from: now)
         
-        // Exemplo: Taxa de Capitação/Renovação Anual geralmente ocorre no 1º trimestre (Fevereiro/Março)
         if currentMonth == 2 || currentMonth == 3 {
             results.append(RawAnalysis(
                 category: .financial,
@@ -217,7 +197,6 @@ final class ChapterAnalysisService: ChapterAnalysisServiceProtocol {
             ))
         }
         
-        // Fechamento de Semestre (Junho e Dezembro)
         if currentMonth == 6 || currentMonth == 12 {
             results.append(RawAnalysis(
                 category: .financial,

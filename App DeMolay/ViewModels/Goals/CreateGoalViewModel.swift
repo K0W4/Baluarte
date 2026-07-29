@@ -40,7 +40,6 @@ public final class CreateGoalViewModel {
             id: UUID(),
             chapterId: chapterId,
             title: title.trimmingCharacters(in: .whitespacesAndNewlines),
-            description: nil,
             currentValue: 0,
             targetValue: target,
             targetDate: targetDate,

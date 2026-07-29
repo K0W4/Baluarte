@@ -26,19 +26,20 @@ struct ToastModifier: ViewModifier {
                     .shadow(color: Theme.textPrimary.opacity(0.1), radius: 10, x: 0, y: 5)
                     .padding(.top, Spacing.xl)
                     .transition(.move(edge: .top).combined(with: .opacity))
+                    .zIndex(1)
                     
                     Spacer()
                 }
-                .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isPresented)
                 .onAppear {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                        withAnimation {
+                        withAnimation(.easeInOut(duration: 0.3)) {
                             isPresented = false
                         }
                     }
                 }
             }
         }
+        .animation(.easeInOut(duration: 0.3), value: isPresented)
     }
 }
 

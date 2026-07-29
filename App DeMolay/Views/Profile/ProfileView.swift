@@ -14,8 +14,8 @@ struct ProfileView: View {
                 Theme.backgroundPrimary.ignoresSafeArea()
                 
                 if case let .authenticated(user, member) = authViewModel.state {
-                    ScrollView {
-                        VStack(spacing: Spacing.xl) {
+                    List {
+                        Section {
                             VStack(spacing: Spacing.md) {
                                 Image(systemName: "person.circle.fill")
                                     .resizable()
@@ -33,58 +33,51 @@ struct ProfileView: View {
                                         .foregroundColor(Theme.textSecondary)
                                 }
                             }
-                            .padding(.top, Spacing.xl)
-                            
-                            VStack(spacing: Spacing.md) {
-                                ProfileInfoRow(icon: "shield.fill", title: "Nível de Acesso", value: member?.accessLevel ?? "Padrão")
-                                Divider()
-                                    .padding(.leading, 40)
-                                if let birthdate = member?.birthdate {
-                                    ProfileInfoRow(icon: "calendar", title: "Data de Nascimento", value: birthdate.formatted(.dateTime.day().month(.twoDigits).year()))
-                                    Divider()
-                                        .padding(.leading, 40)
-                                }
-                                ProfileInfoRow(icon: "star.fill", title: "Cargo", value: member?.role ?? "Sem Cargo")
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, Spacing.md)
+                        }
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                        
+                        Section {
+                            ProfileInfoRow(icon: "shield.fill", title: "Nível de Acesso", value: member?.accessLevel ?? "Padrão")
+                            if let birthdate = member?.birthdate {
+                                ProfileInfoRow(icon: "calendar", title: "Data de Nascimento", value: birthdate.formatted(.dateTime.day().month(.twoDigits).year()))
                             }
-                            .padding(Spacing.lg)
-                            .background(Theme.backgroundSecondary)
-                            .cornerRadius(12)
-                            .padding(.horizontal, Spacing.screenEdgePadding)
-                            
-                            Spacer(minLength: 40)
-                            
-                            // Ações da Conta
-                            VStack(spacing: Spacing.md) {
-                                Button(action: {
-                                    showLeaveChapterAlert = true
-                                }) {
-                                    Text("Sair do capítulo")
-                                        .frame(maxWidth: .infinity)
-                                }
-                                .buttonStyle(PrimaryButtonStyle())
-                                
-                                Button(action: {
-                                    Task {
-                                        await authViewModel.signOut()
-                                    }
-                                }) {
-                                    Text("Sair da conta")
-                                        .frame(maxWidth: .infinity)
-                                }
-                                .buttonStyle(PrimaryButtonStyle())
-                                
-                                Button(action: {
-                                    showDeleteAccountAlert = true
-                                }) {
-                                    Text("Excluir conta")
-                                        .frame(maxWidth: .infinity)
-                                }
-                                .buttonStyle(DestructiveButtonStyle())
+                            ProfileInfoRow(icon: "star.fill", title: "Cargo", value: member?.role ?? "Sem Cargo")
+                        } header: {
+                            Text("Informações")
+                        }
+                        
+                        Section {
+                            Button(action: {
+                                showLeaveChapterAlert = true
+                            }) {
+                                Text("Sair do capítulo")
+                                    .foregroundColor(Theme.destructive)
                             }
-                            .padding(.horizontal, Spacing.screenEdgePadding)
-                            .padding(.bottom, Spacing.xl)
+                            
+                            Button(action: {
+                                Task {
+                                    await authViewModel.signOut()
+                                }
+                            }) {
+                                Text("Sair da conta")
+                                    .foregroundColor(Theme.textPrimary)
+                            }
+                            
+                            Button(action: {
+                                showDeleteAccountAlert = true
+                            }) {
+                                Text("Excluir conta")
+                                    .foregroundColor(Theme.destructive)
+                            }
+                        } header: {
+                            Text("Ações da Conta")
                         }
                     }
+                    .listStyle(.insetGrouped)
+                    .scrollContentBackground(.hidden)
                 }
             }
             .navigationTitle("Meu perfil")
@@ -98,6 +91,7 @@ struct ProfileView: View {
                             .font(.body.weight(.semibold))
                             .foregroundColor(Theme.accent)
                     }
+                    .accessibilityLabel("Editar perfil")
                 }
             }
             .sheet(isPresented: $showEditProfile) {

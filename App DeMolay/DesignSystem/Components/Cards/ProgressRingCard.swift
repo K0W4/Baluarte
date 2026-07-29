@@ -152,6 +152,7 @@ public struct ProgressRingCard: View {
         .accessibilityLabel("\(goal.title), \(progressPercentageValue) por cento")
         .accessibilityValue("\(progressPercentageValue) por cento")
         .accessibilityHint("Toque para ver detalhes da meta")
+        .accessibilityAddTraits(.isButton)
     }
 }
 
@@ -181,19 +182,19 @@ private struct OverflowRing: View {
     }
 }
 
-#Preview {
-    ScrollView(.horizontal, showsIndicators: false) {
-        HStack(spacing: 16) {
-            ProgressRingCard(goal: Goal(id: UUID(), chapterId: UUID(), title: "Doações", description: "Irmão Sangue Bom", currentValue: 150, targetValue: 100, targetDate: nil, isCompleted: false, completedAt: nil, createdAt: Date()))
-            
-            ProgressRingCard(goal: Goal(id: UUID(), chapterId: UUID(), title: "Mensalidades", description: "Arrecadação mensal", currentValue: 999, targetValue: 2000, targetDate: nil, isCompleted: false, completedAt: nil, createdAt: Date()))
-            
-            ProgressRingCard(goal: Goal(id: UUID(), chapterId: UUID(), title: "Novos Membros", description: "Campanha 2026", currentValue: 79, targetValue: 100, targetDate: nil, isCompleted: false, completedAt: nil, createdAt: Date()))
-            
-            ProgressRingCard(goal: Goal(id: UUID(), chapterId: UUID(), title: "Doações", description: "Campanha do agasalho", currentValue: 1999, targetValue: 2000, targetDate: nil, isCompleted: false, completedAt: nil, createdAt: Date()))
+    #Preview {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 16) {
+                ProgressRingCard(goal: Goal(id: UUID(), chapterId: UUID(), title: "Doações", currentValue: 150, targetValue: 100, targetDate: nil, isCompleted: false, completedAt: nil, createdAt: Date()))
+                
+                ProgressRingCard(goal: Goal(id: UUID(), chapterId: UUID(), title: "Mensalidades", currentValue: 999, targetValue: 2000, targetDate: nil, isCompleted: false, completedAt: nil, createdAt: Date()))
+                
+                ProgressRingCard(goal: Goal(id: UUID(), chapterId: UUID(), title: "Novos Membros", currentValue: 79, targetValue: 100, targetDate: nil, isCompleted: false, completedAt: nil, createdAt: Date()))
+                
+                ProgressRingCard(goal: Goal(id: UUID(), chapterId: UUID(), title: "Doações", currentValue: 1999, targetValue: 2000, targetDate: nil, isCompleted: false, completedAt: nil, createdAt: Date()))
+            }
+            .padding()
         }
-        .padding()
+        .background(Color(UIColor.systemBackground))
+        .preferredColorScheme(.dark)
     }
-    .background(Color(UIColor.systemBackground))
-    .preferredColorScheme(.dark)
-}

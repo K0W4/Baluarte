@@ -95,6 +95,7 @@ public struct EventCard: View {
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(event.title), \(event.eventType), \(dateString), \(event.confirmedAttendees?.count ?? 0) presenças")
         .accessibilityHint("Toque para ver detalhes do evento")
+        .accessibilityAddTraits(.isButton)
         .padding(Spacing.md)
         .background(Theme.cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))

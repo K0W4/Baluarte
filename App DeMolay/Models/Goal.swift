@@ -4,7 +4,6 @@ public struct Goal: Codable, Identifiable, Hashable, Sendable {
     public let id: UUID
     public let chapterId: UUID
     public var title: String
-    public var description: String?
     public var currentValue: Double
     public var targetValue: Double
     public var targetDate: Date?
@@ -20,7 +19,7 @@ public struct Goal: Codable, Identifiable, Hashable, Sendable {
     enum CodingKeys: String, CodingKey {
         case id
         case chapterId = "chapter_id"
-        case title, description
+        case title
         case currentValue = "current_value"
         case targetValue = "target_value"
         case targetDate = "target_date"

@@ -7,12 +7,11 @@ struct LoginView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Theme.backgroundPrimary.ignoresSafeArea()
+                Theme.accent.ignoresSafeArea()
                 
                 VStack(spacing: Spacing.xl) {
                     Spacer()
                     
-                    // Logo and Title
                     VStack(spacing: Spacing.md) {
                         Image("LaunchIcon")
                             .resizable()
@@ -23,11 +22,14 @@ struct LoginView: View {
                         Text("Baluarte")
                             .font(Typography.largeTitle)
                             .foregroundColor(Theme.textPrimary)
+                        
+                        Text("Gestão inteligente para seu Capítulo")
+                            .font(Typography.subheadline)
+                            .foregroundColor(Theme.textPrimary)
                     }
                     
                     Spacer()
                     
-                    // Error Message
                     if let errorMessage = authViewModel.errorMessage {
                         Text(errorMessage)
                             .font(Typography.caption1)
@@ -36,7 +38,6 @@ struct LoginView: View {
                             .padding(.horizontal)
                     }
                     
-                    // Login Buttons
                     VStack(spacing: Spacing.md) {
                         if case .loading = authViewModel.state {
                             ProgressView()
@@ -79,7 +80,7 @@ struct LoginView: View {
                     NavigationLink(destination: EmailAuthView()) {
                         Text("Entrar com E-mail")
                             .font(Typography.headline)
-                            .foregroundColor(Theme.accent)
+                            .foregroundColor(Theme.textPrimary)
                     }
                     .padding(.bottom, Spacing.xl)
                 }

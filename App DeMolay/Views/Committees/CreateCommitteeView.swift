@@ -3,6 +3,11 @@ import SwiftUI
 public struct CreateCommitteeView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel: CreateCommitteeViewModel
+    @State private var showDiscardAlert = false
+    
+    private var hasUnsavedChanges: Bool {
+        !viewModel.name.isEmpty || !viewModel.selectedMembersIds.isEmpty
+    }
     
     enum FocusField { case name }
     @FocusState private var focusedField: FocusField?
@@ -89,7 +94,7 @@ public struct CreateCommitteeView: View {
                 if let errorMessage = viewModel.errorMessage {
                     Section {
                         Text(errorMessage)
-                            .foregroundColor(.red)
+                            .foregroundColor(Theme.destructive)
                             .font(Typography.caption1)
                     }
                 }
@@ -99,7 +104,13 @@ public struct CreateCommitteeView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: { dismiss() }) {
+                    Button(action: {
+                        if hasUnsavedChanges {
+                            showDiscardAlert = true
+                        } else {
+                            dismiss()
+                        }
+                    }) {
                         Image(systemName: "xmark")
                             .font(.body.bold())
                             .foregroundColor(Theme.accent)
@@ -108,6 +119,7 @@ public struct CreateCommitteeView: View {
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
+                        HapticManager.shared.impact(style: .medium)
                         Task {
                             let success = await viewModel.saveCommittee()
                             if success {
@@ -115,7 +127,7 @@ public struct CreateCommitteeView: View {
                             }
                         }
                     }) {
-                        Image(systemName: "paperplane.fill")
+                        Image(systemName: "checkmark")
                             .font(.body.bold())
                             .foregroundColor(viewModel.isValid ? Theme.accent : Theme.textSecondary.opacity(0.5))
                     }
@@ -126,12 +138,27 @@ public struct CreateCommitteeView: View {
                 focusedField = .name
                 await viewModel.loadMembers()
             }
+            .interactiveDismissDisabled(hasUnsavedChanges)
+            .alert("Descartar comissão?", isPresented: $showDiscardAlert) {
+                Button("Cancelar", role: .cancel) { }
+                Button("Descartar", role: .destructive) { dismiss() }
+            } message: {
+                Text("Você tem alterações não salvas. Tem certeza que deseja descartar?")
+            }
             .overlay {
                 if viewModel.isLoading {
                     ZStack {
-                        Color.black.opacity(0.2)
-                        ProgressView()
-                            .tint(Theme.accent)
+                        Color.black.opacity(0.3).ignoresSafeArea()
+                        VStack(spacing: Spacing.sm) {
+                            ProgressView()
+                                .tint(Theme.accent)
+                            Text("Criando comissão...")
+                                .font(Typography.subheadline)
+                                .foregroundColor(Theme.textSecondary)
+                        }
+                        .padding(Spacing.lg)
+                        .background(.regularMaterial)
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
                     }
                 }
             }

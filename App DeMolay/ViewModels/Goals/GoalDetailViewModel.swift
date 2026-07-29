@@ -80,11 +80,9 @@ public final class GoalDetailViewModel {
         
         var updatedGoal = goal
         updatedGoal.title = title.trimmingCharacters(in: .whitespacesAndNewlines)
-        updatedGoal.description = nil
         updatedGoal.currentValue = current
         updatedGoal.targetValue = target
         updatedGoal.targetDate = targetDate
-        // isCompleted and completedAt are maintained from the original goal or modified in completeGoal()
         
         do {
             try await goalService.updateGoal(updatedGoal)

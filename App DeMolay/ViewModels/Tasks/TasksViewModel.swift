@@ -77,7 +77,6 @@ public final class TasksViewModel {
         if selectedSegment == .gerais {
             return []
         }
-        // Minhas Tarefas
         return generalTasks.filter { $0.assigneeId == currentUserId || $0.creatorId == currentUserId }
     }
 
@@ -101,7 +100,6 @@ public final class TasksViewModel {
         if selectedSegment == .gerais {
             return completedTasks.filter { $0.committeeId != nil }
         }
-        // Em Minhas Tarefas, mostramos as minhas concluídas
         return completedTasks.filter { $0.assigneeId == currentUserId || $0.creatorId == currentUserId }
     }
 
