@@ -88,18 +88,24 @@ public struct MemberDetailView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Fechar") {
+                    Button(action: {
                         dismiss()
+                    }) {
+                        Image(systemName: "xmark")
+                            .font(.body.weight(.semibold))
                     }
                     .foregroundColor(Theme.accent)
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Salvar") {
+                    Button(action: {
                         Task {
                             let success = await viewModel.saveChanges()
                             if success { dismiss() }
                         }
+                    }) {
+                        Image(systemName: "checkmark")
+                            .font(.body.weight(.semibold))
                     }
                     .font(.body.bold())
                     .foregroundColor(viewModel.isValid && viewModel.hasChanges ? Theme.accent : Theme.textSecondary.opacity(0.5))

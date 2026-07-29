@@ -43,8 +43,11 @@ public struct AddMemberToCommitteeView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancelar") {
+                    Button(action: {
                         dismiss()
+                    }) {
+                        Image(systemName: "xmark")
+                            .font(.body.weight(.semibold))
                     }
                     .foregroundColor(Theme.accent)
                 }

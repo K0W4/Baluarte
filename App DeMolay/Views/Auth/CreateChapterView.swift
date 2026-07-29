@@ -34,14 +34,17 @@ struct CreateChapterView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancelar") {
+                    Button(action: {
                         dismiss()
+                    }) {
+                        Image(systemName: "xmark")
+                            .font(.body.weight(.semibold))
                     }
                     .foregroundColor(Theme.textSecondary)
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Salvar") {
+                    Button(action: {
                         Task {
                             guard let number = Int(chapterNumber) else {
                                 viewModel.errorMessage = "Número inválido"
@@ -56,6 +59,9 @@ struct CreateChapterView: View {
                                 // Erro já tratado na ViewModel
                             }
                         }
+                    }) {
+                        Image(systemName: "checkmark")
+                            .font(.body.weight(.semibold))
                     }
                     .foregroundColor(Theme.accent)
                     .disabled(chapterName.isEmpty || chapterNumber.isEmpty || viewModel.isLoading)
