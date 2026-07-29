@@ -30,7 +30,7 @@ struct CreateChapterView: View {
                         .keyboardType(.numberPad)
                 }
             }
-            .navigationTitle("Criar Capítulo")
+            .navigationTitle("Criar capítulo")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {

@@ -7,6 +7,15 @@ import SwiftUI
 public final class HomeViewModel {
     public var events: [Event] = []
     public var goals: [Goal] = []
+    
+    public var activeGoals: [Goal] {
+        goals.filter { !$0.isCompleted }
+    }
+    
+    public var completedGoals: [Goal] {
+        goals.filter { $0.isCompleted }
+    }
+    
     public var committees: [Committee] = []
     public var tasks: [ChapterTask] = []
     public var currentUser: Member?

@@ -212,7 +212,7 @@ public struct CalendarView: View {
                                     await viewModel.addToNativeCalendar(event: event)
                                 }
                             } label: {
-                                Label("Adicionar ao Calendário", systemImage: "calendar.badge.plus")
+                                Label("Adicionar ao calendário", systemImage: "calendar.badge.plus")
                             }
                         }
                 }

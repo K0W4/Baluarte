@@ -77,12 +77,9 @@ public struct CommitteeDetailView: View {
                             showingAddMember = true
                         } label: {
                             Image(systemName: "plus")
-                                .font(Typography.subheadline.weight(.semibold))
-                                .foregroundColor(Theme.textPrimary)
-                                .frame(width: 32, height: 32)
-                                .background(Circle().fill(Theme.backgroundSecondary))
-                                .frame(width: 44, height: 44)
-                                .contentShape(Rectangle())
+                                .font(Typography.title2)
+                                .foregroundColor(Theme.accent)
+                                .padding(.trailing, 0) // Ensures it doesn't push too far left
                         }
                         .buttonStyle(.plain)
                     }
@@ -98,10 +95,11 @@ public struct CommitteeDetailView: View {
                     Button(action: {
                         showingDeleteAlert = true
                     }) {
-                        Text("Excluir Comissão")
-                            .foregroundColor(Theme.destructive)
-                            .frame(maxWidth: .infinity, alignment: .center)
+                        Text("Excluir comissão")
                     }
+                    .buttonStyle(DestructiveButtonStyle())
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets())
                 }
                 
                 if let errorMessage = viewModel.errorMessage {
@@ -141,7 +139,7 @@ public struct CommitteeDetailView: View {
                     .disabled(!viewModel.isValid || !viewModel.hasChanges || viewModel.isLoading)
                 }
             }
-            .alert("Excluir Comissão", isPresented: $showingDeleteAlert) {
+            .alert("Excluir comissão", isPresented: $showingDeleteAlert) {
                 Button("Cancelar", role: .cancel) { showingDeleteAlert = false }
                 Button("Excluir", role: .destructive) {
                     Task {

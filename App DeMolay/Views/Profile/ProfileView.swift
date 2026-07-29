@@ -6,6 +6,7 @@ struct ProfileView: View {
     @State private var viewModel = ProfileViewModel()
     @State private var showLeaveChapterAlert = false
     @State private var showDeleteAccountAlert = false
+    @State private var showEditProfile = false
     
     var body: some View {
         NavigationStack {
@@ -15,7 +16,6 @@ struct ProfileView: View {
                 if case let .authenticated(user, member) = authViewModel.state {
                     ScrollView {
                         VStack(spacing: Spacing.xl) {
-                            // Avatar and Basic Info
                             VStack(spacing: Spacing.md) {
                                 Image(systemName: "person.circle.fill")
                                     .resizable()
@@ -35,12 +35,16 @@ struct ProfileView: View {
                             }
                             .padding(.top, Spacing.xl)
                             
-                            // Info Cards
                             VStack(spacing: Spacing.md) {
                                 ProfileInfoRow(icon: "shield.fill", title: "Nível de Acesso", value: member?.accessLevel ?? "Padrão")
-                                if let role = member?.role {
-                                    ProfileInfoRow(icon: "star.fill", title: "Cargo", value: role)
+                                Divider()
+                                    .padding(.leading, 40)
+                                if let birthdate = member?.birthdate {
+                                    ProfileInfoRow(icon: "calendar", title: "Data de Nascimento", value: birthdate.formatted(.dateTime.day().month(.twoDigits).year()))
+                                    Divider()
+                                        .padding(.leading, 40)
                                 }
+                                ProfileInfoRow(icon: "star.fill", title: "Cargo", value: member?.role ?? "Sem Cargo")
                             }
                             .padding(Spacing.lg)
                             .background(Theme.backgroundSecondary)
@@ -54,7 +58,7 @@ struct ProfileView: View {
                                 Button(action: {
                                     showLeaveChapterAlert = true
                                 }) {
-                                    Text("Sair do Capítulo")
+                                    Text("Sair do capítulo")
                                         .frame(maxWidth: .infinity)
                                 }
                                 .buttonStyle(PrimaryButtonStyle())
@@ -64,7 +68,7 @@ struct ProfileView: View {
                                         await authViewModel.signOut()
                                     }
                                 }) {
-                                    Text("Sair da Conta")
+                                    Text("Sair da conta")
                                         .frame(maxWidth: .infinity)
                                 }
                                 .buttonStyle(PrimaryButtonStyle())
@@ -72,11 +76,10 @@ struct ProfileView: View {
                                 Button(action: {
                                     showDeleteAccountAlert = true
                                 }) {
-                                    Text("Excluir Conta")
+                                    Text("Excluir conta")
                                         .frame(maxWidth: .infinity)
-                                        .foregroundColor(Theme.destructive)
                                 }
-                                .buttonStyle(PrimaryButtonStyle())
+                                .buttonStyle(DestructiveButtonStyle())
                             }
                             .padding(.horizontal, Spacing.screenEdgePadding)
                             .padding(.bottom, Spacing.xl)
@@ -84,9 +87,25 @@ struct ProfileView: View {
                     }
                 }
             }
-            .navigationTitle("Perfil")
+            .navigationTitle("Meu perfil")
             .navigationBarTitleDisplayMode(.inline)
-            .alert("Sair do Capítulo", isPresented: $showLeaveChapterAlert) {
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        showEditProfile = true
+                    }) {
+                        Image(systemName: "pencil")
+                            .font(.body.weight(.semibold))
+                            .foregroundColor(Theme.accent)
+                    }
+                }
+            }
+            .sheet(isPresented: $showEditProfile) {
+                if case let .authenticated(_, member) = authViewModel.state, let member = member {
+                    EditProfileView(member: member)
+                }
+            }
+            .alert("Sair do capítulo", isPresented: $showLeaveChapterAlert) {
                 Button("Cancelar", role: .cancel) { }
                 Button("Sair", role: .destructive) {
                     Task {
@@ -96,7 +115,7 @@ struct ProfileView: View {
             } message: {
                 Text("Tem certeza que deseja sair do seu Capítulo atual? Você precisará ser aprovado novamente ao entrar em um novo.")
             }
-            .alert("Excluir Conta", isPresented: $showDeleteAccountAlert) {
+            .alert("Excluir conta", isPresented: $showDeleteAccountAlert) {
                 Button("Cancelar", role: .cancel) { }
                 Button("Excluir", role: .destructive) {
                     Task {

@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Event: Codable, Identifiable, Hashable {
+public struct Event: Codable, Identifiable, Hashable, Sendable {
     public let id: UUID
     public let chapterId: UUID
     public var title: String

@@ -8,6 +8,7 @@ public final class GoalDetailViewModel {
     public var currentValue: String
     public var targetValue: String
     public var targetDate: Date
+    public var isCompleted: Bool
     
     public var isLoading: Bool = false
     public var errorMessage: String? = nil
@@ -55,6 +56,7 @@ public final class GoalDetailViewModel {
         self.targetValue = formatter.string(from: NSNumber(value: goal.targetValue)) ?? String(goal.targetValue)
         
         self.targetDate = goal.targetDate ?? Date()
+        self.isCompleted = goal.isCompleted
     }
     
     public func saveChanges() async -> Bool {
@@ -82,6 +84,7 @@ public final class GoalDetailViewModel {
         updatedGoal.currentValue = current
         updatedGoal.targetValue = target
         updatedGoal.targetDate = targetDate
+        // isCompleted and completedAt are maintained from the original goal or modified in completeGoal()
         
         do {
             try await goalService.updateGoal(updatedGoal)
@@ -92,6 +95,29 @@ public final class GoalDetailViewModel {
             if error is CancellationError { return false }
             print("❌ Supabase Error: \(error)")
             errorMessage = "Erro ao atualizar a meta."
+            isLoading = false
+            return false
+        }
+    }
+    
+    public func completeGoal() async -> Bool {
+        isLoading = true
+        errorMessage = nil
+        
+        var updatedGoal = goal
+        updatedGoal.isCompleted = true
+        updatedGoal.completedAt = Date()
+        
+        do {
+            try await goalService.updateGoal(updatedGoal)
+            self.goal = updatedGoal
+            self.isCompleted = true
+            isLoading = false
+            return true
+        } catch {
+            if error is CancellationError { return false }
+            print("❌ Supabase Error: \(error)")
+            errorMessage = "Erro ao concluir a meta."
             isLoading = false
             return false
         }

@@ -1,6 +1,6 @@
 import Foundation
 
-public struct ChapterTask: Codable, Identifiable, Hashable {
+public struct ChapterTask: Codable, Identifiable, Hashable, Sendable {
     public let id: UUID
     public let chapterId: UUID
     public let creatorId: UUID

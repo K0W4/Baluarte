@@ -20,7 +20,7 @@ struct EmailAuthView: View {
             ScrollView {
                 VStack(spacing: Spacing.xl) {
                     VStack(alignment: .leading, spacing: Spacing.sm) {
-                        Text(isSignUp ? "Criar Conta" : "Bem-vindo de volta")
+                        Text(isSignUp ? "Criar conta" : "Bem-vindo de volta")
                             .font(Typography.largeTitle)
                             .foregroundColor(Theme.textPrimary)
                         

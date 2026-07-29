@@ -52,7 +52,7 @@ public struct CreateTaskView: View {
                 }
             }
             .scrollDismissesKeyboard(.interactively)
-            .navigationTitle("Nova Tarefa")
+            .navigationTitle("Nova tarefa")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {

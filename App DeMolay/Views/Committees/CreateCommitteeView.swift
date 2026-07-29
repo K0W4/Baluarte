@@ -95,7 +95,7 @@ public struct CreateCommitteeView: View {
                 }
             }
             .scrollDismissesKeyboard(.interactively)
-            .navigationTitle("Nova Comissão")
+            .navigationTitle("Nova comissão")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {

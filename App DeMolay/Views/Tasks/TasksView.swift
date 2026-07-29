@@ -87,7 +87,7 @@ public struct TasksView: View {
                     }
                 }
             }
-            .alert("Excluir Tarefa", isPresented: Binding(
+            .alert("Excluir tarefa", isPresented: Binding(
                 get: { taskToDelete != nil },
                 set: { if !$0 { taskToDelete = nil } }
             )) {
@@ -107,11 +107,6 @@ public struct TasksView: View {
                 viewModel.currentUserId = authViewModel.currentUserId
                 viewModel.currentChapterId = authViewModel.currentChapterId
                 await viewModel.loadData()
-            }
-            .onAppear {
-                viewModel.currentUserId = authViewModel.currentUserId
-                viewModel.currentChapterId = authViewModel.currentChapterId
-                Task { await viewModel.loadData(showLoading: false) }
             }
             .sheet(isPresented: $showingCreateTask, onDismiss: {
                 Task { await viewModel.loadData() }
@@ -242,8 +237,14 @@ public struct TasksView: View {
 
     @ViewBuilder
     private func taskRow(for task: ChapterTask) -> some View {
-        TaskCard(task: task) {
-            if !viewModel.isLoading {
+        if viewModel.isLoading {
+            TaskCard(task: task) {}
+                .skeleton(isLoading: true)
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets(top: 0, leading: Spacing.screenEdgePadding, bottom: Spacing.md, trailing: Spacing.screenEdgePadding))
+        } else {
+            TaskCard(task: task) {
                 Task {
                     await viewModel.toggleTaskCompletion(task: task)
                     if !task.isCompleted {
@@ -251,19 +252,18 @@ public struct TasksView: View {
                     }
                 }
             }
-        }
-        .skeleton(isLoading: viewModel.isLoading)
-        .swipeActions(edge: .trailing) {
-            Button {
-                taskToDelete = task
-            } label: {
-                Label("Excluir", systemImage: "trash")
+            .swipeActions(edge: .trailing) {
+                Button {
+                    taskToDelete = task
+                } label: {
+                    Label("Excluir", systemImage: "trash")
+                }
+                .tint(.red)
             }
-            .tint(.red)
+            .listRowSeparator(.hidden)
+            .listRowBackground(Color.clear)
+            .listRowInsets(EdgeInsets(top: 0, leading: Spacing.screenEdgePadding, bottom: Spacing.md, trailing: Spacing.screenEdgePadding))
         }
-        .listRowSeparator(.hidden)
-        .listRowBackground(Color.clear)
-        .listRowInsets(EdgeInsets(top: 0, leading: Spacing.screenEdgePadding, bottom: Spacing.md, trailing: Spacing.screenEdgePadding))
     }
 }
 

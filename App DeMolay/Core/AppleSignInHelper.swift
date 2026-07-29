@@ -54,11 +54,10 @@ public final class AppleSignInHelper: NSObject, ASAuthorizationControllerDelegat
     // MARK: - ASAuthorizationControllerPresentationContextProviding
     
     public func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
-        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let window = scene.windows.first else {
+        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
             return UIWindow()
         }
-        return window
+        return scene.windows.first(where: \.isKeyWindow) ?? UIWindow(windowScene: scene)
     }
     
     // MARK: - Helpers

@@ -6,6 +6,7 @@ public struct HomeView: View {
     @State private var showingCreateEvent = false
     @State private var showingCreateGoal = false
     @State private var showingCreateCommittee = false
+    @State private var showingCompletedGoals = false
     
     @State private var selectedEvent: Event?
     @State private var selectedGoal: Goal?
@@ -36,7 +37,8 @@ public struct HomeView: View {
                     }
                     
                     let displayEvents = viewModel.isLoading ? Event.skeletonList : viewModel.upcomingEvents
-                    let displayGoals = viewModel.isLoading ? Goal.skeletonList : viewModel.goals
+                    let displayGoals = viewModel.isLoading ? Goal.skeletonList : viewModel.activeGoals
+                    let completedGoals = viewModel.completedGoals
                     let displayCommittees = viewModel.isLoading ? Committee.skeletonList : viewModel.committees
                     let displayTasks = viewModel.isLoading ? ChapterTask.skeletonList : viewModel.tasks
                     
@@ -60,12 +62,16 @@ public struct HomeView: View {
                     
                     GoalsSection(
                         goals: displayGoals,
+                        hasCompletedGoals: !completedGoals.isEmpty,
                         isLoading: viewModel.isLoading,
                         onCreateGoal: {
                             showingCreateGoal = true
                         },
                         onSelectGoal: { goal in
                             selectedGoal = goal
+                        },
+                        onViewCompletedGoals: {
+                            showingCompletedGoals = true
                         }
                     )
                         .skeleton(isLoading: viewModel.isLoading)
@@ -101,7 +107,7 @@ public struct HomeView: View {
                     NavigationLink(destination: ProfileView()) {
                         Image(systemName: "person.fill")
                             .foregroundColor(Theme.accent)
-                            .accessibilityLabel("Meu Perfil")
+                            .accessibilityLabel("Meu perfil")
                     }
 
                 }
@@ -114,11 +120,6 @@ public struct HomeView: View {
                 viewModel.currentUserId = authViewModel.currentUserId
                 viewModel.currentChapterId = authViewModel.currentChapterId
                 await viewModel.loadData()
-            }
-            .onAppear {
-                viewModel.currentUserId = authViewModel.currentUserId
-                viewModel.currentChapterId = authViewModel.currentChapterId
-                Task { await viewModel.loadData(showLoading: false) }
             }
             .sheet(isPresented: $showingCreateEvent, onDismiss: {
                 Task { await viewModel.loadData() }
@@ -140,6 +141,9 @@ public struct HomeView: View {
                 if let chapterId = authViewModel.currentChapterId {
                     CreateCommitteeView(chapterId: chapterId)
                 }
+            }
+            .sheet(isPresented: $showingCompletedGoals) {
+                CompletedGoalsView(viewModel: viewModel)
             }
             .sheet(item: $selectedEvent, onDismiss: {
                 Task { await viewModel.loadData() }
@@ -213,9 +217,11 @@ private struct EventsSection: View {
 
 private struct GoalsSection: View {
     let goals: [Goal]
+    let hasCompletedGoals: Bool
     let isLoading: Bool
     let onCreateGoal: () -> Void
     let onSelectGoal: (Goal) -> Void
+    let onViewCompletedGoals: () -> Void
     
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
@@ -228,7 +234,7 @@ private struct GoalsSection: View {
             }
             .padding(.horizontal, Spacing.screenEdgePadding)
             
-            if goals.isEmpty && !isLoading {
+            if goals.isEmpty && !hasCompletedGoals && !isLoading {
                 EmptyStateCard(cardType: .goal) {
                     onCreateGoal()
                 }
@@ -242,6 +248,42 @@ private struct GoalsSection: View {
                                 .onTapGesture {
                                     onSelectGoal(goal)
                                 }
+                        }
+                        
+                        if hasCompletedGoals {
+                            Button {
+                                onViewCompletedGoals()
+                            } label: {
+                                VStack(spacing: Spacing.lg) {
+                                    ZStack {
+                                        Image(systemName: "checklist.checked")
+                                            .font(.system(size: 120, weight: .light))
+                                            .foregroundColor(Theme.success)
+                                    }
+                                    .frame(width: 120, height: 120)
+                                    
+                                    VStack(spacing: Spacing.xxs) {
+                                        Text("Concluídas")
+                                            .font(Typography.headline)
+                                            .foregroundColor(Theme.textPrimary)
+                                            .multilineTextAlignment(.center)
+                                            .lineLimit(2)
+                                            .frame(height: 48, alignment: .center)
+                                    }
+                                }
+                                .padding(.horizontal, Spacing.md)
+                                .padding(.bottom, Spacing.md)
+                                .padding(.top, Spacing.xl)
+                                .frame(maxWidth: .infinity)
+                                .background(Theme.cardBackground)
+                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .stroke(Theme.border, lineWidth: 1)
+                                )
+                            }
+                            .buttonStyle(CardButtonStyle())
+                            .containerRelativeFrame(.horizontal, count: 2, span: 1, spacing: Spacing.xs)
                         }
                     }
                     .scrollTargetLayout()

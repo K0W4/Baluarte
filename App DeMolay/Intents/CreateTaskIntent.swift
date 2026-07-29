@@ -13,23 +13,25 @@ public struct CreateTaskIntent: AppIntent {
     public init() {}
     
     public func perform() async throws -> some IntentResult & ProvidesDialog {
-        guard let chapterId = UserDefaultsManager.shared.currentChapterId,
-              let userId = UserDefaultsManager.shared.currentUserId else {
+        guard let chapterId = await UserDefaultsManager.shared.currentChapterId,
+              let userId = await UserDefaultsManager.shared.currentUserId else {
             return .result(dialog: "Você precisa estar autenticado para criar uma tarefa.")
         }
         
-        let newTask = ChapterTask(
-            id: UUID(),
-            chapterId: chapterId,
-            creatorId: userId,
-            assigneeId: nil,
-            committeeId: nil,
-            title: title.trimmingCharacters(in: .whitespacesAndNewlines),
-            description: "",
-            isCompleted: false,
-            dueDate: nil,
-            createdAt: Date()
-        )
+        let newTask = await MainActor.run {
+            ChapterTask(
+                id: UUID(),
+                chapterId: chapterId,
+                creatorId: userId,
+                assigneeId: nil,
+                committeeId: nil,
+                title: title.trimmingCharacters(in: .whitespacesAndNewlines),
+                description: "",
+                isCompleted: false,
+                dueDate: nil,
+                createdAt: Date()
+            )
+        }
         
         try await Services.task.createTask(newTask)
         

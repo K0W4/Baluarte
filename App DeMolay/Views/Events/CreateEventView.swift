@@ -64,7 +64,7 @@ public struct CreateEventView: View {
                 }
             }
             .scrollDismissesKeyboard(.interactively)
-            .navigationTitle("Novo Evento")
+            .navigationTitle("Novo evento")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {

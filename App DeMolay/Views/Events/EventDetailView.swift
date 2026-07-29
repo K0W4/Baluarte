@@ -48,7 +48,7 @@ public struct EventDetailView: View {
                             Image(systemName: viewModel.isUserConfirmed ? "checkmark.circle.fill" : "person.crop.circle.badge.plus")
                                 .foregroundColor(viewModel.isUserConfirmed ? Theme.success : Theme.accent)
                                 .frame(width: 24, height: 24)
-                            Text(viewModel.isUserConfirmed ? "Presença Confirmada" : "Confirmar Presença")
+                            Text(viewModel.isUserConfirmed ? "Presença confirmada" : "Confirmar presença")
                                 .foregroundColor(Theme.textPrimary)
                         }
                     }
@@ -109,10 +109,9 @@ public struct EventDetailView: View {
                     Button(action: {
                         showingDeleteAlert = true
                     }) {
-                        Text("Excluir Evento")
-                            .foregroundColor(Theme.destructive)
+                        Text("Excluir evento")
                     }
-                    .buttonStyle(PrimaryButtonStyle())
+                    .buttonStyle(DestructiveButtonStyle())
                 }
                 .listRowBackground(Color.clear)
                 .listRowInsets(EdgeInsets())
@@ -157,7 +156,7 @@ public struct EventDetailView: View {
                     .disabled(!viewModel.isValid || !viewModel.hasChanges || viewModel.isLoading)
                 }
             }
-            .alert("Excluir Evento", isPresented: $showingDeleteAlert) {
+            .alert("Excluir evento", isPresented: $showingDeleteAlert) {
                 Button("Cancelar", role: .cancel) { showingDeleteAlert = false }
                 Button("Excluir", role: .destructive) {
                     Task {

@@ -76,7 +76,7 @@ struct ChapterSelectionView: View {
                     Button(action: {
                         showCreateChapter = true
                     }) {
-                        Text("Criar Novo Capítulo")
+                        Text("Criar novo capítulo")
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(PrimaryButtonStyle())

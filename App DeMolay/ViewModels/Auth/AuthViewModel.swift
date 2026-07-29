@@ -161,6 +161,23 @@ public final class AuthViewModel {
     }
     
     @MainActor
+    public func updateProfile(fullName: String, cid: String, birthdate: Date?) async -> Bool {
+        guard case let .authenticated(user, member) = self.state, var existingMember = member else { return false }
+        
+        do {
+            existingMember.fullName = fullName
+            existingMember.cid = cid
+            existingMember.birthdate = birthdate
+            try await memberService.updateMember(existingMember)
+            self.state = .authenticated(user, existingMember)
+            return true
+        } catch {
+            self.errorMessage = AppError.from(error).userMessage
+            return false
+        }
+    }
+    
+    @MainActor
     public func signOut() async {
         self.state = .loading
         do {

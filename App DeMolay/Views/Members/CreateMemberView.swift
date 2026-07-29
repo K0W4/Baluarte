@@ -88,7 +88,7 @@ public struct CreateMemberView: View {
                 }
             }
             .scrollDismissesKeyboard(.interactively)
-            .navigationTitle("Novo Membro")
+            .navigationTitle("Novo membro")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {

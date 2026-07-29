@@ -1,7 +1,7 @@
 import Foundation
 
 @propertyWrapper
-public struct SupabaseDate: Codable, Hashable {
+public struct SupabaseDate: Codable, Hashable, Sendable {
     public var wrappedValue: Date?
     
     public init(wrappedValue: Date?) {

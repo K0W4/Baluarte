@@ -1,6 +1,6 @@
 import Foundation
 
-public struct UserDefaultsManager {
+public struct UserDefaultsManager: @unchecked Sendable {
     public static let shared = UserDefaultsManager()
     
     private let defaults: UserDefaults

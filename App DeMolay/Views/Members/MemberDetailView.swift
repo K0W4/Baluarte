@@ -69,10 +69,11 @@ public struct MemberDetailView: View {
                     Button(action: {
                         showingDeleteAlert = true
                     }) {
-                        Text("Excluir Membro")
-                            .foregroundColor(Theme.destructive)
-                            .frame(maxWidth: .infinity, alignment: .center)
+                        Text("Excluir membro")
                     }
+                    .buttonStyle(DestructiveButtonStyle())
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets())
                 }
                 
                 if let errorMessage = viewModel.errorMessage {
@@ -112,7 +113,7 @@ public struct MemberDetailView: View {
                     .disabled(!viewModel.isValid || !viewModel.hasChanges || viewModel.isLoading)
                 }
             }
-            .alert("Excluir Membro", isPresented: $showingDeleteAlert) {
+            .alert("Excluir membro", isPresented: $showingDeleteAlert) {
                 Button("Cancelar", role: .cancel) { showingDeleteAlert = false }
                 Button("Excluir", role: .destructive) {
                     Task {

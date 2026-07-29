@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Chapter: Codable, Identifiable, Hashable {
+public struct Chapter: Codable, Identifiable, Hashable, Sendable {
     public let id: UUID
     public var name: String
     public var number: Int

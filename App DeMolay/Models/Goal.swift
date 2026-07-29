@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Goal: Codable, Identifiable, Hashable {
+public struct Goal: Codable, Identifiable, Hashable, Sendable {
     public let id: UUID
     public let chapterId: UUID
     public var title: String
@@ -8,6 +8,8 @@ public struct Goal: Codable, Identifiable, Hashable {
     public var currentValue: Double
     public var targetValue: Double
     public var targetDate: Date?
+    public var isCompleted: Bool
+    public var completedAt: Date?
     public var createdAt: Date
     
     public var progressPercentage: Double {
@@ -22,6 +24,8 @@ public struct Goal: Codable, Identifiable, Hashable {
         case currentValue = "current_value"
         case targetValue = "target_value"
         case targetDate = "target_date"
+        case isCompleted = "is_completed"
+        case completedAt = "completed_at"
         case createdAt = "created_at"
     }
 }

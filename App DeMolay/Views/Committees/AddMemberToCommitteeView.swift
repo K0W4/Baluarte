@@ -39,7 +39,7 @@ public struct AddMemberToCommitteeView: View {
                 }
             }
             .searchable(text: $searchText, prompt: "Buscar membro")
-            .navigationTitle("Adicionar Membro")
+            .navigationTitle("Adicionar membro")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {

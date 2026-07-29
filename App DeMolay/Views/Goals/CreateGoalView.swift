@@ -41,7 +41,7 @@ public struct CreateGoalView: View {
                 }
             }
             .scrollDismissesKeyboard(.interactively)
-            .navigationTitle("Nova Meta")
+            .navigationTitle("Nova meta")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {

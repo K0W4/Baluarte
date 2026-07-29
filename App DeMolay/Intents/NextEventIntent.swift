@@ -9,7 +9,7 @@ public struct NextEventIntent: AppIntent {
     public init() {}
     
     public func perform() async throws -> some IntentResult & ProvidesDialog & ShowsSnippetView {
-        guard let chapterId = UserDefaultsManager.shared.currentChapterId else {
+        guard let chapterId = await UserDefaultsManager.shared.currentChapterId else {
             return .result(dialog: "Você precisa estar autenticado para ver o próximo evento.")
         }
         

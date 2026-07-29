@@ -36,15 +36,32 @@ public struct GoalDetailView: View {
                 } header: {
                     Text("Informações Básicas")
                 }
+                .disabled(viewModel.isCompleted)
+                if !viewModel.isCompleted {
+                    Section {
+                        Button(action: {
+                            Task {
+                                let success = await viewModel.completeGoal()
+                                if success { dismiss() }
+                            }
+                        }) {
+                            Text("Concluir meta")
+                        }
+                        .buttonStyle(PrimaryButtonStyle())
+                        .listRowBackground(Color.clear)
+                        .listRowInsets(EdgeInsets())
+                    }
+                }
                 
                 Section {
                     Button(action: {
                         showingDeleteAlert = true
                     }) {
-                        Text("Excluir Meta")
-                            .foregroundColor(Theme.destructive)
-                            .frame(maxWidth: .infinity, alignment: .center)
+                        Text("Excluir meta")
                     }
+                    .buttonStyle(DestructiveButtonStyle())
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets())
                 }
                 
                 if let errorMessage = viewModel.errorMessage {
@@ -70,21 +87,23 @@ public struct GoalDetailView: View {
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        Task {
-                            let success = await viewModel.saveChanges()
-                            if success { dismiss() }
+                    if !viewModel.isCompleted {
+                        Button(action: {
+                            Task {
+                                let success = await viewModel.saveChanges()
+                                if success { dismiss() }
+                            }
+                        }) {
+                            Image(systemName: "checkmark")
+                                .font(.body.weight(.semibold))
                         }
-                    }) {
-                        Image(systemName: "checkmark")
-                            .font(.body.weight(.semibold))
+                        .font(.body.bold())
+                        .foregroundColor(viewModel.isValid && viewModel.hasChanges ? Theme.accent : Theme.textSecondary.opacity(0.5))
+                        .disabled(!viewModel.isValid || !viewModel.hasChanges || viewModel.isLoading)
                     }
-                    .font(.body.bold())
-                    .foregroundColor(viewModel.isValid && viewModel.hasChanges ? Theme.accent : Theme.textSecondary.opacity(0.5))
-                    .disabled(!viewModel.isValid || !viewModel.hasChanges || viewModel.isLoading)
                 }
             }
-            .alert("Excluir Meta", isPresented: $showingDeleteAlert) {
+            .alert("Excluir meta", isPresented: $showingDeleteAlert) {
                 Button("Cancelar", role: .cancel) { showingDeleteAlert = false }
                 Button("Excluir", role: .destructive) {
                     Task {

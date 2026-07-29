@@ -4,14 +4,14 @@ import Supabase
 import Auth
 
 public struct ConfirmAttendanceIntent: AppIntent {
-    public static var title: LocalizedStringResource = "Confirmar Presença no Capítulo"
+    public static var title: LocalizedStringResource = "Confirmar presença no capítulo"
     public static var description = IntentDescription("Confirma sua presença no próximo evento agendado do Capítulo.")
     
     public init() {}
     
     public func perform() async throws -> some IntentResult & ProvidesDialog {
-        guard let chapterId = UserDefaultsManager.shared.currentChapterId,
-              let userId = UserDefaultsManager.shared.currentUserId else {
+        guard let chapterId = await UserDefaultsManager.shared.currentChapterId,
+              let userId = await UserDefaultsManager.shared.currentUserId else {
             return .result(dialog: "Você precisa estar autenticado para confirmar presença.")
         }
         

@@ -44,6 +44,8 @@ public final class CreateGoalViewModel {
             currentValue: 0,
             targetValue: target,
             targetDate: targetDate,
+            isCompleted: false,
+            completedAt: nil,
             createdAt: Date()
         )
         

@@ -23,7 +23,7 @@ public struct DeMolayShortcutsProvider: AppShortcutsProvider {
                 "Confirmar presença no \(.applicationName)",
                 "Confirmar presença na próxima reunião do \(.applicationName)"
             ],
-            shortTitle: "Confirmar Presença",
+            shortTitle: "Confirmar presença",
             systemImageName: "checkmark.circle"
         )
         
