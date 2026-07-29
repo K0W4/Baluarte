@@ -92,33 +92,7 @@ public struct CommitteeDetailView: View {
                     }
                 }
                 
-                if !viewModel.committeeTasks.isEmpty {
-                    Section {
-                        ForEach(viewModel.committeeTasks) { task in
-                            Button(action: {
-                                Task { await viewModel.toggleTaskCompletion(taskId: task.id) }
-                            }) {
-                                HStack(spacing: Spacing.md) {
-                                    Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
-                                        .foregroundColor(task.isCompleted ? Theme.accent : Theme.textSecondary)
-                                        .font(Typography.title3)
-                                    
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        Text(task.title)
-                                            .font(Typography.body)
-                                            .foregroundColor(task.isCompleted ? Theme.textSecondary : Theme.textPrimary)
-                                            .strikethrough(task.isCompleted)
-                                            .lineLimit(1)
-                                    }
-                                }
-                                .padding(.vertical, 4)
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    } header: {
-                        Text("Tarefas Pendentes")
-                    }
-                }
+
                 
                 Section {
                     Button(action: {
