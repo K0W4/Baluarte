@@ -13,22 +13,14 @@ struct AnalysisView: View {
                 Theme.backgroundPrimary
                     .ignoresSafeArea()
                 
-                ScrollView(showsIndicators: false) {
+                ScrollView(.vertical, showsIndicators: false) {
                     VStack(spacing: Spacing.md) {
-                        VStack(spacing: Spacing.xs) {
-                            Image(systemName: "apple.intelligence")
-                                .font(.system(size: 40))
-                                .foregroundStyle(Theme.accent)
-                                .accessibilityLabel("Inteligência Apple")
-                            
-                            Text("Painel Estratégico")
-                                .font(Typography.title2)
-                            
-                            Text("Análises geradas por Apple Intelligence")
-                                .font(Typography.subheadline)
-                                .foregroundColor(Theme.textSecondary)
-                        }
-                        .padding(.top, Spacing.xl)
+                        Text("Insights detalhados sobre o seu Capítulo")
+                            .font(Typography.subheadline)
+                            .foregroundColor(Theme.textSecondary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal, Spacing.screenEdgePadding)
+                            .padding(.top, Spacing.xs)
                         
                         if let chapterId = authViewModel.currentChapterId {
                             SmartSummaryCard(chapterId: chapterId)
@@ -41,10 +33,10 @@ struct AnalysisView: View {
                                 .padding()
                                 .frame(height: 300)
                         } else {
-                            let displayGrouped: [(key: AnalysisCategory, value: [DisplayedAnalysis])] = viewModel.isLoading ? [
-                                (key: .membership, value: [DisplayedAnalysis.skeletonList[0], DisplayedAnalysis.skeletonList[1], DisplayedAnalysis.skeletonList[2]]),
-                                (key: .structure, value: [DisplayedAnalysis.skeletonList[3], DisplayedAnalysis.skeletonList[4], DisplayedAnalysis.skeletonList[5]])
-                            ] : viewModel.groupedAnalyses
+                            let displayGrouped: [(key: AnalysisCategory, value: [ConsolidatedInsight])] = viewModel.isLoading ? [
+                                (key: .membership, value: [ConsolidatedInsight(category: .membership, severity: .info, items: [DisplayedAnalysis.skeletonList[0]], primaryActionLabel: nil)]),
+                                (key: .structure, value: [ConsolidatedInsight(category: .structure, severity: .info, items: [DisplayedAnalysis.skeletonList[3]], primaryActionLabel: nil)])
+                            ] : viewModel.consolidatedGroupedAnalyses
 
                             if displayGrouped.isEmpty && !viewModel.isLoading {
                                 VStack(spacing: Spacing.sm) {
@@ -61,50 +53,29 @@ struct AnalysisView: View {
                                 .padding(Spacing.xl)
                                 .frame(height: 300)
                             } else {
-                                VStack(spacing: Spacing.xl) {
+                                VStack(spacing: Spacing.md) {
                                     ForEach(displayGrouped, id: \.key) { group in
-                                        VStack(alignment: .leading, spacing: Spacing.md) {
-                                            SectionHeaderView(title: titleFor(category: group.key))
-                                                .padding(.horizontal, Spacing.screenEdgePadding)
-                                            
-                                            ScrollView(.horizontal, showsIndicators: false) {
-                                                HStack(spacing: Spacing.xs) {
-                                                    ForEach(group.value) { analysis in
-                                                        AnalysisCard(analysis: analysis) {
-                                                            handleAction(for: analysis.category)
-                                                        }
-                                                        .containerRelativeFrame(.horizontal)
-                                                    }
-                                                }
-                                                .fixedSize(horizontal: false, vertical: true)
-                                                .scrollTargetLayout()
+                                        if let insight = group.value.first {
+                                            InsightSectionCard(insight: insight) {
+                                                handleAction(for: group.key)
                                             }
-                                            .contentMargins(.horizontal, Spacing.screenEdgePadding, for: .scrollContent)
-                                            .scrollTargetBehavior(.viewAligned)
+                                            .padding(.horizontal, Spacing.screenEdgePadding)
+                                            .skeleton(isLoading: viewModel.isLoading)
                                         }
-                                        .skeleton(isLoading: viewModel.isLoading)
                                     }
                                 }
                                 .padding(.bottom, 100)
                             }
                         }
                     }
+                    .containerRelativeFrame(.horizontal)
                 }
             }
             .navigationTitle("Análise")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        Task {
-                            if let chapterId = authViewModel.currentChapterId {
-                                await viewModel.fetchAnalyses(chapterId: chapterId)
-                            }
-                        }
-                    }) {
-                        Image(systemName: "arrow.clockwise")
-                    }
-                    .accessibilityLabel("Atualizar análises")
+            .navigationBarTitleDisplayMode(.large)
+            .refreshable {
+                if let chapterId = authViewModel.currentChapterId {
+                    await viewModel.fetchAnalyses(chapterId: chapterId)
                 }
             }
             .task {
@@ -153,13 +124,5 @@ struct AnalysisView: View {
         }
     }
     
-    private func titleFor(category: AnalysisCategory) -> String {
-        switch category {
-        case .membership: return "Membros e Iniciação"
-        case .structure: return "Estrutura e Comissões"
-        case .calendar: return "Calendário e Eventos"
-        case .engagement: return "Engajamento e Frequência"
-        case .financial: return "Planejamento Financeiro"
-        }
-    }
+
 }

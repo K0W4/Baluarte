@@ -26,11 +26,16 @@ public struct SmartSummaryCard: View {
                         )
                 )
         )
+        .task {
+            if viewModel.generatedSummary.isEmpty && !viewModel.isGenerating && viewModel.errorMessage == nil {
+                await viewModel.generateSummary(chapterId: chapterId)
+            }
+        }
     }
     
     private var headerSection: some View {
         HStack(spacing: Spacing.xs) {
-            Image(systemName: "apple.intelligence")
+            Image(systemName: "sparkles")
                 .font(.system(size: 20))
                 .foregroundStyle(Theme.accent)
                 .symbolEffect(.pulse, options: .repeating, isActive: viewModel.isGenerating)
@@ -51,7 +56,7 @@ public struct SmartSummaryCard: View {
                 }) {
                     Image(systemName: "arrow.triangle.2.circlepath")
                         .font(.system(size: 14, weight: .bold))
-                        .foregroundColor(Theme.textSecondary)
+                        .foregroundColor(Theme.accent)
                 }
             }
         }
@@ -60,9 +65,17 @@ public struct SmartSummaryCard: View {
     @ViewBuilder
     private var contentSection: some View {
         if let error = viewModel.errorMessage {
-            Label(error, systemImage: "exclamationmark.triangle.fill")
-                .font(Typography.subheadline)
-                .foregroundColor(Theme.destructive)
+            VStack(alignment: .leading, spacing: Spacing.xs) {
+                Label(error, systemImage: "exclamationmark.triangle.fill")
+                    .font(Typography.subheadline)
+                    .foregroundColor(Theme.destructive)
+                
+                Button("Tentar Novamente") {
+                    Task { await viewModel.generateSummary(chapterId: chapterId) }
+                }
+                .font(Typography.caption1.weight(.bold))
+                .foregroundColor(Theme.accent)
+            }
         } else if viewModel.generatedSummary.isEmpty && !viewModel.isGenerating {
             emptyStateSection
         } else if viewModel.isGenerating && viewModel.generatedSummary.isEmpty {
@@ -119,22 +132,13 @@ public struct SmartSummaryCard: View {
                 .contentTransition(.interpolate)
                 .animation(.spring(response: 0.3, dampingFraction: 0.8), value: viewModel.generatedSummary)
             
-            if viewModel.generatedSummary.count > 200 {
+            if viewModel.generatedSummary.count > 300 {
                 Button(action: { withAnimation { isExpanded.toggle() } }) {
                     Text(isExpanded ? "Ver menos" : "Ver mais")
                         .font(Typography.caption1)
                         .foregroundColor(Theme.accent)
                 }
             }
-            
-            HStack(spacing: Spacing.xs) {
-                Image(systemName: "apple.intelligence")
-                    .font(.system(size: 10))
-                Text("Gerado por Apple Intelligence")
-                    .font(Typography.caption2)
-            }
-            .foregroundColor(Theme.textTertiary)
-            .padding(.top, Spacing.xs)
         }
     }
 }

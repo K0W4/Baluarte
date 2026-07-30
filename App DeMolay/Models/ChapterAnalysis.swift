@@ -58,3 +58,33 @@ struct DisplayedAnalysis: Identifiable, Hashable {
         self.suggestedActionLabel = actionLabel
     }
 }
+
+struct ConsolidatedInsight: Identifiable, Hashable {
+    let id = UUID()
+    let category: AnalysisCategory
+    let severity: AnalysisSeverity
+    let items: [DisplayedAnalysis]
+    let primaryActionLabel: String?
+
+    var title: String {
+        switch category {
+        case .membership: return "Membros e Iniciação"
+        case .structure: return "Estrutura e Comissões"
+        case .calendar: return "Calendário e Eventos"
+        case .engagement: return "Engajamento e Frequência"
+        case .financial: return "Planejamento Financeiro"
+        }
+    }
+
+    var iconName: String {
+        switch category {
+        case .membership: return "person.2.fill"
+        case .structure: return "building.columns.fill"
+        case .calendar: return "calendar.badge.exclamationmark"
+        case .engagement: return "chart.line.uptrend.xyaxis"
+        case .financial: return "dollarsign.circle.fill"
+        }
+    }
+
+    var itemCount: Int { items.count }
+}

@@ -54,7 +54,7 @@ struct ProfileView: View {
                                 showLeaveChapterAlert = true
                             }) {
                                 Text("Sair do capítulo")
-                                    .foregroundColor(Theme.destructive)
+                                    .foregroundColor(Theme.textPrimary)
                             }
                             
                             Button(action: {
@@ -131,7 +131,7 @@ struct ProfileInfoRow: View {
     var body: some View {
         HStack(spacing: Spacing.md) {
             Image(systemName: icon)
-                .foregroundColor(Theme.accent)
+                .foregroundColor(Theme.textPrimary)
                 .frame(width: 24)
             
             Text(title)

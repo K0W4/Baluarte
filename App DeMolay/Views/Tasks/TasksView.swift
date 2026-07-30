@@ -29,7 +29,7 @@ public struct TasksView: View {
                     .padding(.vertical, Spacing.sm)
                     .background(Theme.backgroundPrimary)
 
-                    if viewModel.activeTasks.isEmpty && viewModel.completedTasks.isEmpty && !viewModel.isLoading {
+                    if viewModel.displayIndividualTasks.isEmpty && viewModel.displayCommitteeTasks.isEmpty && viewModel.displayCompletedTasks.isEmpty && !viewModel.isLoading {
                         ScrollView {
                             VStack(spacing: Spacing.md) {
                                 if let errorMessage = viewModel.errorMessage {
@@ -42,9 +42,9 @@ public struct TasksView: View {
                                 EmptyStateCard(cardType: .task) {
                                     showingCreateTask = true
                                 }
-                                .padding(.horizontal, Spacing.screenEdgePadding)
                             }
-                            .padding(Spacing.screenEdgePadding)
+                            .padding(.horizontal, Spacing.screenEdgePadding)
+                            .padding(.top, Spacing.screenEdgePadding)
                         }
                         .scrollIndicators(.hidden)
                         .tint(Theme.accent)

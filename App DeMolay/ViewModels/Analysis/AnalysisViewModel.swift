@@ -37,6 +37,34 @@ final class AnalysisViewModel {
             return nil
         }
     }
+
+    var consolidatedGroupedAnalyses: [(key: AnalysisCategory, value: [ConsolidatedInsight])] {
+        let order: [AnalysisCategory] = [.membership, .structure, .calendar, .engagement, .financial]
+
+        return order.compactMap { category in
+            let categoryAnalyses = displayedAnalyses.filter { $0.category == category }
+            guard !categoryAnalyses.isEmpty else { return nil }
+
+            let maxSeverity = categoryAnalyses.map(\.severity).max(by: { severityRank($0) < severityRank($1) }) ?? .info
+
+            let consolidated = ConsolidatedInsight(
+                category: category,
+                severity: maxSeverity,
+                items: categoryAnalyses,
+                primaryActionLabel: categoryAnalyses.compactMap(\.suggestedActionLabel).first
+            )
+
+            return (key: category, value: [consolidated])
+        }
+    }
+
+    private func severityRank(_ severity: AnalysisSeverity) -> Int {
+        switch severity {
+        case .info: return 0
+        case .warning: return 1
+        case .actionRequired: return 2
+        }
+    }
     
     @MainActor
     func fetchAnalyses(chapterId: UUID) async {
@@ -69,6 +97,8 @@ final class AnalysisViewModel {
             print("Erro ao gerar análise: \(error)")
         }
         
-        self.isLoading = false
+        withAnimation(.easeInOut(duration: 0.3)) {
+            self.isLoading = false
+        }
     }
 }

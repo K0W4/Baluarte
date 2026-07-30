@@ -13,7 +13,7 @@ final class AnalysisTranslationService: AnalysisTranslationServiceProtocol {
         case .membership:
             if let countStr = analysis.contextData["agingOutCount"], let count = Int(countStr) {
                 generatedTitle = "Oportunidade de Renovação"
-                generatedMessage = "O Capítulo conta com **\(count) irmão(s)** alcançando a maioridade neste semestre! É o momento perfeito para organizarmos uma iniciação e garantirmos novos líderes para nossa ordem."
+                generatedMessage = "\(count) irmão(s) completam 21 anos neste semestre. Hora de planejar a próxima iniciação."
                 suggestedAction = "Ver Membros"
             } else {
                 generatedTitle = analysis.fallbackTitle
@@ -21,8 +21,8 @@ final class AnalysisTranslationService: AnalysisTranslationServiceProtocol {
             }
         case .structure:
             if let missing = analysis.contextData["missingCommittee"] {
-                generatedTitle = "Potencialize sua Gestão"
-                generatedMessage = "Para envolver mais irmãos e alavancar nossos resultados, que tal estruturar a **Comissão de \(missing)**? Delegar tarefas é o segredo de um Capítulo dinâmico."
+                generatedTitle = missing
+                generatedMessage = ""
                 suggestedAction = "Criar Comissão"
             } else {
                 generatedTitle = analysis.fallbackTitle
@@ -30,17 +30,14 @@ final class AnalysisTranslationService: AnalysisTranslationServiceProtocol {
             }
         case .calendar:
             if let event = analysis.contextData["upcomingEvent"] {
-                let sentimentScore = analyzeSentiment(for: event)
-                let isPositive = sentimentScore >= 0.0
                 let isCerimonial = isRelatedToCeremony(event)
                 
                 if isCerimonial {
-                    generatedTitle = "Foco na Ritualística"
-                    generatedMessage = "O **\(event)** é um evento solene. Garantir a excelência na ritualística é o que define nosso Capítulo!"
+                    generatedTitle = event
+                    generatedMessage = ""
                 } else {
-                    generatedTitle = isPositive ? "Grande Evento à Vista" : "Planeje o Sucesso"
-                    let prefix = isPositive ? "Temos uma excelente oportunidade chegando:" : "Fique atento ao nosso calendário:"
-                    generatedMessage = "\(prefix) O **\(event)** já está no horizonte! Planejar essa data com antecedência garante uma atividade memorável."
+                    generatedTitle = event
+                    generatedMessage = ""
                 }
                 
                 suggestedAction = "Criar Evento"
@@ -51,7 +48,7 @@ final class AnalysisTranslationService: AnalysisTranslationServiceProtocol {
         case .engagement:
             if let countStr = analysis.contextData["count"], let count = Int(countStr) {
                 generatedTitle = "Acolhimento Fraternal"
-                generatedMessage = "Senti a falta de **\(count) irmão(s)** nas últimas três reuniões. Uma mensagem amigável da **Comissão de Hospitalaria** fará toda a diferença para mostrar que nos importamos com eles."
+                generatedMessage = "\(count) irmão(s) faltaram às últimas 3 reuniões. A Hospitalaria deve entrar em contato."
                 suggestedAction = nil
             } else {
                 generatedTitle = analysis.fallbackTitle
@@ -61,10 +58,10 @@ final class AnalysisTranslationService: AnalysisTranslationServiceProtocol {
             if let deadline = analysis.contextData["deadline"] {
                 if deadline.contains("Capitação") {
                     generatedTitle = "Saúde Financeira em Dia"
-                    generatedMessage = "A época da **Capitação Anual** se aproxima. Um bom planejamento agora garante que o Capítulo mantenha suas obrigações sem correria, mantendo o caixa saudável."
+                    generatedMessage = "Prazo da Capitação Anual se aproxima. Verifique se o caixa está preparado."
                 } else {
                     generatedTitle = "Fechamento de Ouro"
-                    generatedMessage = "Nosso semestre foi incrível! Aproveite este momento de transição para deixar as contas organizadas e entregar um caixa redondo para a próxima gestão."
+                    generatedMessage = "Fim de semestre: organize as contas e feche o caixa para a próxima gestão."
                 }
                 suggestedAction = nil
             } else {
@@ -81,16 +78,6 @@ final class AnalysisTranslationService: AnalysisTranslationServiceProtocol {
         )
     }
     
-    private func analyzeSentiment(for text: String) -> Double {
-        let tagger = NLTagger(tagSchemes: [.sentimentScore])
-        tagger.string = text
-        let (sentiment, _) = tagger.tag(at: text.startIndex, unit: .paragraph, scheme: .sentimentScore)
-        
-        if let scoreStr = sentiment?.rawValue, let score = Double(scoreStr) {
-            return score
-        }
-        return 0.0
-    }
     
     private func isRelatedToCeremony(_ text: String) -> Bool {
         guard let embedding = NLEmbedding.wordEmbedding(for: .portuguese) else { return false }
