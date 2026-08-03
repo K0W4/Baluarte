@@ -11,6 +11,7 @@ struct AppDeMolay: App {
             RootView()
                 .environment(authViewModel)
                 .task {
+                    _ = await NotificationService.shared.requestAuthorization()
                     if isFirstLaunch {
                         await authViewModel.signOut()
                         isFirstLaunch = false

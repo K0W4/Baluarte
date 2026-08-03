@@ -86,9 +86,9 @@ public struct EmptyStateCard: View {
         .accessibilityLabel("\(cardType.title). \(cardType.subtitle)")
         .padding(Spacing.md)
         .background(Theme.cardBackground)
-        .clipShape(.rect(cornerRadius: 16))
+        .clipShape(.rect(cornerRadius: Spacing.cornerRadius))
         .overlay(
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: Spacing.cornerRadius)
                 .stroke(Theme.border, lineWidth: 1)
         )
     }

@@ -4,6 +4,7 @@ public struct EventDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel: EventDetailViewModel
     @State private var showingDeleteAlert = false
+    @State private var isEditing = false
     
     public init(event: Event, currentUserId: UUID) {
         self._viewModel = State(initialValue: EventDetailViewModel(event: event, currentUserId: currentUserId))
@@ -28,6 +29,7 @@ public struct EventDetailView: View {
                 } header: {
                     Text("Informações Básicas")
                 }
+                .disabled(!isEditing)
                 
                 Section {
                     TextField("Observações (Opcional)", text: $viewModel.notes, axis: .vertical)
@@ -35,6 +37,7 @@ public struct EventDetailView: View {
                 } header: {
                     Text("Detalhes")
                 }
+                .disabled(!isEditing)
                 
                 Section {
                     Button(action: {
@@ -144,20 +147,34 @@ public struct EventDetailView: View {
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        HapticManager.shared.impact(style: .medium)
-                        Task {
-                            let success = await viewModel.saveChanges()
-                            if success { dismiss() }
+                    if isEditing {
+                        Button(action: {
+                            HapticManager.shared.impact(style: .medium)
+                            Task {
+                                let success = await viewModel.saveChanges()
+                                if success { 
+                                    isEditing = false 
+                                }
+                            }
+                        }) {
+                            Image(systemName: "checkmark")
+                                .font(.body.weight(.semibold))
                         }
-                    }) {
-                        Image(systemName: "checkmark")
-                            .font(.body.weight(.semibold))
+                        .font(.body.bold())
+                        .foregroundColor(viewModel.isValid && viewModel.hasChanges ? Theme.accent : Theme.textSecondary.opacity(0.5))
+                        .disabled(!viewModel.isValid || !viewModel.hasChanges || viewModel.isLoading)
+                        .accessibilityLabel("Salvar alterações")
+                    } else {
+                        Button(action: {
+                            HapticManager.shared.impact(style: .light)
+                            isEditing = true
+                        }) {
+                            Image(systemName: "pencil")
+                                .font(.body.weight(.semibold))
+                        }
+                        .foregroundColor(Theme.accent)
+                        .accessibilityLabel("Editar")
                     }
-                    .font(.body.bold())
-                    .foregroundColor(viewModel.isValid && viewModel.hasChanges ? Theme.accent : Theme.textSecondary.opacity(0.5))
-                    .disabled(!viewModel.isValid || !viewModel.hasChanges || viewModel.isLoading)
-                    .accessibilityLabel("Salvar alterações")
                 }
             }
             .alert("Excluir evento", isPresented: $showingDeleteAlert) {

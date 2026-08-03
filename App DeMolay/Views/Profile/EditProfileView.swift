@@ -70,7 +70,7 @@ struct EditProfileView: View {
                         if isLoading {
                             ProgressView()
                         } else {
-                            Image(systemName: "paperplane.fill")
+                            Image(systemName: "checkmark")
                                 .font(.body.bold())
                                 .foregroundColor(fullName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? Theme.textSecondary.opacity(0.5) : Theme.accent)
                         }

@@ -22,7 +22,7 @@ struct ToastModifier: ViewModifier {
                     .padding(.horizontal, Spacing.lg)
                     .padding(.vertical, Spacing.md)
                     .background(Theme.backgroundPrimary)
-                    .cornerRadius(Spacing.md)
+                    .cornerRadius(Spacing.cornerRadius)
                     .shadow(color: Theme.textPrimary.opacity(0.1), radius: 10, x: 0, y: 5)
                     .padding(.top, Spacing.xl)
                     .transition(.move(edge: .top).combined(with: .opacity))

@@ -1,4 +1,5 @@
 import Foundation
+import Security
 
 struct WidgetDataManager {
     static let shared = WidgetDataManager()
@@ -12,7 +13,20 @@ struct WidgetDataManager {
         UserDefaults(suiteName: "group.com.kowa.baluarte")?.string(forKey: "currentChapterId")
     }
     private var accessToken: String? {
-        UserDefaults(suiteName: "group.com.kowa.baluarte")?.string(forKey: "accessToken")
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: "com.kowa.baluarte.supabase",
+            kSecAttrAccount as String: "accessToken",
+            kSecReturnData as String: true,
+            kSecMatchLimit as String: kSecMatchLimitOne
+        ]
+        var dataTypeRef: AnyObject?
+        let status = SecItemCopyMatching(query as CFDictionary, &dataTypeRef)
+        if status == errSecSuccess, let data = dataTypeRef as? Data {
+            return String(data: data, encoding: .utf8)
+        }
+        // Fallback para quem estiver com o app antigo, migração:
+        return UserDefaults(suiteName: "group.com.kowa.baluarte")?.string(forKey: "accessToken")
     }
     
     private var defaultHeaders: [String: String] {

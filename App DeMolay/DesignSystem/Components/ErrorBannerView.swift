@@ -55,9 +55,9 @@ public struct ErrorBannerView: View {
         }
         .padding(Spacing.md)
         .background(Theme.cardBackground)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .clipShape(RoundedRectangle(cornerRadius: Spacing.cornerRadius))
         .overlay(
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: Spacing.cornerRadius)
                 .stroke(Theme.warning.opacity(0.5), lineWidth: 1)
         )
         .transition(.move(edge: .top).combined(with: .opacity))

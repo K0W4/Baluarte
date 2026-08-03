@@ -16,10 +16,10 @@ public struct SmartSummaryCard: View {
         }
         .padding(Spacing.md)
         .background(
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: Spacing.cornerRadius)
                 .fill(Theme.backgroundSecondary)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 16)
+                    RoundedRectangle(cornerRadius: Spacing.cornerRadius)
                         .stroke(
                             viewModel.generatedSummary.isEmpty ? Color.clear : Theme.accent.opacity(0.3),
                             lineWidth: 1
@@ -103,7 +103,7 @@ public struct SmartSummaryCard: View {
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, Spacing.sm)
                 .background(Theme.accent)
-                .cornerRadius(12)
+                .cornerRadius(Spacing.cornerRadius)
             }
         }
     }
@@ -114,7 +114,7 @@ public struct SmartSummaryCard: View {
                 .font(Typography.subheadline)
                 .foregroundColor(Theme.textSecondary)
             
-            Text("...")
+            Text(verbatim: "...")
                 .font(Typography.subheadline)
                 .foregroundColor(Theme.accent)
                 .contentTransition(.numericText())

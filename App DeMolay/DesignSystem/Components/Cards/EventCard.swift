@@ -55,7 +55,7 @@ public struct EventCard: View {
                 .background(Theme.border)
             
             HStack(alignment: .top, spacing: Spacing.xxs) {
-                Text("Data:")
+                (Text("Data") + Text(verbatim: ":"))
                     .font(Typography.subheadline)
                     .foregroundColor(Theme.textPrimary)
                 
@@ -66,7 +66,7 @@ public struct EventCard: View {
             
             if let notes = event.notes, !notes.isEmpty {
                 HStack(alignment: .top, spacing: Spacing.xxs) {
-                    Text("Detalhes:")
+                    (Text("Detalhes") + Text(verbatim: ":"))
                         .font(Typography.subheadline)
                         .foregroundColor(Theme.textPrimary)
                     
@@ -98,9 +98,9 @@ public struct EventCard: View {
         .accessibilityAddTraits(.isButton)
         .padding(Spacing.md)
         .background(Theme.cardBackground)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .clipShape(RoundedRectangle(cornerRadius: Spacing.cornerRadius))
         .overlay(
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: Spacing.cornerRadius)
                 .stroke(Theme.border, lineWidth: 1)
         )
     }

@@ -31,10 +31,14 @@ public struct UserDefaultsManager: @unchecked Sendable {
     
     public var accessToken: String? {
         get {
-            return defaults.string(forKey: "accessToken")
+            return KeychainHelper.shared.readString(service: "com.kowa.baluarte.supabase", account: "accessToken")
         }
         nonmutating set {
-            defaults.set(newValue, forKey: "accessToken")
+            if let newValue = newValue {
+                KeychainHelper.shared.save(newValue, service: "com.kowa.baluarte.supabase", account: "accessToken")
+            } else {
+                KeychainHelper.shared.delete(service: "com.kowa.baluarte.supabase", account: "accessToken")
+            }
         }
     }
 }

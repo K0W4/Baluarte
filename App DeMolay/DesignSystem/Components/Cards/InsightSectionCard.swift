@@ -51,9 +51,9 @@ struct InsightSectionCard: View {
         }
         .padding(Spacing.md)
         .background(Theme.cardBackground)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .clipShape(RoundedRectangle(cornerRadius: Spacing.cornerRadius))
         .overlay(
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: Spacing.cornerRadius)
                 .stroke(Theme.border, lineWidth: 1)
         )
         .accessibilityElement(children: .combine)

@@ -107,9 +107,9 @@ public struct CommitteeCard: View {
         .accessibilityHint("Toque para ver detalhes da comissão")
         .padding(Spacing.md)
         .background(Theme.cardBackground)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .clipShape(RoundedRectangle(cornerRadius: Spacing.cornerRadius))
         .overlay(
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: Spacing.cornerRadius)
                 .stroke(Theme.border)
         )
     }

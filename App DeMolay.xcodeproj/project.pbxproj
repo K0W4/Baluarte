@@ -252,10 +252,12 @@
 				};
 			};
 			buildConfigurationList = 932EA1793006CB3D00CD22BF /* Build configuration list for PBXProject "App DeMolay" */;
-			developmentRegion = en;
+			developmentRegion = "pt-BR";
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				"pt-BR",
 				en,
+				es,
 				Base,
 			);
 			mainGroup = 932EA1753006CB3D00CD22BF;

@@ -84,12 +84,14 @@ public final class EventDetailViewModel {
             if isUserConfirmed {
                 try await eventService.removeAttendance(eventId: event.id, userId: currentUserId)
                 event.confirmedAttendees?.removeAll(where: { $0 == currentUserId })
+                NotificationService.shared.cancelEventReminder(eventId: event.id.uuidString)
             } else {
                 try await eventService.confirmAttendance(eventId: event.id, userId: currentUserId)
                 if event.confirmedAttendees == nil {
                     event.confirmedAttendees = []
                 }
                 event.confirmedAttendees?.append(currentUserId)
+                NotificationService.shared.scheduleEventReminder(for: event.title, date: event.scheduledDate, eventId: event.id.uuidString)
             }
             await loadMembers()
             isLoading = false

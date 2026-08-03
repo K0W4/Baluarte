@@ -5,6 +5,7 @@ public struct CommitteeDetailView: View {
     @State private var viewModel: CommitteeDetailViewModel
     @State private var showingDeleteAlert = false
     @State private var showingAddMember = false
+    @State private var isEditing = false
     
     public init(committee: Committee, chapterId: UUID, currentUserId: UUID) {
         self._viewModel = State(initialValue: CommitteeDetailViewModel(committee: committee, chapterId: chapterId, currentUserId: currentUserId))
@@ -18,6 +19,7 @@ public struct CommitteeDetailView: View {
                 } header: {
                     Text("Informações Básicas")
                 }
+                .disabled(!isEditing)
                 
                 Section {
                     if viewModel.isFetchingMembers {
@@ -105,7 +107,7 @@ public struct CommitteeDetailView: View {
                 if let errorMessage = viewModel.errorMessage {
                     Section {
                         Text(errorMessage)
-                            .foregroundColor(.red)
+                            .foregroundColor(Theme.destructive)
                             .font(Typography.caption1)
                     }
                 }
@@ -125,18 +127,28 @@ public struct CommitteeDetailView: View {
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        Task {
-                            let success = await viewModel.saveChanges()
-                            if success { dismiss() }
+                    if isEditing {
+                        Button(action: {
+                            Task {
+                                let success = await viewModel.saveChanges()
+                                if success { isEditing = false }
+                            }
+                        }) {
+                            Image(systemName: "checkmark")
+                                .font(.body.weight(.semibold))
                         }
-                    }) {
-                        Image(systemName: "checkmark")
-                            .font(.body.weight(.semibold))
+                        .font(.body.bold())
+                        .foregroundColor(viewModel.isValid && viewModel.hasChanges ? Theme.accent : Theme.textSecondary.opacity(0.5))
+                        .disabled(!viewModel.isValid || !viewModel.hasChanges || viewModel.isLoading)
+                    } else {
+                        Button(action: {
+                            isEditing = true
+                        }) {
+                            Image(systemName: "pencil")
+                                .font(.body.weight(.semibold))
+                        }
+                        .foregroundColor(Theme.accent)
                     }
-                    .font(.body.bold())
-                    .foregroundColor(viewModel.isValid && viewModel.hasChanges ? Theme.accent : Theme.textSecondary.opacity(0.5))
-                    .disabled(!viewModel.isValid || !viewModel.hasChanges || viewModel.isLoading)
                 }
             }
             .alert("Excluir comissão", isPresented: $showingDeleteAlert) {

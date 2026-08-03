@@ -4,6 +4,7 @@ public struct GoalDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel: GoalDetailViewModel
     @State private var showingDeleteAlert = false
+    @State private var isEditing = false
     
     public init(goal: Goal) {
         self._viewModel = State(initialValue: GoalDetailViewModel(goal: goal))
@@ -36,7 +37,7 @@ public struct GoalDetailView: View {
                 } header: {
                     Text("Informações Básicas")
                 }
-                .disabled(viewModel.isCompleted)
+                .disabled(viewModel.isCompleted || !isEditing)
                 if !viewModel.isCompleted {
                     Section {
                         Button(action: {
@@ -91,20 +92,32 @@ public struct GoalDetailView: View {
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     if !viewModel.isCompleted {
-                        Button(action: {
-                            HapticManager.shared.impact(style: .medium)
-                            Task {
-                                let success = await viewModel.saveChanges()
-                                if success { dismiss() }
+                        if isEditing {
+                            Button(action: {
+                                HapticManager.shared.impact(style: .medium)
+                                Task {
+                                    let success = await viewModel.saveChanges()
+                                    if success { isEditing = false }
+                                }
+                            }) {
+                                Image(systemName: "checkmark")
+                                    .font(.body.weight(.semibold))
                             }
-                        }) {
-                            Image(systemName: "checkmark")
-                                .font(.body.weight(.semibold))
+                            .font(.body.bold())
+                            .foregroundColor(viewModel.isValid && viewModel.hasChanges ? Theme.accent : Theme.textSecondary.opacity(0.5))
+                            .disabled(!viewModel.isValid || !viewModel.hasChanges || viewModel.isLoading)
+                            .accessibilityLabel("Salvar alterações")
+                        } else {
+                            Button(action: {
+                                HapticManager.shared.impact(style: .light)
+                                isEditing = true
+                            }) {
+                                Image(systemName: "pencil")
+                                    .font(.body.weight(.semibold))
+                            }
+                            .foregroundColor(Theme.accent)
+                            .accessibilityLabel("Editar")
                         }
-                        .font(.body.bold())
-                        .foregroundColor(viewModel.isValid && viewModel.hasChanges ? Theme.accent : Theme.textSecondary.opacity(0.5))
-                        .disabled(!viewModel.isValid || !viewModel.hasChanges || viewModel.isLoading)
-                        .accessibilityLabel("Salvar alterações")
                     }
                 }
             }

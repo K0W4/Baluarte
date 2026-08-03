@@ -108,9 +108,9 @@ public struct ProgressRingCard: View {
         .padding(.top, Spacing.xl)
         .frame(maxWidth: .infinity)
         .background(Theme.cardBackground)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .clipShape(RoundedRectangle(cornerRadius: Spacing.cornerRadius))
         .overlay(
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: Spacing.cornerRadius)
                 .stroke(Theme.border, lineWidth: 1)
         )
         .onAppear {

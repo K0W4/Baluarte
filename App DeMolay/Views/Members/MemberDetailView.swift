@@ -4,6 +4,7 @@ public struct MemberDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel: MemberDetailViewModel
     @State private var showingDeleteAlert = false
+    @State private var isEditing = false
     
     public init(member: Member) {
         self._viewModel = State(initialValue: MemberDetailViewModel(member: member))
@@ -22,6 +23,7 @@ public struct MemberDetailView: View {
                 } header: {
                     Text("Dados Pessoais")
                 }
+                .disabled(!isEditing)
                 
                 Section {
                     Toggle("Ativo", isOn: $viewModel.isActive)
@@ -54,6 +56,7 @@ public struct MemberDetailView: View {
                 } header: {
                     Text("Status")
                 }
+                .disabled(!isEditing)
                 
                 Section {
                     Picker("Cargo", selection: $viewModel.role) {
@@ -64,6 +67,7 @@ public struct MemberDetailView: View {
                 } header: {
                     Text("Atuação no Capítulo")
                 }
+                .disabled(!isEditing)
                 
                 Section {
                     Button(action: {
@@ -101,20 +105,32 @@ public struct MemberDetailView: View {
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        HapticManager.shared.impact(style: .medium)
-                        Task {
-                            let success = await viewModel.saveChanges()
-                            if success { dismiss() }
+                    if isEditing {
+                        Button(action: {
+                            HapticManager.shared.impact(style: .medium)
+                            Task {
+                                let success = await viewModel.saveChanges()
+                                if success { isEditing = false }
+                            }
+                        }) {
+                            Image(systemName: "checkmark")
+                                .font(.body.weight(.semibold))
                         }
-                    }) {
-                        Image(systemName: "checkmark")
-                            .font(.body.weight(.semibold))
+                        .font(.body.bold())
+                        .foregroundColor(viewModel.isValid && viewModel.hasChanges ? Theme.accent : Theme.textSecondary.opacity(0.5))
+                        .disabled(!viewModel.isValid || !viewModel.hasChanges || viewModel.isLoading)
+                        .accessibilityLabel("Salvar alterações")
+                    } else {
+                        Button(action: {
+                            HapticManager.shared.impact(style: .light)
+                            isEditing = true
+                        }) {
+                            Image(systemName: "pencil")
+                                .font(.body.weight(.semibold))
+                        }
+                        .foregroundColor(Theme.accent)
+                        .accessibilityLabel("Editar")
                     }
-                    .font(.body.bold())
-                    .foregroundColor(viewModel.isValid && viewModel.hasChanges ? Theme.accent : Theme.textSecondary.opacity(0.5))
-                    .disabled(!viewModel.isValid || !viewModel.hasChanges || viewModel.isLoading)
-                    .accessibilityLabel("Salvar alterações")
                 }
             }
             .alert("Excluir membro", isPresented: $showingDeleteAlert) {

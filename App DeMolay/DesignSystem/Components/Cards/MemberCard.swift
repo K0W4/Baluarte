@@ -49,8 +49,8 @@ public struct MemberCard: View {
         .accessibilityAddTraits(.isButton)
         .padding(Spacing.md)
         .background(Theme.cardBackground)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
-        .overlay(RoundedRectangle(cornerRadius: 16).stroke(Theme.border, lineWidth: 1))
+        .clipShape(RoundedRectangle(cornerRadius: Spacing.cornerRadius))
+        .overlay(RoundedRectangle(cornerRadius: Spacing.cornerRadius).stroke(Theme.border, lineWidth: 1))
     }
     
     @ViewBuilder

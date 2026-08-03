@@ -16,4 +16,7 @@ public struct Spacing {
     public static let cardPadding: CGFloat = md
     public static let screenEdgePadding: CGFloat = md
     public static let elementGap: CGFloat = xs
+    
+    public static let cornerRadius: CGFloat = 16.0
+    public static let minTouchTarget: CGFloat = 44.0
 }

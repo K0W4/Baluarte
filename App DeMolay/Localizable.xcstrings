@@ -1,0 +1,2672 @@
+{
+  "sourceLanguage" : "pt-BR",
+  "strings" : {
+    "" : {
+
+    },
+    "\\(calendar.component(.day, from: date))" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\\(calendar.component(.day, from: date)) (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\\(calendar.component(.day, from: date)) (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\\(calendar.component(.day, from: date))"
+          }
+        }
+      }
+    },
+    "\\(completed) de \\(total) tarefas concluídas" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\\(completed) de \\(total) tarefas concluídas (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\\(completed) de \\(total) tarefas concluídas (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\\(completed) de \\(total) tarefas concluídas"
+          }
+        }
+      }
+    },
+    "\\(formattedCurrent)/\\(formattedTarget)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\\(formattedCurrent)/\\(formattedTarget) (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\\(formattedCurrent)/\\(formattedTarget) (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\\(formattedCurrent)/\\(formattedTarget)"
+          }
+        }
+      }
+    },
+    "\\(insight.itemCount)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\\(insight.itemCount) (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\\(insight.itemCount) (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\\(insight.itemCount)"
+          }
+        }
+      }
+    },
+    "\\(Int(progress * 100))%" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\\(Int(progress * 100))% (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\\(Int(progress * 100))% (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\\(Int(progress * 100))%"
+          }
+        }
+      }
+    },
+    "\\(progressPercentageValue)%" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\\(progressPercentageValue)% (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\\(progressPercentageValue)% (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\\(progressPercentageValue)%"
+          }
+        }
+      }
+    },
+    "\\(tasks.count - 3) tarefas restantes" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\\(tasks.count - 3) tarefas restantes (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\\(tasks.count - 3) tarefas restantes (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\\(tasks.count - 3) tarefas restantes"
+          }
+        }
+      }
+    },
+    "\\(viewModel.selectedMembersIds.count) selecionado(s)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\\(viewModel.selectedMembersIds.count) selecionado(s) (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\\(viewModel.selectedMembersIds.count) selecionado(s) (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\\(viewModel.selectedMembersIds.count) selecionado(s)"
+          }
+        }
+      }
+    },
+    "%@, %@, %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@, %2$@, %3$@"
+          }
+        }
+      }
+    },
+    "%@, %@, %@, %lld presenças" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@, %2$@, %3$@, %4$lld presenças"
+          }
+        }
+      }
+    },
+    "%@, %@%@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@, %2$@%3$@"
+          }
+        }
+      }
+    },
+    "%@, %lld por cento" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@, %2$lld por cento"
+          }
+        }
+      }
+    },
+    "%@, %lld tarefas pendentes, %lld tarefas concluídas" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@, %2$lld tarefas pendentes, %3$lld tarefas concluídas"
+          }
+        }
+      }
+    },
+    "%@. %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@. %2$@"
+          }
+        }
+      }
+    },
+    "%@/%@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@/%2$@"
+          }
+        }
+      }
+    },
+    "%lld" : {
+
+    },
+    "%lld de %lld membros" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld de %2$lld membros"
+          }
+        }
+      }
+    },
+    "%lld de %lld tarefas concluídas" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld de %2$lld tarefas concluídas"
+          }
+        }
+      }
+    },
+    "%lld membros" : {
+
+    },
+    "%lld por cento" : {
+
+    },
+    "%lld selecionado(s)" : {
+
+    },
+    "%lld tarefas restantes" : {
+
+    },
+    "%lld%%" : {
+
+    },
+    "• \\(item.title)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• \\(item.title) (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• \\(item.title) (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• \\(item.title)"
+          }
+        }
+      }
+    },
+    "• %@" : {
+
+    },
+    "0" : {
+
+    },
+    "100" : {
+
+    },
+    "Ações da Conta" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ações da Conta (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ações da Conta (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ações da Conta"
+          }
+        }
+      }
+    },
+    "Adicionando membro..." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionando membro... (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionando membro... (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionando membro..."
+          }
+        }
+      }
+    },
+    "Adicionar ao calendário" : {
+
+    },
+    "Adicionar membro" : {
+
+    },
+    "Adicionar novo membro" : {
+
+    },
+    "Alvo:" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alvo: (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alvo: (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alvo:"
+          }
+        }
+      }
+    },
+    "Analisando dados do Capítulo" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analisando dados do Capítulo (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analisando dados do Capítulo (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analisando dados do Capítulo"
+          }
+        }
+      }
+    },
+    "Análise" : {
+
+    },
+    "Ativo" : {
+
+    },
+    "Ativos (\\(viewModel.activeMembers.count))" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ativos (\\(viewModel.activeMembers.count)) (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ativos (\\(viewModel.activeMembers.count)) (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ativos (\\(viewModel.activeMembers.count))"
+          }
+        }
+      }
+    },
+    "Ativos (%lld)" : {
+
+    },
+    "Atuação no Capítulo" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atuação no Capítulo (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atuação no Capítulo (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atuação no Capítulo"
+          }
+        }
+      }
+    },
+    "Atual:" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atual: (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atual: (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atual:"
+          }
+        }
+      }
+    },
+    "Baluarte" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baluarte (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baluarte (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baluarte"
+          }
+        }
+      }
+    },
+    "Bem-vindo de volta" : {
+
+    },
+    "Buscar Capítulo" : {
+
+    },
+    "Buscar membro" : {
+
+    },
+    "Buscar membro ou cargo" : {
+
+    },
+    "Cadastrar" : {
+
+    },
+    "Cadastro" : {
+
+    },
+    "Calendário" : {
+
+    },
+    "Cancelar" : {
+
+    },
+    "Cancelar presença no evento %@" : {
+
+    },
+    "Capítulo nº \\(chapter.number)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capítulo nº \\(chapter.number) (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capítulo nº \\(chapter.number) (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capítulo nº \\(chapter.number)"
+          }
+        }
+      }
+    },
+    "Capítulo nº %lld" : {
+
+    },
+    "Cargo" : {
+
+    },
+    "Carregando comissões..." : {
+
+    },
+    "Carregando membros..." : {
+
+    },
+    "Carregando resumo..." : {
+
+    },
+    "Começar Agora" : {
+
+    },
+    "Comissão Responsável" : {
+
+    },
+    "Comissões Ausentes:" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comissões Ausentes: (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comissões Ausentes: (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comissões Ausentes:"
+          }
+        }
+      }
+    },
+    "Concluídas" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Concluídas (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Concluídas (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Concluídas"
+          }
+        }
+      }
+    },
+    "Concluir meta" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Concluir meta (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Concluir meta (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Concluir meta"
+          }
+        }
+      }
+    },
+    "Concluir tarefa: %@" : {
+
+    },
+    "Confirma sua presença no próximo evento agendado do Capítulo." : {
+
+    },
+    "Confirmar presença" : {
+
+    },
+    "Confirmar presença no capítulo" : {
+
+    },
+    "Confirmar presença no evento %@" : {
+
+    },
+    "Confirmar Senha" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirmar Senha (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirmar Senha (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirmar Senha"
+          }
+        }
+      }
+    },
+    "Confirme sua senha" : {
+
+    },
+    "Conselho Consultivo (\\(viewModel.advisoryCouncil.count))" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conselho Consultivo (\\(viewModel.advisoryCouncil.count)) (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conselho Consultivo (\\(viewModel.advisoryCouncil.count)) (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conselho Consultivo (\\(viewModel.advisoryCouncil.count))"
+          }
+        }
+      }
+    },
+    "Conselho Consultivo (%lld)" : {
+
+    },
+    "Continuar" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuar (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuar (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuar"
+          }
+        }
+      }
+    },
+    "Continuar com Apple" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuar com Apple (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuar com Apple (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuar com Apple"
+          }
+        }
+      }
+    },
+    "Cria uma nova tarefa geral para o Capítulo." : {
+
+    },
+    "Criando comissão..." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Criando comissão... (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Criando comissão... (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Criando comissão..."
+          }
+        }
+      }
+    },
+    "Criando evento..." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Criando evento... (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Criando evento... (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Criando evento..."
+          }
+        }
+      }
+    },
+    "Criando meta..." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Criando meta... (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Criando meta... (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Criando meta..."
+          }
+        }
+      }
+    },
+    "Criando tarefa..." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Criando tarefa... (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Criando tarefa... (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Criando tarefa..."
+          }
+        }
+      }
+    },
+    "Criar capítulo" : {
+
+    },
+    "Criar conta" : {
+
+    },
+    "Criar nova tarefa" : {
+
+    },
+    "Criar novo capítulo" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Criar novo capítulo (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Criar novo capítulo (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Criar novo capítulo"
+          }
+        }
+      }
+    },
+    "Dados Pessoais" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dados Pessoais (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dados Pessoais (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dados Pessoais"
+          }
+        }
+      }
+    },
+    "Data" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data"
+          }
+        }
+      }
+    },
+    "Data de nascimento" : {
+
+    },
+    "Data de Nascimento" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data de Nascimento (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data de Nascimento (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data de Nascimento"
+          }
+        }
+      }
+    },
+    "Data Limite" : {
+
+    },
+    "Definir como presidente" : {
+
+    },
+    "Definir como Presidente" : {
+
+    },
+    "Delegação" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delegação (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delegação (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delegação"
+          }
+        }
+      }
+    },
+    "Descartar" : {
+
+    },
+    "Descartar comissão?" : {
+
+    },
+    "Descartar evento?" : {
+
+    },
+    "Descartar membro?" : {
+
+    },
+    "Descartar meta?" : {
+
+    },
+    "Descartar tarefa?" : {
+
+    },
+    "Deseja sair da conta?" : {
+
+    },
+    "Desmarcar tarefa %@" : {
+
+    },
+    "Detalhes" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detalhes (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detalhes (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detalhes"
+          }
+        }
+      }
+    },
+    "Detalhes da Comissão" : {
+
+    },
+    "Detalhes da Meta" : {
+
+    },
+    "Detalhes do Evento" : {
+
+    },
+    "Detalhes do evento..." : {
+
+    },
+    "Detalhes do Membro" : {
+
+    },
+    "Dias Obrigatórios Ausentes:" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dias Obrigatórios Ausentes: (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dias Obrigatórios Ausentes: (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dias Obrigatórios Ausentes:"
+          }
+        }
+      }
+    },
+    "Digite seu e-mail" : {
+
+    },
+    "Digite seu ID" : {
+
+    },
+    "Digite seu nome completo" : {
+
+    },
+    "Digite sua senha" : {
+
+    },
+    "E-mail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E-mail (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E-mail (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E-mail"
+          }
+        }
+      }
+    },
+    "Editar" : {
+
+    },
+    "Editar perfil" : {
+
+    },
+    "Encontre seu Capítulo" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encontre seu Capítulo (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encontre seu Capítulo (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encontre seu Capítulo"
+          }
+        }
+      }
+    },
+    "Entrar" : {
+
+    },
+    "Entrar com E-mail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entrar com E-mail (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entrar com E-mail (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entrar com E-mail"
+          }
+        }
+      }
+    },
+    "Erro ao carregar dados" : {
+
+    },
+    "Erro ao criar capítulo" : {
+
+    },
+    "Esta ação é irreversível. Todos os seus dados serão apagados e você perderá o acesso ao app." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta ação é irreversível. Todos os seus dados serão apagados e você perderá o acesso ao app. (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta ação é irreversível. Todos os seus dados serão apagados e você perderá o acesso ao app. (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta ação é irreversível. Todos os seus dados serão apagados e você perderá o acesso ao app."
+          }
+        }
+      }
+    },
+    "Excluir" : {
+
+    },
+    "Excluir comissão" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excluir comissão (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excluir comissão (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excluir comissão"
+          }
+        }
+      }
+    },
+    "Excluir conta" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excluir conta (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excluir conta (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excluir conta"
+          }
+        }
+      }
+    },
+    "Excluir evento" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excluir evento (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excluir evento (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excluir evento"
+          }
+        }
+      }
+    },
+    "Excluir membro" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excluir membro (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excluir membro (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excluir membro"
+          }
+        }
+      }
+    },
+    "Excluir meta" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excluir meta (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excluir meta (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excluir meta"
+          }
+        }
+      }
+    },
+    "Excluir tarefa" : {
+
+    },
+    "Faça login para acessar seu Capítulo." : {
+
+    },
+    "Fechar" : {
+
+    },
+    "Fechar alerta" : {
+
+    },
+    "Filtro" : {
+
+    },
+    "Fornece um resumo das tarefas pendentes e do próximo evento do Capítulo." : {
+
+    },
+    "Gerar Resumo" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gerar Resumo (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gerar Resumo (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gerar Resumo"
+          }
+        }
+      }
+    },
+    "Gere insights baseados nas metas, eventos e tarefas do seu Capítulo usando Apple Intelligence." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gere insights baseados nas metas, eventos e tarefas do seu Capítulo usando Apple Intelligence. (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gere insights baseados nas metas, eventos e tarefas do seu Capítulo usando Apple Intelligence. (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gere insights baseados nas metas, eventos e tarefas do seu Capítulo usando Apple Intelligence."
+          }
+        }
+      }
+    },
+    "Gestão inteligente para seu Capítulo" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gestão inteligente para seu Capítulo (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gestão inteligente para seu Capítulo (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gestão inteligente para seu Capítulo"
+          }
+        }
+      }
+    },
+    "Hoje" : {
+
+    },
+    "Horário" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Horário (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Horário (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Horário"
+          }
+        }
+      }
+    },
+    "ID (Identidade DeMolay)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID (Identidade DeMolay) (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID (Identidade DeMolay) (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID (Identidade DeMolay)"
+          }
+        }
+      }
+    },
+    "ID (Opcional)" : {
+
+    },
+    "ID: \\(cid)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID: \\(cid) (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID: \\(cid) (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID: \\(cid)"
+          }
+        }
+      }
+    },
+    "ID: %@" : {
+
+    },
+    "Informações" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informações (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informações (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informações"
+          }
+        }
+      }
+    },
+    "Informações Básicas" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informações Básicas (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informações Básicas (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informações Básicas"
+          }
+        }
+      }
+    },
+    "Informações do Capítulo" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informações do Capítulo (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informações do Capítulo (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informações do Capítulo"
+          }
+        }
+      }
+    },
+    "Informações Pessoais" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informações Pessoais (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informações Pessoais (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informações Pessoais"
+          }
+        }
+      }
+    },
+    "Início" : {
+
+    },
+    "Insights detalhados sobre o seu Capítulo" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Insights detalhados sobre o seu Capítulo (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Insights detalhados sobre o seu Capítulo (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Insights detalhados sobre o seu Capítulo"
+          }
+        }
+      }
+    },
+    "Já tem uma conta? Entre aqui." : {
+
+    },
+    "Login" : {
+
+    },
+    "Maçom" : {
+
+    },
+    "Marcar tarefa %@ como concluída" : {
+
+    },
+    "Membros" : {
+
+    },
+    "Membros e Presidente" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Membros e Presidente (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Membros e Presidente (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Membros e Presidente"
+          }
+        }
+      }
+    },
+    "Mês anterior" : {
+
+    },
+    "Metas Concluídas" : {
+
+    },
+    "Meu perfil" : {
+
+    },
+    "Não há próximos eventos agendados para confirmar presença." : {
+
+    },
+    "Não há próximos eventos agendados para o Capítulo." : {
+
+    },
+    "Não tem conta? Cadastre-se." : {
+
+    },
+    "Nenhum Capítulo encontrado" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhum Capítulo encontrado (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhum Capítulo encontrado (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhum Capítulo encontrado"
+          }
+        }
+      }
+    },
+    "Nenhum membro disponível" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhum membro disponível (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhum membro disponível (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhum membro disponível"
+          }
+        }
+      }
+    },
+    "Nenhum membro na comissão." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhum membro na comissão. (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhum membro na comissão. (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhum membro na comissão."
+          }
+        }
+      }
+    },
+    "Nenhuma" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma"
+          }
+        }
+      }
+    },
+    "Nenhuma comissão disponível" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma comissão disponível (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma comissão disponível (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma comissão disponível"
+          }
+        }
+      }
+    },
+    "Nome Completo" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nome Completo (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nome Completo (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nome Completo"
+          }
+        }
+      }
+    },
+    "Nome da Comissão" : {
+
+    },
+    "Nome da Meta" : {
+
+    },
+    "Nome do Capítulo" : {
+
+    },
+    "Nova comissão" : {
+
+    },
+    "Nova meta" : {
+
+    },
+    "Nova tarefa" : {
+
+    },
+    "Nova Tarefa" : {
+
+    },
+    "Nova Tarefa do Capítulo" : {
+
+    },
+    "Novo evento" : {
+
+    },
+    "Novo membro" : {
+
+    },
+    "Número do Capítulo" : {
+
+    },
+    "Obrigatório selecionar pelo menos um status. 'Ativo' não pode ser marcado simultaneamente com 'Sênior' ou 'Maçom'." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obrigatório selecionar pelo menos um status. 'Ativo' não pode ser marcado simultaneamente com 'Sênior' ou 'Maçom'. (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obrigatório selecionar pelo menos um status. 'Ativo' não pode ser marcado simultaneamente com 'Sênior' ou 'Maçom'. (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obrigatório selecionar pelo menos um status. 'Ativo' não pode ser marcado simultaneamente com 'Sênior' ou 'Maçom'."
+          }
+        }
+      }
+    },
+    "Observações (Opcional)" : {
+
+    },
+    "OK" : {
+
+    },
+    "ou" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ou (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ou (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ou"
+          }
+        }
+      }
+    },
+    "Para aproveitar o Baluarte, você precisa estar vinculado a um Capítulo." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para aproveitar o Baluarte, você precisa estar vinculado a um Capítulo. (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para aproveitar o Baluarte, você precisa estar vinculado a um Capítulo. (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para aproveitar o Baluarte, você precisa estar vinculado a um Capítulo."
+          }
+        }
+      }
+    },
+    "Passo \\(currentPage + 1) de \\(pages.count)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passo \\(currentPage + 1) de \\(pages.count) (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passo \\(currentPage + 1) de \\(pages.count) (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passo \\(currentPage + 1) de \\(pages.count)"
+          }
+        }
+      }
+    },
+    "Passo %lld de %lld" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Passo %1$lld de %2$lld"
+          }
+        }
+      }
+    },
+    "Prazo" : {
+
+    },
+    "Precisamos de mais alguns dados para finalizar seu cadastro." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Precisamos de mais alguns dados para finalizar seu cadastro. (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Precisamos de mais alguns dados para finalizar seu cadastro. (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Precisamos de mais alguns dados para finalizar seu cadastro."
+          }
+        }
+      }
+    },
+    "Preencha seus dados para começar." : {
+
+    },
+    "Presença confirmada" : {
+
+    },
+    "Presenças Confirmadas (\\(viewModel.activeMembers.count + viewModel.seniorMembers.count + viewModel.advisoryCouncil.count))" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Presenças Confirmadas (\\(viewModel.activeMembers.count + viewModel.seniorMembers.count + viewModel.advisoryCouncil.count)) (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Presenças Confirmadas (\\(viewModel.activeMembers.count + viewModel.seniorMembers.count + viewModel.advisoryCouncil.count)) (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Presenças Confirmadas (\\(viewModel.activeMembers.count + viewModel.seniorMembers.count + viewModel.advisoryCouncil.count))"
+          }
+        }
+      }
+    },
+    "Presenças Confirmadas (%lld)" : {
+
+    },
+    "Pressione e segure um membro selecionado para defini-lo como Presidente (ícone da coroa)." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pressione e segure um membro selecionado para defini-lo como Presidente (ícone da coroa). (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pressione e segure um membro selecionado para defini-lo como Presidente (ícone da coroa). (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pressione e segure um membro selecionado para defini-lo como Presidente (ícone da coroa)."
+          }
+        }
+      }
+    },
+    "Pronto, adicionei a tarefa %@ no Capítulo." : {
+
+    },
+    "Próximo" : {
+
+    },
+    "Próximo Evento" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Próximo Evento (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Próximo Evento (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Próximo Evento"
+          }
+        }
+      }
+    },
+    "Próximo Evento do Capítulo" : {
+
+    },
+    "Próximo mês" : {
+
+    },
+    "Pular" : {
+
+    },
+    "Quase lá!" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quase lá! (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quase lá! (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quase lá!"
+          }
+        }
+      }
+    },
+    "Remover presidente" : {
+
+    },
+    "Remover Presidente" : {
+
+    },
+    "Resumo do Capítulo" : {
+
+    },
+    "Resumo Inteligente" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resumo Inteligente (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resumo Inteligente (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resumo Inteligente"
+          }
+        }
+      }
+    },
+    "Sair" : {
+
+    },
+    "Sair da conta" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sair da conta (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sair da conta (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sair da conta"
+          }
+        }
+      }
+    },
+    "Sair do capítulo" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sair do capítulo (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sair do capítulo (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sair do capítulo"
+          }
+        }
+      }
+    },
+    "Salvando..." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salvando... (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salvando... (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salvando..."
+          }
+        }
+      }
+    },
+    "Salvar alterações" : {
+
+    },
+    "Salvar evento" : {
+
+    },
+    "Salvar membro" : {
+
+    },
+    "Salvar meta" : {
+
+    },
+    "Salvar tarefa" : {
+
+    },
+    "Selecione os membros da comissão. Clique na coroa para definir o presidente (Obrigatório)." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selecione os membros da comissão. Clique na coroa para definir o presidente (Obrigatório). (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selecione os membros da comissão. Clique na coroa para definir o presidente (Obrigatório). (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selecione os membros da comissão. Clique na coroa para definir o presidente (Obrigatório)."
+          }
+        }
+      }
+    },
+    "Senha" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senha (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senha (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senha"
+          }
+        }
+      }
+    },
+    "Sênior" : {
+
+    },
+    "Sênior DeMolay" : {
+
+    },
+    "Sêniors (\\(viewModel.seniorMembers.count))" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sêniors (\\(viewModel.seniorMembers.count)) (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sêniors (\\(viewModel.seniorMembers.count)) (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sêniors (\\(viewModel.seniorMembers.count))"
+          }
+        }
+      }
+    },
+    "Sêniors (%lld)" : {
+
+    },
+    "Seu Capítulo está cumprindo todas as diretrizes no momento." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu Capítulo está cumprindo todas as diretrizes no momento. (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu Capítulo está cumprindo todas as diretrizes no momento. (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu Capítulo está cumprindo todas as diretrizes no momento."
+          }
+        }
+      }
+    },
+    "Seu Status (Selecione os que se aplicam)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu Status (Selecione os que se aplicam) (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu Status (Selecione os que se aplicam) (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu Status (Selecione os que se aplicam)"
+          }
+        }
+      }
+    },
+    "Status" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Status (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Status (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Status"
+          }
+        }
+      }
+    },
+    "Status e Cargo" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Status e Cargo (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Status e Cargo (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Status e Cargo"
+          }
+        }
+      }
+    },
+    "Sua presença foi confirmada para o evento %@." : {
+
+    },
+    "Tarefas" : {
+
+    },
+    "Tem certeza que deseja excluir \"%@\"? Esta ação não pode ser desfeita." : {
+
+    },
+    "Tem certeza que deseja excluir esta comissão? Esta ação não pode ser desfeita." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tem certeza que deseja excluir esta comissão? Esta ação não pode ser desfeita. (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tem certeza que deseja excluir esta comissão? Esta ação não pode ser desfeita. (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tem certeza que deseja excluir esta comissão? Esta ação não pode ser desfeita."
+          }
+        }
+      }
+    },
+    "Tem certeza que deseja excluir esta meta? Esta ação não pode ser desfeita." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tem certeza que deseja excluir esta meta? Esta ação não pode ser desfeita. (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tem certeza que deseja excluir esta meta? Esta ação não pode ser desfeita. (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tem certeza que deseja excluir esta meta? Esta ação não pode ser desfeita."
+          }
+        }
+      }
+    },
+    "Tem certeza que deseja excluir este evento? Esta ação não pode ser desfeita." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tem certeza que deseja excluir este evento? Esta ação não pode ser desfeita. (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tem certeza que deseja excluir este evento? Esta ação não pode ser desfeita. (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tem certeza que deseja excluir este evento? Esta ação não pode ser desfeita."
+          }
+        }
+      }
+    },
+    "Tem certeza que deseja excluir este membro? Esta ação não pode ser desfeita." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tem certeza que deseja excluir este membro? Esta ação não pode ser desfeita. (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tem certeza que deseja excluir este membro? Esta ação não pode ser desfeita. (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tem certeza que deseja excluir este membro? Esta ação não pode ser desfeita."
+          }
+        }
+      }
+    },
+    "Tem certeza que deseja sair do seu Capítulo atual? Você precisará ser aprovado novamente ao entrar em um novo." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tem certeza que deseja sair do seu Capítulo atual? Você precisará ser aprovado novamente ao entrar em um novo. (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tem certeza que deseja sair do seu Capítulo atual? Você precisará ser aprovado novamente ao entrar em um novo. (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tem certeza que deseja sair do seu Capítulo atual? Você precisará ser aprovado novamente ao entrar em um novo."
+          }
+        }
+      }
+    },
+    "Tentar novamente" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tentar novamente (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tentar novamente (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tentar novamente"
+          }
+        }
+      }
+    },
+    "Tentar Novamente" : {
+
+    },
+    "Tipo" : {
+
+    },
+    "Título da Meta" : {
+
+    },
+    "Título da Tarefa" : {
+
+    },
+    "Título do Evento" : {
+
+    },
+    "Toca duas vezes para avançar um mês" : {
+
+    },
+    "Toca duas vezes para recarregar os dados" : {
+
+    },
+    "Toca duas vezes para retroceder um mês" : {
+
+    },
+    "Toque para alternar o status da tarefa" : {
+
+    },
+    "Toque para ver detalhes da comissão" : {
+
+    },
+    "Toque para ver detalhes da meta" : {
+
+    },
+    "Toque para ver detalhes do evento" : {
+
+    },
+    "Toque para ver detalhes do membro" : {
+
+    },
+    "Tudo em dia!" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tudo em dia! (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tudo em dia! (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tudo em dia!"
+          }
+        }
+      }
+    },
+    "Tudo em ordem!" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tudo em ordem! (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tudo em ordem! (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tudo em ordem!"
+          }
+        }
+      }
+    },
+    "Valor Alvo (ex: 50.0)" : {
+
+    },
+    "Ver mais" : {
+
+    },
+    "Ver menos" : {
+
+    },
+    "Verifica qual é o próximo evento agendado do Capítulo." : {
+
+    },
+    "Você precisa estar autenticado para confirmar presença." : {
+
+    },
+    "Você precisa estar autenticado para criar uma tarefa." : {
+
+    },
+    "Você precisa estar autenticado para ver o próximo evento." : {
+
+    },
+    "Você precisa estar autenticado para ver o resumo do Capítulo." : {
+
+    },
+    "Você tem %lld tarefas pendentes." : {
+
+    },
+    "Você tem alterações não salvas. Tem certeza que deseja descartar?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você tem alterações não salvas. Tem certeza que deseja descartar? (EN)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você tem alterações não salvas. Tem certeza que deseja descartar? (ES)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você tem alterações não salvas. Tem certeza que deseja descartar?"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}
