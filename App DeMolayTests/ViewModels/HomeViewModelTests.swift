@@ -41,6 +41,8 @@ struct HomeViewModelTests {
             committeeService: TestMockCommitteeService(),
             taskService: taskService
         )
+        viewModel.currentUserId = UUID()
+        viewModel.currentChapterId = UUID()
         
         await viewModel.loadData()
         
@@ -64,6 +66,8 @@ struct HomeViewModelTests {
             committeeService: TestMockCommitteeService(),
             taskService: TestMockTaskService()
         )
+        viewModel.currentUserId = UUID()
+        viewModel.currentChapterId = UUID()
         
         await viewModel.loadData()
         
@@ -86,6 +90,8 @@ struct HomeViewModelTests {
             committeeService: TestMockCommitteeService(),
             taskService: taskService
         )
+        viewModel.currentUserId = UUID()
+        viewModel.currentChapterId = UUID()
         
         await viewModel.loadData()
         
@@ -114,6 +120,8 @@ struct HomeViewModelTests {
             committeeService: TestMockCommitteeService(),
             taskService: taskService
         )
+        viewModel.currentUserId = UUID()
+        viewModel.currentChapterId = UUID()
         
         await viewModel.loadData()
         
@@ -138,16 +146,18 @@ struct HomeViewModelTests {
             committeeService: TestMockCommitteeService(),
             taskService: TestMockTaskService()
         )
+        viewModel.currentUserId = UUID()
+        viewModel.currentChapterId = UUID()
         
         await viewModel.loadData()
         eventService.shouldThrowError = true
         
-        #expect(viewModel.events.first?.confirmedAttendees?.contains(viewModel.currentUserId) == false)
+        #expect(viewModel.events.first?.confirmedAttendees?.contains(viewModel.currentUserId ?? UUID()) == false)
         
         await viewModel.confirmAttendance(eventId: eventId)
         
         #expect(eventService.confirmAttendanceCallCount == 1)
         
-        #expect(viewModel.events.first?.confirmedAttendees?.contains(viewModel.currentUserId) == false)
+        #expect(viewModel.events.first?.confirmedAttendees?.contains(viewModel.currentUserId ?? UUID()) == false)
     }
 }

@@ -8,17 +8,17 @@ struct CreateGoalViewModelTests {
     
     @Test("Initialization sets default values")
     func testInitialization() {
-        let viewModel = CreateGoalViewModel()
+        let viewModel = CreateGoalViewModel(chapterId: UUID())
         
         #expect(viewModel.title == "")
-        #expect(viewModel.description == "")
+
         #expect(viewModel.targetValue == "")
         #expect(viewModel.isValid == false)
     }
     
     @Test("Validation logic works correctly")
     func testValidation() {
-        let viewModel = CreateGoalViewModel()
+        let viewModel = CreateGoalViewModel(chapterId: UUID())
         
         viewModel.title = "New Goal"
         viewModel.targetValue = "invalid"
@@ -33,7 +33,7 @@ struct CreateGoalViewModelTests {
     
     @Test("saveGoal with zero or negative target sets error")
     func testSaveGoalInvalidTarget() async {
-        let viewModel = CreateGoalViewModel()
+        let viewModel = CreateGoalViewModel(chapterId: UUID())
         viewModel.title = "Goal"
         viewModel.targetValue = "0"
         
@@ -46,7 +46,7 @@ struct CreateGoalViewModelTests {
     @Test("saveGoal succeeds")
     func testSaveGoalSuccess() async {
         let mockService = TestMockGoalService()
-        let viewModel = CreateGoalViewModel(goalService: mockService)
+        let viewModel = CreateGoalViewModel(chapterId: UUID(), goalService: mockService)
         
         viewModel.title = "New Goal"
         viewModel.targetValue = "100.0"

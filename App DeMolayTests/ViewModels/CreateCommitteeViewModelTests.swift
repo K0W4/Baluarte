@@ -8,7 +8,7 @@ struct CreateCommitteeViewModelTests {
     
     @Test("Initialization sets default values")
     func testInitialization() {
-        let viewModel = CreateCommitteeViewModel()
+        let viewModel = CreateCommitteeViewModel(chapterId: UUID())
         
         #expect(viewModel.name == "")
         #expect(viewModel.chairmanId == nil)
@@ -18,7 +18,7 @@ struct CreateCommitteeViewModelTests {
     
     @Test("Validation logic")
     func testValidation() {
-        let viewModel = CreateCommitteeViewModel()
+        let viewModel = CreateCommitteeViewModel(chapterId: UUID())
         
         viewModel.name = "Committee"
         #expect(viewModel.isValid == false)
@@ -35,7 +35,7 @@ struct CreateCommitteeViewModelTests {
             Member(id: UUID(), chapterId: UUID(), fullName: "Jane", role: "None", isActive: false, isSenior: true, isMason: false, accessLevel: "member", createdAt: Date())
         ]
         
-        let viewModel = CreateCommitteeViewModel(memberService: mockService)
+        let viewModel = CreateCommitteeViewModel(chapterId: UUID(), memberService: mockService)
         await viewModel.loadMembers()
         
         #expect(viewModel.availableMembers.count == 2)
@@ -44,7 +44,7 @@ struct CreateCommitteeViewModelTests {
     
     @Test("Filtering members works correctly")
     func testMemberFiltering() async {
-        let viewModel = CreateCommitteeViewModel()
+        let viewModel = CreateCommitteeViewModel(chapterId: UUID())
         viewModel.availableMembers = [
             Member(id: UUID(), chapterId: UUID(), fullName: "John", role: "None", isActive: true, isSenior: false, isMason: false, accessLevel: "member", createdAt: Date()),
             Member(id: UUID(), chapterId: UUID(), fullName: "Jane", role: "None", isActive: false, isSenior: true, isMason: false, accessLevel: "member", createdAt: Date()),
@@ -66,7 +66,7 @@ struct CreateCommitteeViewModelTests {
     
     @Test("toggleMemberSelection updates selected set and unsets chairman if removed")
     func testToggleMemberSelection() {
-        let viewModel = CreateCommitteeViewModel()
+        let viewModel = CreateCommitteeViewModel(chapterId: UUID())
         let memberId = UUID()
         
         viewModel.toggleMemberSelection(memberId)
@@ -81,7 +81,7 @@ struct CreateCommitteeViewModelTests {
     @Test("saveCommittee succeeds")
     func testSaveCommitteeSuccess() async {
         let mockService = TestMockCommitteeService()
-        let viewModel = CreateCommitteeViewModel(committeeService: mockService)
+        let viewModel = CreateCommitteeViewModel(chapterId: UUID(), committeeService: mockService)
         
         viewModel.name = "Committee"
         viewModel.chairmanId = UUID()

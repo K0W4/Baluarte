@@ -49,4 +49,23 @@ public struct NotificationService: @unchecked Sendable {
     public func cancelEventReminder(eventId: String) {
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["event_\(eventId)"])
     }
+    
+    // Método para testar a notificação na prática sem precisar alterar a hora
+    public func scheduleTestNotification(inSeconds seconds: TimeInterval = 5) {
+        let content = UNMutableNotificationContent()
+        content.title = "Teste de Notificação 🚀"
+        content.body = "Se você está vendo isso, o agendamento local está funcionando perfeitamente! Estamos te esperando! 🤝"
+        content.sound = .default
+        
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: seconds, repeats: false)
+        let request = UNNotificationRequest(identifier: "test_notification", content: content, trigger: trigger)
+        
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Erro ao agendar notificação de teste: \(error.localizedDescription)")
+            } else {
+                print("✅ Notificação de teste agendada para daqui a \(seconds) segundos.")
+            }
+        }
+    }
 }

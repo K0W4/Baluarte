@@ -20,6 +20,13 @@ public final class TestMockMemberService: MemberServiceProtocol {
         return membersToReturn
     }
     
+    public func fetchMember(id: UUID) async throws -> Member? {
+        if shouldThrowError {
+            throw NSError(domain: "TestMockMemberService", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to fetch member"])
+        }
+        return membersToReturn.first { $0.id == id }
+    }
+    
     public func createMember(_ member: Member) async throws {
         createMemberCallCount += 1
         if shouldThrowError {

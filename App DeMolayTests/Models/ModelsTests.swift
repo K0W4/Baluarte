@@ -41,7 +41,7 @@ struct ModelsTests {
             "id": "123e4567-e89b-12d3-a456-426614174000",
             "chapter_id": "123e4567-e89b-12d3-a456-426614174001",
             "title": "Meta 1",
-            "description": "Desc",
+            "is_completed": false,
             "current_value": 10.5,
             "target_value": 20.0,
             "target_date": "2024-12-01T20:00:00Z",

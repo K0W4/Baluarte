@@ -66,7 +66,7 @@ struct MemberDetailViewModelTests {
         
         viewModel.isMason = true
         #expect(viewModel.roles.contains("Mestre Conselheiro") == false)
-        #expect(viewModel.roles.contains("Presidente do Conselho Consultivo") == true)
+        #expect(viewModel.roles.contains("Presidente do Conselho") == true)
         
         viewModel.isMason = false
         viewModel.isSenior = true

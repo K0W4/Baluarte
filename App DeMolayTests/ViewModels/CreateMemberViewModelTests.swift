@@ -8,7 +8,7 @@ struct CreateMemberViewModelTests {
     
     @Test("Initialization sets default values")
     func testInitialization() {
-        let viewModel = CreateMemberViewModel()
+        let viewModel = CreateMemberViewModel(chapterId: UUID())
         
         #expect(viewModel.fullName == "")
         #expect(viewModel.role == "Membro")
@@ -20,7 +20,7 @@ struct CreateMemberViewModelTests {
     
     @Test("Validation logic")
     func testValidation() {
-        let viewModel = CreateMemberViewModel()
+        let viewModel = CreateMemberViewModel(chapterId: UUID())
         
         viewModel.fullName = "John Doe"
         #expect(viewModel.isValid == true)
@@ -37,18 +37,18 @@ struct CreateMemberViewModelTests {
     
     @Test("Role logic works correctly")
     func testRolesLogic() {
-        let viewModel = CreateMemberViewModel()
+        let viewModel = CreateMemberViewModel(chapterId: UUID())
         
         #expect(viewModel.roles.contains("Mestre Conselheiro") == true)
         
         viewModel.isMason = true
         #expect(viewModel.roles.contains("Mestre Conselheiro") == false)
-        #expect(viewModel.roles.contains("Presidente do Conselho Consultivo") == true)
+        #expect(viewModel.roles.contains("Presidente do Conselho") == true)
     }
     
     @Test("updateRoleIfNeeded fixes invalid role")
     func testUpdateRoleIfNeeded() {
-        let viewModel = CreateMemberViewModel()
+        let viewModel = CreateMemberViewModel(chapterId: UUID())
         viewModel.role = "Mestre Conselheiro" // valid initially
         
         viewModel.isMason = true // Mason cannot be MC
@@ -60,7 +60,7 @@ struct CreateMemberViewModelTests {
     @Test("saveMember succeeds")
     func testSaveMemberSuccess() async {
         let mockService = TestMockMemberService()
-        let viewModel = CreateMemberViewModel(memberService: mockService)
+        let viewModel = CreateMemberViewModel(chapterId: UUID(), memberService: mockService)
         
         viewModel.fullName = "John Doe"
         let result = await viewModel.saveMember()
@@ -75,7 +75,7 @@ struct CreateMemberViewModelTests {
     func testSaveMemberFailure() async {
         let mockService = TestMockMemberService()
         mockService.shouldThrowError = true
-        let viewModel = CreateMemberViewModel(memberService: mockService)
+        let viewModel = CreateMemberViewModel(chapterId: UUID(), memberService: mockService)
         
         viewModel.fullName = "John Doe"
         let result = await viewModel.saveMember()

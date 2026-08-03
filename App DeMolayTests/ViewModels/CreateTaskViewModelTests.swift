@@ -8,10 +8,10 @@ struct CreateTaskViewModelTests {
     
     @Test("Initialization sets default values")
     func testInitialization() {
-        let viewModel = CreateTaskViewModel()
+        let viewModel = CreateTaskViewModel(chapterId: UUID(), currentUserId: UUID())
         
         #expect(viewModel.title == "")
-        #expect(viewModel.description == "")
+
         #expect(viewModel.selectedCommitteeId == nil)
         #expect(viewModel.isValid == false)
         #expect(viewModel.committees.isEmpty)
@@ -19,7 +19,7 @@ struct CreateTaskViewModelTests {
     
     @Test("Validation logic")
     func testValidation() {
-        let viewModel = CreateTaskViewModel()
+        let viewModel = CreateTaskViewModel(chapterId: UUID(), currentUserId: UUID())
         
         viewModel.title = "   "
         #expect(viewModel.isValid == false)
@@ -35,7 +35,7 @@ struct CreateTaskViewModelTests {
             Committee(id: UUID(), chapterId: UUID(), name: "Committee 1", chairmanId: UUID(), memberIds: [], createdAt: Date())
         ]
         
-        let viewModel = CreateTaskViewModel(committeeService: mockService)
+        let viewModel = CreateTaskViewModel(chapterId: UUID(), currentUserId: UUID(), committeeService: mockService)
         
         await viewModel.loadCommittees()
         
@@ -46,7 +46,7 @@ struct CreateTaskViewModelTests {
     @Test("saveTask succeeds")
     func testSaveTaskSuccess() async {
         let mockService = TestMockTaskService()
-        let viewModel = CreateTaskViewModel(taskService: mockService)
+        let viewModel = CreateTaskViewModel(chapterId: UUID(), currentUserId: UUID(), taskService: mockService)
         
         viewModel.title = "Task Title"
         
@@ -60,7 +60,7 @@ struct CreateTaskViewModelTests {
     func testSaveTaskFailure() async {
         let mockService = TestMockTaskService()
         mockService.shouldThrowError = true
-        let viewModel = CreateTaskViewModel(taskService: mockService)
+        let viewModel = CreateTaskViewModel(chapterId: UUID(), currentUserId: UUID(), taskService: mockService)
         
         viewModel.title = "Task Title"
         

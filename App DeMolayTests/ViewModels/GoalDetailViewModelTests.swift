@@ -10,10 +10,10 @@ struct GoalDetailViewModelTests {
         id: UUID(),
         chapterId: UUID(),
         title: "Test Goal",
-        description: "Desc",
         currentValue: 10.5,
         targetValue: 100.0,
         targetDate: Date(),
+        isCompleted: false,
         createdAt: Date()
     )
     

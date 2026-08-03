@@ -19,7 +19,7 @@ struct EventDetailViewModelTests {
     
     @Test("Initialization populates fields correctly")
     func testInitialization() {
-        let viewModel = EventDetailViewModel(event: sampleEvent)
+        let viewModel = EventDetailViewModel(event: sampleEvent, currentUserId: UUID())
         
         #expect(viewModel.title == "Initial Title")
         #expect(viewModel.eventType == "Reunião Ritualística")
@@ -31,7 +31,7 @@ struct EventDetailViewModelTests {
     
     @Test("hasChanges and isValid properties work correctly")
     func testValidationAndChanges() {
-        let viewModel = EventDetailViewModel(event: sampleEvent)
+        let viewModel = EventDetailViewModel(event: sampleEvent, currentUserId: UUID())
         
         viewModel.title = "New Title"
         #expect(viewModel.hasChanges == true)
@@ -44,7 +44,7 @@ struct EventDetailViewModelTests {
     @Test("saveChanges succeeds and updates internal event")
     func testSaveChangesSuccess() async {
         let mockService = TestMockEventService()
-        let viewModel = EventDetailViewModel(event: sampleEvent, eventService: mockService)
+        let viewModel = EventDetailViewModel(event: sampleEvent, currentUserId: UUID(), eventService: mockService)
         
         viewModel.title = "New Title"
         let result = await viewModel.saveChanges()
@@ -60,7 +60,7 @@ struct EventDetailViewModelTests {
     func testSaveChangesFailure() async {
         let mockService = TestMockEventService()
         mockService.shouldThrowError = true
-        let viewModel = EventDetailViewModel(event: sampleEvent, eventService: mockService)
+        let viewModel = EventDetailViewModel(event: sampleEvent, currentUserId: UUID(), eventService: mockService)
         
         viewModel.title = "New Title"
         let result = await viewModel.saveChanges()
@@ -74,7 +74,7 @@ struct EventDetailViewModelTests {
     func testToggleAttendanceConfirm() async {
         let mockService = TestMockEventService()
         let userId = UUID()
-        let viewModel = EventDetailViewModel(event: sampleEvent, eventService: mockService, currentUserId: userId)
+        let viewModel = EventDetailViewModel(event: sampleEvent, currentUserId: userId, eventService: mockService)
         
         await viewModel.toggleAttendance()
         
@@ -89,7 +89,7 @@ struct EventDetailViewModelTests {
         var event = sampleEvent
         event.confirmedAttendees = [userId]
         
-        let viewModel = EventDetailViewModel(event: event, eventService: mockService, currentUserId: userId)
+        let viewModel = EventDetailViewModel(event: event, currentUserId: userId, eventService: mockService)
         
         await viewModel.toggleAttendance()
         
@@ -100,7 +100,7 @@ struct EventDetailViewModelTests {
     @Test("deleteEvent succeeds")
     func testDeleteEventSuccess() async {
         let mockService = TestMockEventService()
-        let viewModel = EventDetailViewModel(event: sampleEvent, eventService: mockService)
+        let viewModel = EventDetailViewModel(event: sampleEvent, currentUserId: UUID(), eventService: mockService)
         
         let result = await viewModel.deleteEvent()
         
@@ -112,7 +112,7 @@ struct EventDetailViewModelTests {
     func testDeleteEventFailure() async {
         let mockService = TestMockEventService()
         mockService.shouldThrowError = true
-        let viewModel = EventDetailViewModel(event: sampleEvent, eventService: mockService)
+        let viewModel = EventDetailViewModel(event: sampleEvent, currentUserId: UUID(), eventService: mockService)
         
         let result = await viewModel.deleteEvent()
         

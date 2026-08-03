@@ -44,6 +44,30 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
       shouldAutocreateTestPlan = "YES">
+      <Testables>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "9353B39B3011A47C00D754B7"
+               BuildableName = "App DeMolayTests.xctest"
+               BlueprintName = "App DeMolayTests"
+               ReferencedContainer = "container:App DeMolay.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "938AD98C302118B200314177"
+               BuildableName = "App DeMolayUITests.xctest"
+               BlueprintName = "App DeMolayUITests"
+               ReferencedContainer = "container:App DeMolay.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+      </Testables>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
