@@ -3,6 +3,7 @@ import Foundation
 @testable import App_DeMolay
 
 @Suite("Models Tests")
+@MainActor
 struct ModelsTests {
     
     @Test("Event JSON Parsing maps CodingKeys correctly")

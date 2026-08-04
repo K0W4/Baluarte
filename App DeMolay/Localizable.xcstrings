@@ -109,52 +109,6 @@
         }
       }
     },
-    "\\(Int(progress * 100))%" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\\(Int(progress * 100))%"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\\(Int(progress * 100))%"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\\(Int(progress * 100))%"
-          }
-        }
-      }
-    },
-    "\\(progressPercentageValue)%" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\\(progressPercentageValue)%"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\\(progressPercentageValue)%"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\\(progressPercentageValue)%"
-          }
-        }
-      }
-    },
     "\\(tasks.count - 3) tarefas restantes" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -321,6 +275,12 @@
         }
       }
     },
+    "%@:" : {
+
+    },
+    "%@." : {
+
+    },
     "%@. %@" : {
       "localizations" : {
         "en" : {
@@ -485,28 +445,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld tareas restantes"
-          }
-        }
-      }
-    },
-    "%lld%%" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld%%"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld%%"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld%%"
           }
         }
       }
@@ -1374,52 +1312,6 @@
         }
       }
     },
-    "Continuar" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Continue"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Continuar"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Continuar"
-          }
-        }
-      }
-    },
-    "Continuar com Apple" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Continue with Apple"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Continuar con Apple"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Continuar com Apple"
-          }
-        }
-      }
-    },
     "Cria uma nova tarefa geral para o Capítulo." : {
       "localizations" : {
         "en" : {
@@ -2031,40 +1923,6 @@
         }
       }
     },
-    "Digite seu ID" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enter your ID"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ingresa tu ID"
-          }
-        }
-      }
-    },
-    "Digite seu nome completo" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enter your full name"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ingresa tu nombre completo"
-          }
-        }
-      }
-    },
     "Digite sua senha" : {
       "localizations" : {
         "en" : {
@@ -2600,29 +2458,6 @@
         }
       }
     },
-    "ID (Identidade DeMolay)" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ID (DeMolay Identity)"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ID (Identidad DeMolay)"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ID (Identidade DeMolay)"
-          }
-        }
-      }
-    },
     "ID (Opcional)" : {
       "localizations" : {
         "en" : {
@@ -3010,29 +2845,6 @@
     },
     "Nenhum Capítulo cadastrado" : {
 
-    },
-    "Nenhum Capítulo encontrado" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No Chapter found"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ningún Capítulo encontrado"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nenhum Capítulo encontrado"
-          }
-        }
-      }
     },
     "Nenhum Capítulo para “%@”" : {
 
@@ -3490,29 +3302,6 @@
         }
       }
     },
-    "Precisamos de mais alguns dados para finalizar seu cadastro." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "We need a few more details to complete your registration."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Necesitamos algunos datos más para finalizar tu registro."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Precisamos de mais alguns dados para finalizar seu cadastro."
-          }
-        }
-      }
-    },
     "Preencha seus dados para começar." : {
       "localizations" : {
         "en" : {
@@ -3709,29 +3498,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Saltar"
-          }
-        }
-      }
-    },
-    "Quase lá!" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Almost there!"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "¡Casi listo!"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quase lá!"
           }
         }
       }
@@ -4115,29 +3881,6 @@
         }
       }
     },
-    "Seu Status (Selecione os que se aplicam)" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Your Status (Select all that apply)"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tu Estado (Selecciona los que correspondan)"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seu Status (Selecione os que se aplicam)"
-          }
-        }
-      }
-    },
     "Status" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4326,29 +4069,6 @@
     },
     "Tem certeza que deseja sair do seu Capítulo atual? Você deixará de ver os eventos, metas e tarefas dele, mas poderá entrar em outro Capítulo quando quiser." : {
 
-    },
-    "Tem certeza que deseja sair do seu Capítulo atual? Você precisará ser aprovado novamente ao entrar em um novo." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Are you sure you want to leave your current Chapter? You will need to be approved again when joining a new one."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "¿Estás seguro de que deseas salir de tu Capítulo actual? Deberás ser aprobado nuevamente al unirte a uno nuevo."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tem certeza que deseja sair do seu Capítulo atual? Você precisará ser aprovado novamente ao entrar em um novo."
-          }
-        }
-      }
     },
     "Tentar novamente" : {
       "extractionState" : "manual",

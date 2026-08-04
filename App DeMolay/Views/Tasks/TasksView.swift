@@ -292,7 +292,7 @@ private struct TaskProgressCard: View {
 
                 Spacer()
 
-                Text("\(Int(progress * 100))%")
+                Text(progress, format: .percent.precision(.fractionLength(0)))
                     .font(Typography.title1.bold())
                     .foregroundColor(Theme.textPrimary)
             }

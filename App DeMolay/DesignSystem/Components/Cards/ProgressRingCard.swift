@@ -80,7 +80,7 @@ public struct ProgressRingCard: View {
                 .opacity(animatedProgress > 1.0 ? 1.0 : 0.0)
                 
                 VStack(spacing: Spacing.xxs) {
-                    Text("\(progressPercentageValue)%")
+                    Text(animatedProgress, format: .percent.precision(.fractionLength(0)))
                         .font(Typography.numericDisplay)
                         .foregroundColor(Theme.textPrimary)
                         .contentTransition(.numericText())
