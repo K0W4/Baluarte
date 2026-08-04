@@ -23,7 +23,7 @@ App DeMolay/
 └── Assets.xcassets     → Ícones, cores e assets visuais
 ```
 
-## 2. SwiftUI Best Practices (iOS 17+)
+## 2. SwiftUI Best Practices (iOS 26+)
 
 * **State Management**: Utilize estritamente a macro `@Observable` para ViewModels. Proibido usar `@ObservableObject` e `@Published` legados.
 * **Navigation**: Utilize sempre `NavigationStack` com gerenciamento de rotas baseado em valor (ex: `enum Route: Hashable`), nunca `NavigationView`.

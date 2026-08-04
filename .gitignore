@@ -40,3 +40,6 @@ fastlane/test_output
 
 # Environment / Secrets
 App DeMolay/Core/SupabaseSecrets.swift
+
+# Supabase CLI local state
+supabase/.temp/

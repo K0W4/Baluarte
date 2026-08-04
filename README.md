@@ -3,7 +3,7 @@
 > Smart, gamified, and AI-powered management application for DeMolay Chapters.
 
 [![Swift](https://img.shields.io/badge/Swift-5.9-orange.svg)](https://swift.org)
-[![iOS](https://img.shields.io/badge/iOS-17.0%2B-blue.svg)](https://developer.apple.com/ios/)
+[![iOS](https://img.shields.io/badge/iOS-26.0%2B-blue.svg)](https://developer.apple.com/ios/)
 [![Supabase](https://img.shields.io/badge/Supabase-Backend-green.svg)](https://supabase.com)
 [![Architecture](https://img.shields.io/badge/Architecture-MVVM-lightgrey.svg)]()
 [![Design](https://img.shields.io/badge/Design-Heuristics%20%7C%20WCAG-blueviolet.svg)]()
@@ -38,8 +38,8 @@ The project strictly follows the **MVVM** (Model-View-ViewModel) pattern utilizi
 ## 🚀 Getting Started
 
 ### Prerequisites
-* macOS Sonoma (14.0) or higher.
-* Xcode 15 or higher.
+* macOS Tahoe (26.0) or higher.
+* Xcode 26 or higher.
 * Active Supabase project (for the database backend).
 
 ### Installation
