@@ -55,7 +55,7 @@ public struct EventCard: View {
                 .background(Theme.border)
             
             HStack(alignment: .top, spacing: Spacing.xxs) {
-                (Text("Data") + Text(verbatim: ":"))
+                Text("\(String(localized: "Data")):")
                     .font(Typography.subheadline)
                     .foregroundColor(Theme.textPrimary)
                 
@@ -66,7 +66,7 @@ public struct EventCard: View {
             
             if let notes = event.notes, !notes.isEmpty {
                 HStack(alignment: .top, spacing: Spacing.xxs) {
-                    (Text("Detalhes") + Text(verbatim: ":"))
+                    Text("\(String(localized: "Detalhes")):")
                         .font(Typography.subheadline)
                         .foregroundColor(Theme.textPrimary)
                     

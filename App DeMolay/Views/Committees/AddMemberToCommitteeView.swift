@@ -16,7 +16,7 @@ public struct AddMemberToCommitteeView: View {
                 }
                 
                 if filtered.isEmpty {
-                    (Text("Nenhum membro disponível") + Text(verbatim: "."))
+                    Text("\(String(localized: "Nenhum membro disponível")).")
                         .foregroundColor(Theme.textSecondary)
                         .listRowBackground(Color.clear)
                 } else {
