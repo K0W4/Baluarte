@@ -42,8 +42,7 @@ public struct EventDetailView: View {
                 Section {
                     Button(action: {
                         Task {
-                            let generator = UIImpactFeedbackGenerator(style: viewModel.isUserConfirmed ? .rigid : .medium)
-                            generator.impactOccurred()
+                            HapticManager.shared.impact(style: viewModel.isUserConfirmed ? .rigid : .medium)
                             await viewModel.toggleAttendance()
                         }
                     }) {

@@ -12,6 +12,7 @@ public struct Theme {
     public static let accent = Color.accentColor
     public static let accentSecondary = Color.accentColor.opacity(0.6)
     public static let accentTertiary = Color.accentColor.opacity(0.3)
+    public static let onAccent = Color.white
     
     public static let destructive = Color(UIColor.systemRed)
     public static let success = Color(UIColor.systemGreen)

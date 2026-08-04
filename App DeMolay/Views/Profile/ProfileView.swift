@@ -107,7 +107,7 @@ struct ProfileView: View {
                     }
                 }
             } message: {
-                Text("Tem certeza que deseja sair do seu Capítulo atual? Você precisará ser aprovado novamente ao entrar em um novo.")
+                Text("Tem certeza que deseja sair do seu Capítulo atual? Você deixará de ver os eventos, metas e tarefas dele, mas poderá entrar em outro Capítulo quando quiser.")
             }
             .alert("Excluir conta", isPresented: $showDeleteAccountAlert) {
                 Button("Cancelar", role: .cancel) { }

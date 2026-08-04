@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct OnboardingView: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var currentPage = 0
     var onFinish: (() -> Void)? = nil
     
@@ -37,24 +38,25 @@ struct OnboardingView: View {
                         .font(Typography.caption1)
                         .foregroundColor(Theme.textSecondary)
                         .padding(.top, Spacing.md)
-                    
+                        .accessibilityLabel("Passo \(currentPage + 1) de \(pages.count)")
+
                     TabView(selection: $currentPage) {
                         ForEach(0..<pages.count, id: \.self) { index in
                             OnboardingSlideView(page: pages[index])
                                 .tag(index)
                         }
                     }
-                    .tabViewStyle(.page(indexDisplayMode: .always))
-                    .indexViewStyle(.page(backgroundDisplayMode: .always))
-                    .animation(.easeInOut, value: currentPage)
-                    
+                    .tabViewStyle(.page(indexDisplayMode: .never))
+                    .animation(reduceMotion ? nil : .easeInOut, value: currentPage)
+
                     Button(action: {
-                        let generator = UIImpactFeedbackGenerator(style: .medium)
-                        generator.impactOccurred()
-                        
+                        HapticManager.shared.impact(style: .medium)
+
                         if currentPage < pages.count - 1 {
-                            withAnimation {
+                            if reduceMotion {
                                 currentPage += 1
+                            } else {
+                                withAnimation { currentPage += 1 }
                             }
                         } else {
                             onFinish?()
@@ -70,12 +72,14 @@ struct OnboardingView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    if currentPage < pages.count - 1 {
-                        Button("Pular") {
-                            onFinish?()
-                        }
-                        .foregroundColor(Theme.textSecondary)
+                    Button("Pular") {
+                        onFinish?()
                     }
+                    .foregroundColor(Theme.textSecondary)
+                    .opacity(currentPage < pages.count - 1 ? 1 : 0)
+                    .disabled(currentPage == pages.count - 1)
+                    .accessibilityHidden(currentPage == pages.count - 1)
+                    .accessibilityHint("Pula a apresentação e vai para o acesso")
                 }
             }
         }

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct RootView: View {
     @Environment(AuthViewModel.self) private var authViewModel
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
     
     var body: some View {
@@ -17,8 +18,10 @@ struct RootView: View {
             case .unauthenticated:
                 if !hasSeenOnboarding {
                     OnboardingView {
-                        withAnimation {
+                        if reduceMotion {
                             hasSeenOnboarding = true
+                        } else {
+                            withAnimation { hasSeenOnboarding = true }
                         }
                     }
                 } else {
@@ -28,10 +31,7 @@ struct RootView: View {
                 
             case .authenticated(_, let member):
                 if let member = member {
-                    if member.cid == nil || member.birthdate == nil {
-                        CompleteProfileView()
-                            .transition(.opacity)
-                    } else if member.chapterId == nil {
+                    if member.chapterId == nil {
                         ChapterSelectionView()
                             .transition(.opacity)
                     } else {
@@ -39,12 +39,12 @@ struct RootView: View {
                             .transition(.opacity)
                     }
                 } else {
-                    CompleteProfileView()
+                    ChapterSelectionView()
                         .transition(.opacity)
                 }
             }
         }
-        .animation(.easeInOut, value: hasSeenOnboarding)
+        .animation(reduceMotion ? nil : .easeInOut, value: hasSeenOnboarding)
     }
 }
 

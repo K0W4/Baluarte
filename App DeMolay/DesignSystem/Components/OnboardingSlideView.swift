@@ -13,12 +13,14 @@ struct OnboardingSlideView: View {
                 .frame(height: 150)
                 .foregroundColor(Theme.accent)
                 .padding(.bottom, Spacing.lg)
-            
+                .accessibilityHidden(true)
+
             VStack(spacing: Spacing.md) {
                 Text(page.title)
                     .font(Typography.title1)
                     .foregroundColor(Theme.textPrimary)
                     .multilineTextAlignment(.center)
+                    .accessibilityAddTraits(.isHeader)
                 
                 Text(page.description)
                     .font(Typography.body)

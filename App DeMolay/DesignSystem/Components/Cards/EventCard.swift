@@ -78,8 +78,7 @@ public struct EventCard: View {
             }
             
             Button(action: {
-                let generator = UIImpactFeedbackGenerator(style: isUserConfirmed ? .rigid : .medium)
-                generator.impactOccurred()
+                HapticManager.shared.impact(style: isUserConfirmed ? .rigid : .medium)
                 onConfirmAttendance?()
             }) {
                 HStack(spacing: Spacing.xs) {

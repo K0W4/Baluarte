@@ -13,8 +13,7 @@ public struct TaskCard: View {
         
         HStack(alignment: task.description.isEmpty ? .center : .top, spacing: Spacing.sm) {
             Button {
-                let generator = UIImpactFeedbackGenerator(style: .medium)
-                generator.impactOccurred()
+                HapticManager.shared.impact(style: .medium)
                 onToggle()
             } label: {
                 Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")

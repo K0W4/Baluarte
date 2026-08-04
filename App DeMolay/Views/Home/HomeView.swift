@@ -11,12 +11,19 @@ public struct HomeView: View {
     @State private var selectedEvent: Event?
     @State private var selectedGoal: Goal?
     @State private var selectedCommittee: Committee?
+    
+    private var hasIncompleteProfile: Bool {
+        if case let .authenticated(_, member) = authViewModel.state, let member = member {
+            return member.cid == nil || member.birthdate == nil || member.cid?.isEmpty == true
+        }
+        return false
+    }
 
     public var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: Spacing.xl) {
-                    Text(viewModel.isLoading ? "Carregando resumo..." : "Você tem \(viewModel.tasks.filter { !$0.isCompleted }.count) tarefas pendentes.")
+                    Text(viewModel.isLoading ? "Carregando resumo..." : (hasIncompleteProfile ? "Você tem informações pendentes no seu perfil." : "Você tem \(viewModel.tasks.filter { !$0.isCompleted }.count) tarefas pendentes."))
                         .font(Typography.subheadline)
                         .foregroundColor(Theme.textSecondary)
                         .padding(.horizontal, Spacing.screenEdgePadding)

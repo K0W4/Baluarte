@@ -64,8 +64,7 @@ public struct CommitteeCard: View {
                     ForEach(tasks.prefix(3)) { task in
                         HStack(alignment: .center, spacing: Spacing.sm) {
                             Button(action: {
-                                let generator = UINotificationFeedbackGenerator()
-                                generator.notificationOccurred(.success)
+                                HapticManager.shared.notification(type: .success)
                                 onTaskToggled?(task.id)
                             }) {
                                 Image(systemName: "circle")
