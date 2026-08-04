@@ -543,6 +543,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "App-DeMolay-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Baluarte;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "We need access to add the institution's events directly to your native calendar.";
 				INFOPLIST_KEY_NSCalendarsWriteOnlyAccessUsageDescription = "We need access to add the institution's events directly to your native calendar.";
@@ -586,6 +587,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "App-DeMolay-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Baluarte;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "We need access to add the institution's events directly to your native calendar.";
 				INFOPLIST_KEY_NSCalendarsWriteOnlyAccessUsageDescription = "We need access to add the institution's events directly to your native calendar.";
