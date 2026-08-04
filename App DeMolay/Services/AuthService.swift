@@ -7,6 +7,8 @@ public protocol AuthServiceProtocol {
     func signUpWithEmail(email: String, password: String) async throws -> User
     func signOut() async throws
     func getCurrentSession() async throws -> Session
+    func deleteAccount() async throws
+    func sendPasswordReset(email: String) async throws
 }
 
 public class AuthService: AuthServiceProtocol {
@@ -37,5 +39,13 @@ public class AuthService: AuthServiceProtocol {
     
     public func getCurrentSession() async throws -> Session {
         return try await client.auth.session
+    }
+
+    public func deleteAccount() async throws {
+        try await client.functions.invoke("delete-account")
+    }
+
+    public func sendPasswordReset(email: String) async throws {
+        try await client.auth.resetPasswordForEmail(email)
     }
 }

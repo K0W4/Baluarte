@@ -2,64 +2,53 @@ import AuthenticationServices
 import CryptoKit
 import Foundation
 
-public final class AppleSignInHelper: NSObject, ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
-    
+public struct AppleCredentials: Sendable {
+    public let idToken: String
+    public let nonce: String
+    public let fullName: String?
+}
+
+public final class AppleSignInHelper {
+
     public static let shared = AppleSignInHelper()
-    
+
     private var currentNonce: String?
-    private var completionHandler: ((Result<(idToken: String, nonce: String), Error>) -> Void)?
-    
-    private override init() {}
-    
-    public func startSignIn(completion: @escaping (Result<(idToken: String, nonce: String), Error>) -> Void) {
-        self.completionHandler = completion
-        
+
+    private init() {}
+
+    // MARK: - SignInWithAppleButton
+
+    public func prepare(request: ASAuthorizationAppleIDRequest) {
         let nonce = randomNonceString()
         self.currentNonce = nonce
-        
-        let provider = ASAuthorizationAppleIDProvider()
-        let request = provider.createRequest()
         request.requestedScopes = [.fullName, .email]
         request.nonce = sha256(nonce)
-        
-        let controller = ASAuthorizationController(authorizationRequests: [request])
-        controller.delegate = self
-        controller.presentationContextProvider = self
-        controller.performRequests()
     }
-    
-    // MARK: - ASAuthorizationControllerDelegate
-    
-    public func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
-        if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
-            guard let nonce = currentNonce else {
-                completionHandler?(.failure(NSError(domain: "AppleSignInHelper", code: 1, userInfo: [NSLocalizedDescriptionKey: "Invalid state: A login callback was received, but no login request was sent."])))
-                return
-            }
-            
-            guard let appleIDToken = appleIDCredential.identityToken,
-                  let idTokenString = String(data: appleIDToken, encoding: .utf8) else {
-                completionHandler?(.failure(NSError(domain: "AppleSignInHelper", code: 2, userInfo: [NSLocalizedDescriptionKey: "Unable to fetch identity token."])))
-                return
-            }
-            
-            completionHandler?(.success((idToken: idTokenString, nonce: nonce)))
+
+    public func credentials(from authorization: ASAuthorization) throws -> AppleCredentials {
+        guard let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential else {
+            throw NSError(domain: "AppleSignInHelper", code: 3, userInfo: [NSLocalizedDescriptionKey: "Credencial da Apple em formato inesperado."])
         }
-    }
-    
-    public func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
-        completionHandler?(.failure(error))
-    }
-    
-    // MARK: - ASAuthorizationControllerPresentationContextProviding
-    
-    public func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
-            fatalError("Sign In with Apple requires an active UIWindowScene.")
+
+        guard let nonce = currentNonce else {
+            throw NSError(domain: "AppleSignInHelper", code: 1, userInfo: [NSLocalizedDescriptionKey: "Estado inválido: resposta recebida sem uma solicitação correspondente."])
         }
-        return windowScene.windows.first(where: \.isKeyWindow) ?? ASPresentationAnchor(windowScene: windowScene)
+
+        guard let appleIDToken = appleIDCredential.identityToken,
+              let idTokenString = String(data: appleIDToken, encoding: .utf8) else {
+            throw NSError(domain: "AppleSignInHelper", code: 2, userInfo: [NSLocalizedDescriptionKey: "Não foi possível obter o token de identidade."])
+        }
+
+        var fullNameString: String? = nil
+        if let fullName = appleIDCredential.fullName {
+            let formatter = PersonNameComponentsFormatter()
+            fullNameString = formatter.string(from: fullName)
+        }
+
+        currentNonce = nil
+        return AppleCredentials(idToken: idTokenString, nonce: nonce, fullName: fullNameString)
     }
-    
+
     // MARK: - Helpers
     
     private func randomNonceString(length: Int = 32) -> String {

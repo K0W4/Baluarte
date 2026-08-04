@@ -56,38 +56,63 @@ public final class AuthViewModel {
     }
     
     @MainActor
-    public func signInWithApple() async {
+    public func signInWithApple(credentials: AppleCredentials) async {
         self.state = .loading
-        
-        AppleSignInHelper.shared.startSignIn { [weak self] result in
-            guard let self = self else { return }
-            
-            Task { @MainActor in
-                switch result {
-                case .success(let credentials):
-                    do {
-                        let user = try await self.authService.signInWithApple(idToken: credentials.idToken, nonce: credentials.nonce)
-                        let member = try await self.memberService.fetchMember(id: user.id)
-                        self.state = .authenticated(user, member)
-                        let session = try await self.authService.getCurrentSession()
-                        UserDefaultsManager.shared.currentUserId = user.id
-                        UserDefaultsManager.shared.currentChapterId = member?.chapterId
-                        UserDefaultsManager.shared.accessToken = session.accessToken
-                    } catch {
-                        self.state = .unauthenticated
-                        self.errorMessage = AppError.from(error).userMessage
-                        UserDefaultsManager.shared.currentUserId = nil
-                        UserDefaultsManager.shared.currentChapterId = nil
-                        UserDefaultsManager.shared.accessToken = nil
-                    }
-                case .failure(let error):
-                    self.state = .unauthenticated
-                    self.errorMessage = AppError.from(error).userMessage
-                    UserDefaultsManager.shared.currentUserId = nil
-                    UserDefaultsManager.shared.currentChapterId = nil
-                    UserDefaultsManager.shared.accessToken = nil
-                }
+
+        do {
+            let user = try await authService.signInWithApple(idToken: credentials.idToken, nonce: credentials.nonce)
+            let fetchedMember = try await memberService.fetchMember(id: user.id)
+
+            let member: Member
+            if let existing = fetchedMember {
+                member = existing
+            } else {
+                let newMember = Member(
+                    id: user.id,
+                    chapterId: nil,
+                    fullName: credentials.fullName ?? "Membro DeMolay",
+                    role: nil,
+                    isActive: false,
+                    isSenior: false,
+                    isMason: false,
+                    accessLevel: "Membro",
+                    birthdate: nil,
+                    cid: nil,
+                    createdAt: Date()
+                )
+                try await memberService.createMember(newMember)
+                member = newMember
             }
+
+            self.state = .authenticated(user, member)
+            let session = try await authService.getCurrentSession()
+            UserDefaultsManager.shared.currentUserId = user.id
+            UserDefaultsManager.shared.currentChapterId = member.chapterId
+            UserDefaultsManager.shared.accessToken = session.accessToken
+        } catch {
+            self.state = .unauthenticated
+            self.errorMessage = AppError.from(error).userMessage
+            UserDefaultsManager.shared.currentUserId = nil
+            UserDefaultsManager.shared.currentChapterId = nil
+            UserDefaultsManager.shared.accessToken = nil
+        }
+    }
+
+    @MainActor
+    public func failAppleSignIn(with error: Error) {
+        self.state = .unauthenticated
+        self.errorMessage = AppError.from(error).userMessage
+    }
+
+    @MainActor
+    public func sendPasswordReset(to email: String) async -> Bool {
+        errorMessage = nil
+        do {
+            try await authService.sendPasswordReset(email: email)
+            return true
+        } catch {
+            errorMessage = AppError.from(error).userMessage
+            return false
         }
     }
     
@@ -96,11 +121,33 @@ public final class AuthViewModel {
         self.state = .loading
         do {
             let user = try await authService.signInWithEmail(email: email, password: password)
-            let member = try await memberService.fetchMember(id: user.id)
+            let fetchedMember = try await memberService.fetchMember(id: user.id)
+            
+            let member: Member
+            if let existing = fetchedMember {
+                member = existing
+            } else {
+                let newMember = Member(
+                    id: user.id,
+                    chapterId: nil,
+                    fullName: "Membro DeMolay",
+                    role: nil,
+                    isActive: false,
+                    isSenior: false,
+                    isMason: false,
+                    accessLevel: "Membro",
+                    birthdate: nil,
+                    cid: nil,
+                    createdAt: Date()
+                )
+                try await memberService.createMember(newMember)
+                member = newMember
+            }
+            
             self.state = .authenticated(user, member)
             let session = try await authService.getCurrentSession()
             UserDefaultsManager.shared.currentUserId = user.id
-            UserDefaultsManager.shared.currentChapterId = member?.chapterId
+            UserDefaultsManager.shared.currentChapterId = member.chapterId
             UserDefaultsManager.shared.accessToken = session.accessToken
         } catch {
             self.errorMessage = AppError.from(error).userMessage
@@ -116,7 +163,23 @@ public final class AuthViewModel {
         self.state = .loading
         do {
             let user = try await authService.signUpWithEmail(email: email, password: password)
-            self.state = .authenticated(user, nil)
+            
+            let newMember = Member(
+                id: user.id,
+                chapterId: nil,
+                fullName: "Membro DeMolay",
+                role: nil,
+                isActive: false,
+                isSenior: false,
+                isMason: false,
+                accessLevel: "Membro",
+                birthdate: nil,
+                cid: nil,
+                createdAt: Date()
+            )
+            try await memberService.createMember(newMember)
+            
+            self.state = .authenticated(user, newMember)
             let session = try await authService.getCurrentSession()
             UserDefaultsManager.shared.currentUserId = user.id
             UserDefaultsManager.shared.currentChapterId = nil
@@ -127,48 +190,6 @@ public final class AuthViewModel {
             UserDefaultsManager.shared.currentUserId = nil
             UserDefaultsManager.shared.currentChapterId = nil
             UserDefaultsManager.shared.accessToken = nil
-        }
-    }
-    
-    @MainActor
-    public func completeProfile(fullName: String, cid: String, birthDate: Date, isActive: Bool, isSenior: Bool, isMason: Bool) async {
-        guard case let .authenticated(user, member) = self.state else { return }
-        
-        self.state = .loading
-        
-        do {
-            var updatedMember: Member
-            if var existingMember = member {
-                existingMember.fullName = fullName
-                existingMember.cid = cid
-                existingMember.birthdate = birthDate
-                existingMember.isActive = isActive
-                existingMember.isSenior = isSenior
-                existingMember.isMason = isMason
-                try await memberService.updateMember(existingMember)
-                updatedMember = existingMember
-            } else {
-                updatedMember = Member(
-                    id: user.id,
-                    chapterId: nil,
-                    fullName: fullName,
-                    role: nil,
-                    isActive: isActive,
-                    isSenior: isSenior,
-                    isMason: isMason,
-                    accessLevel: "Membro",
-                    birthdate: birthDate,
-                    cid: cid,
-                    createdAt: Date()
-                )
-                try await memberService.createMember(updatedMember)
-            }
-            self.state = .authenticated(user, updatedMember)
-            UserDefaultsManager.shared.currentUserId = user.id
-            UserDefaultsManager.shared.currentChapterId = updatedMember.chapterId
-        } catch {
-            self.errorMessage = AppError.from(error).userMessage
-            self.state = .authenticated(user, member)
         }
     }
     
@@ -223,14 +244,13 @@ public final class AuthViewModel {
     
     @MainActor
     public func deleteAccount() async {
-        guard let userId = currentUserId else { return }
-        
+        guard currentUserId != nil else { return }
+
         self.state = .loading
         do {
-            try await memberService.deleteMember(memberId: userId)
-            
+            try await authService.deleteAccount()
             try await authService.signOut()
-            
+
             self.state = .unauthenticated
             UserDefaultsManager.shared.currentUserId = nil
             UserDefaultsManager.shared.currentChapterId = nil

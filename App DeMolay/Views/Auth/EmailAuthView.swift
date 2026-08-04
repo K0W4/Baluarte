@@ -3,137 +3,78 @@ import SwiftUI
 struct EmailAuthView: View {
     @Environment(AuthViewModel.self) private var authViewModel
     @Environment(\.dismiss) private var dismiss
-    
+
     @State private var isSignUp = false
     @State private var email = ""
     @State private var password = ""
     @State private var confirmPassword = ""
     @State private var isLoading = false
-    
+    @State private var resetConfirmation: String?
+
     enum FocusField { case email, password, confirmPassword }
     @FocusState private var focusedField: FocusField?
-    
+
+    private static let minPasswordLength = 6
+
+    private var trimmedEmail: String {
+        email.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private var isEmailValid: Bool {
+        let pattern = #"^[^@\s]+@[^@\s]+\.[A-Za-z]{2,}$"#
+        return trimmedEmail.range(of: pattern, options: .regularExpression) != nil
+    }
+
+    private var emailWarning: String? {
+        guard !trimmedEmail.isEmpty, !isEmailValid else { return nil }
+        return "Digite um e-mail válido, como nome@exemplo.com."
+    }
+
+    private var passwordWarning: String? {
+        guard isSignUp, !password.isEmpty, password.count < Self.minPasswordLength else { return nil }
+        return "A senha precisa ter ao menos \(Self.minPasswordLength) caracteres."
+    }
+
+    private var confirmWarning: String? {
+        guard isSignUp, !confirmPassword.isEmpty, password != confirmPassword else { return nil }
+        return "As senhas não coincidem."
+    }
+
+    private var canSubmit: Bool {
+        guard isEmailValid, !password.isEmpty, !isLoading else { return false }
+        guard isSignUp else { return true }
+        return password.count >= Self.minPasswordLength && password == confirmPassword
+    }
+
     var body: some View {
         ZStack {
             Theme.backgroundPrimary.ignoresSafeArea()
-            
+
             ScrollView {
                 VStack(spacing: Spacing.xl) {
-                    VStack(alignment: .leading, spacing: Spacing.sm) {
-                        Text(isSignUp ? "Criar conta" : "Bem-vindo de volta")
-                            .font(Typography.largeTitle)
+                    header
+                    fields
+
+                    if let resetConfirmation {
+                        Text(resetConfirmation)
+                            .font(Typography.subheadline)
                             .foregroundColor(Theme.textPrimary)
-                        
-                        Text(isSignUp ? "Preencha seus dados para começar." : "Faça login para acessar seu Capítulo.")
-                            .font(Typography.body)
-                            .foregroundColor(Theme.textSecondary)
+                            .multilineTextAlignment(.center)
+                            .frame(maxWidth: .infinity)
+                            .padding(Spacing.md)
+                            .background(Theme.cardBackground)
+                            .clipShape(RoundedRectangle(cornerRadius: Spacing.cornerRadius))
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    
-                    VStack(spacing: Spacing.lg) {
-                        VStack(alignment: .leading, spacing: Spacing.xs) {
-                            Text("E-mail")
-                                .font(Typography.callout)
-                                .foregroundColor(Theme.textPrimary)
-                            
-                            TextField("Digite seu e-mail", text: $email)
-                                .focused($focusedField, equals: .email)
-                                .submitLabel(.next)
-                                .onSubmit { focusedField = .password }
-                                .keyboardType(.emailAddress)
-                                .textInputAutocapitalization(.never)
-                                .autocorrectionDisabled()
-                                .padding()
-                                .background(Theme.backgroundSecondary)
-                                .cornerRadius(8)
-                                .foregroundColor(Theme.textPrimary)
-                        }
-                        
-                        VStack(alignment: .leading, spacing: Spacing.xs) {
-                            Text("Senha")
-                                .font(Typography.callout)
-                                .foregroundColor(Theme.textPrimary)
-                            
-                            SecureField("Digite sua senha", text: $password)
-                                .focused($focusedField, equals: .password)
-                                .submitLabel(isSignUp ? .next : .done)
-                                .onSubmit {
-                                    if isSignUp {
-                                        focusedField = .confirmPassword
-                                    } else {
-                                        focusedField = nil
-                                    }
-                                }
-                                .padding()
-                                .background(Theme.backgroundSecondary)
-                                .cornerRadius(8)
-                                .foregroundColor(Theme.textPrimary)
-                        }
-                        
-                        if isSignUp {
-                            VStack(alignment: .leading, spacing: Spacing.xs) {
-                                Text("Confirmar Senha")
-                                    .font(Typography.callout)
-                                    .foregroundColor(Theme.textPrimary)
-                                
-                                SecureField("Confirme sua senha", text: $confirmPassword)
-                                    .focused($focusedField, equals: .confirmPassword)
-                                    .submitLabel(.done)
-                                    .onSubmit { focusedField = nil }
-                                    .padding()
-                                    .background(Theme.backgroundSecondary)
-                                    .cornerRadius(8)
-                                    .foregroundColor(Theme.textPrimary)
-                            }
-                        }
-                    }
-                    
+
                     if let errorMessage = authViewModel.errorMessage {
                         Text(errorMessage)
-                            .font(Typography.caption1)
+                            .font(Typography.subheadline)
                             .foregroundColor(Theme.destructive)
                             .multilineTextAlignment(.center)
                             .padding(.horizontal)
                     }
-                    
-                    VStack(spacing: Spacing.md) {
-                        Button(action: {
-                            Task {
-                                isLoading = true
-                                authViewModel.errorMessage = nil
-                                if isSignUp {
-                                    if password == confirmPassword {
-                                        await authViewModel.signUpWithEmail(email: email, password: password)
-                                    } else {
-                                        authViewModel.errorMessage = "As senhas não coincidem."
-                                    }
-                                } else {
-                                    await authViewModel.signInWithEmail(email: email, password: password)
-                                }
-                                isLoading = false
-                            }
-                        }) {
-                            if isLoading {
-                                ProgressView().tint(.white)
-                            } else {
-                                Text(isSignUp ? "Cadastrar" : "Entrar")
-                                    .frame(maxWidth: .infinity)
-                            }
-                        }
-                        .buttonStyle(PrimaryButtonStyle())
-                        .disabled(email.isEmpty || password.isEmpty || (isSignUp && confirmPassword.isEmpty) || isLoading)
-                        
-                        Button(action: {
-                            withAnimation {
-                                isSignUp.toggle()
-                                authViewModel.errorMessage = nil
-                            }
-                        }) {
-                            Text(isSignUp ? "Já tem uma conta? Entre aqui." : "Não tem conta? Cadastre-se.")
-                                .font(Typography.callout)
-                                .foregroundColor(Theme.accent)
-                        }
-                    }
+
+                    actions
                 }
                 .padding(Spacing.screenEdgePadding)
             }
@@ -149,15 +90,151 @@ struct EmailAuthView: View {
                     Image(systemName: "chevron.left")
                         .foregroundColor(Theme.accent)
                 }
+                .accessibilityLabel("Voltar")
             }
         }
         .navigationBarBackButtonHidden()
     }
+
+    private var header: some View {
+        VStack(alignment: .leading, spacing: Spacing.sm) {
+            Text(isSignUp ? "Criar conta" : "Bem-vindo de volta")
+                .font(Typography.largeTitle)
+                .foregroundColor(Theme.textPrimary)
+                .accessibilityAddTraits(.isHeader)
+
+            Text(isSignUp ? "Preencha seus dados para começar." : "Faça login para acessar seu Capítulo.")
+                .font(Typography.body)
+                .foregroundColor(Theme.textSecondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var fields: some View {
+        VStack(spacing: Spacing.lg) {
+            FormFieldContainer(title: "E-mail", warning: emailWarning) {
+                TextField("Digite seu e-mail", text: $email)
+                    .focused($focusedField, equals: .email)
+                    .submitLabel(.next)
+                    .onSubmit { focusedField = .password }
+                    .keyboardType(.emailAddress)
+                    .textContentType(.emailAddress)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+            }
+
+            FormFieldContainer(title: "Senha", warning: passwordWarning) {
+                SecureField("Digite sua senha", text: $password)
+                    .focused($focusedField, equals: .password)
+                    .submitLabel(isSignUp ? .next : .done)
+                    .onSubmit { focusedField = isSignUp ? .confirmPassword : nil }
+                    .textContentType(isSignUp ? .newPassword : .password)
+            }
+
+            if isSignUp {
+                FormFieldContainer(title: "Confirmar Senha", warning: confirmWarning) {
+                    SecureField("Confirme sua senha", text: $confirmPassword)
+                        .focused($focusedField, equals: .confirmPassword)
+                        .submitLabel(.done)
+                        .onSubmit { focusedField = nil }
+                        .textContentType(.newPassword)
+                }
+            }
+        }
+    }
+
+    private var actions: some View {
+        VStack(spacing: Spacing.md) {
+            Button(action: submit) {
+                if isLoading {
+                    ProgressView().tint(Theme.onAccent)
+                } else {
+                    Text(isSignUp ? "Cadastrar" : "Entrar")
+                }
+            }
+            .buttonStyle(PrimaryButtonStyle())
+            .disabled(!canSubmit)
+
+            if !isSignUp {
+                Button(action: sendReset) {
+                    Text("Esqueci minha senha")
+                        .font(Typography.callout)
+                        .foregroundColor(Theme.accent)
+                        .frame(maxWidth: .infinity, minHeight: Spacing.minTouchTarget)
+                        .contentShape(Rectangle())
+                }
+                .disabled(!isEmailValid || isLoading)
+                .accessibilityHint("Envia um link de redefinição para o e-mail informado")
+            }
+
+            Button(action: {
+                withAnimation {
+                    isSignUp.toggle()
+                    authViewModel.errorMessage = nil
+                    resetConfirmation = nil
+                }
+            }) {
+                Text(isSignUp ? "Já tem uma conta? Entre aqui." : "Não tem conta? Cadastre-se.")
+                    .font(Typography.callout)
+                    .foregroundColor(Theme.accent)
+                    .frame(maxWidth: .infinity, minHeight: Spacing.minTouchTarget)
+                    .contentShape(Rectangle())
+            }
+        }
+    }
+
+    private func submit() {
+        Task {
+            isLoading = true
+            authViewModel.errorMessage = nil
+            resetConfirmation = nil
+            if isSignUp {
+                await authViewModel.signUpWithEmail(email: trimmedEmail, password: password)
+            } else {
+                await authViewModel.signInWithEmail(email: trimmedEmail, password: password)
+            }
+            isLoading = false
+        }
+    }
+
+    private func sendReset() {
+        Task {
+            isLoading = true
+            authViewModel.errorMessage = nil
+            resetConfirmation = nil
+            let sent = await authViewModel.sendPasswordReset(to: trimmedEmail)
+            if sent {
+                resetConfirmation = "Se houver uma conta com esse e-mail, enviamos um link para redefinir a senha."
+            }
+            isLoading = false
+        }
+    }
 }
 
-#Preview {
-    NavigationStack {
-        EmailAuthView()
-            .environment(AuthViewModel(authService: AuthService()))
+private struct FormFieldContainer<Content: View>: View {
+    let title: String
+    let warning: String?
+    @ViewBuilder let content: Content
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Spacing.xs) {
+            Text(title)
+                .font(Typography.callout)
+                .foregroundColor(Theme.textPrimary)
+
+            content
+                .padding()
+                .background(Theme.backgroundSecondary)
+                .cornerRadius(8)
+                .foregroundColor(Theme.textPrimary)
+
+            if let warning {
+                Text(warning)
+                    .font(Typography.caption1)
+                    .foregroundColor(Theme.destructive)
+            }
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel(title)
     }
 }
