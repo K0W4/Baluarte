@@ -28,33 +28,37 @@ public final class ChapterSelectionViewModel {
     
     @MainActor
     public func searchChapters(query: String) async {
-        guard !query.isEmpty else {
+        let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else {
             await fetchChapters()
             return
         }
-        
+
         self.isLoading = true
         self.errorMessage = nil
         do {
-            self.chapters = try await chapterService.searchChapters(query: query)
+            self.chapters = try await chapterService.searchChapters(query: trimmed)
         } catch {
+            if error is CancellationError { self.isLoading = false; return }
             self.errorMessage = AppError.from(error).userMessage
         }
         self.isLoading = false
     }
-    
+
     @MainActor
-    public func selectChapter(_ chapter: Chapter, for member: Member) async throws -> Member {
+    public func selectChapter(_ chapter: Chapter, for member: Member) async -> Bool {
         self.isLoading = true
+        self.errorMessage = nil
         do {
             var updatedMember = member
             updatedMember.chapterId = chapter.id
             try await memberService.updateMember(updatedMember)
             self.isLoading = false
-            return updatedMember
+            return true
         } catch {
+            self.errorMessage = AppError.from(error).userMessage
             self.isLoading = false
-            throw error
+            return false
         }
     }
 }

@@ -16,6 +16,10 @@ public final class CreateChapterViewModel {
         self.isLoading = true
         self.errorMessage = nil
         do {
+            if try await chapterService.chapterExists(number: number) {
+                throw AppError.validationFailed("Já existe um Capítulo com o número \(number). Verifique se o seu já está cadastrado antes de criar outro.")
+            }
+
             let newChapter = Chapter(
                 id: UUID(),
                 name: name,

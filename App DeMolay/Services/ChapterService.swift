@@ -25,6 +25,18 @@ public class ChapterService: ChapterServiceProtocol {
             .value
     }
     
+    public func chapterExists(number: Int) async throws -> Bool {
+        let matches: [Chapter] = try await client
+            .from("chapter")
+            .select()
+            .eq("number", value: number)
+            .limit(1)
+            .execute()
+            .value
+
+        return !matches.isEmpty
+    }
+
     public func createChapter(_ chapter: Chapter) async throws -> Chapter {
         let insertedChapter: Chapter = try await client
             .from("chapter")

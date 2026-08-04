@@ -34,8 +34,12 @@ public enum AppError: Error, LocalizedError {
     public var errorDescription: String? { userMessage }
     
     public static func from(_ error: Error) -> AppError {
+        if let appError = error as? AppError {
+            return appError
+        }
+
         let description = String(describing: error)
-        
+
         if let urlError = error as? URLError {
             switch urlError.code {
             case .notConnectedToInternet, .networkConnectionLost:
