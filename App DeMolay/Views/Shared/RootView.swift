@@ -4,7 +4,16 @@ struct RootView: View {
     @Environment(AuthViewModel.self) private var authViewModel
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
-    
+
+    private var stateKey: String {
+        switch authViewModel.state {
+        case .loading: return "loading"
+        case .unauthenticated: return "unauth"
+        case .authenticated(_, let member):
+            return (member == nil || member?.chapterId == nil) ? "chapterSelect" : "app"
+        }
+    }
+
     var body: some View {
         Group {
             switch authViewModel.state {
@@ -45,6 +54,7 @@ struct RootView: View {
             }
         }
         .animation(reduceMotion ? nil : .easeInOut, value: hasSeenOnboarding)
+        .animation(reduceMotion ? nil : .easeInOut, value: stateKey)
     }
 }
 

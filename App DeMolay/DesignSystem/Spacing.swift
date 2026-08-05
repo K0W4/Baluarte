@@ -19,4 +19,5 @@ public struct Spacing {
     
     public static let cornerRadius: CGFloat = 16.0
     public static let minTouchTarget: CGFloat = 44.0
+    public static let heroIconSize: CGFloat = 120.0
 }

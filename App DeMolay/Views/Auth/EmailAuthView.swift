@@ -56,22 +56,32 @@ struct EmailAuthView: View {
                     fields
 
                     if let resetConfirmation {
-                        Text(resetConfirmation)
-                            .font(Typography.subheadline)
-                            .foregroundColor(Theme.textPrimary)
-                            .multilineTextAlignment(.center)
-                            .frame(maxWidth: .infinity)
-                            .padding(Spacing.md)
-                            .background(Theme.cardBackground)
-                            .clipShape(RoundedRectangle(cornerRadius: Spacing.cornerRadius))
+                        HStack(spacing: Spacing.sm) {
+                            Image(systemName: "checkmark.circle.fill")
+                                .font(Typography.headline)
+                                .foregroundColor(Theme.success)
+
+                            Text(resetConfirmation)
+                                .font(Typography.subheadline)
+                                .foregroundColor(Theme.textPrimary)
+                                .lineLimit(3)
+                        }
+                        .padding(Spacing.md)
+                        .background(Theme.cardBackground)
+                        .clipShape(RoundedRectangle(cornerRadius: Spacing.cornerRadius))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: Spacing.cornerRadius)
+                                .stroke(Theme.success.opacity(0.5), lineWidth: 1)
+                        )
+                        .accessibilityElement(children: .combine)
                     }
 
                     if let errorMessage = authViewModel.errorMessage {
-                        Text(errorMessage)
-                            .font(Typography.subheadline)
-                            .foregroundColor(Theme.destructive)
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal)
+                        ErrorBannerView(
+                            message: errorMessage,
+                            onRetry: submit,
+                            onDismiss: { authViewModel.errorMessage = nil }
+                        )
                     }
 
                     actions
@@ -184,6 +194,7 @@ struct EmailAuthView: View {
     }
 
     private func submit() {
+        HapticManager.shared.impact(style: .medium)
         Task {
             isLoading = true
             authViewModel.errorMessage = nil
@@ -194,10 +205,12 @@ struct EmailAuthView: View {
                 await authViewModel.signInWithEmail(email: trimmedEmail, password: password)
             }
             isLoading = false
+            HapticManager.shared.notification(type: authViewModel.errorMessage == nil ? .success : .error)
         }
     }
 
     private func sendReset() {
+        HapticManager.shared.impact(style: .medium)
         Task {
             isLoading = true
             authViewModel.errorMessage = nil
@@ -207,6 +220,7 @@ struct EmailAuthView: View {
                 resetConfirmation = "Se houver uma conta com esse e-mail, enviamos um link para redefinir a senha."
             }
             isLoading = false
+            HapticManager.shared.notification(type: sent ? .success : .error)
         }
     }
 }
@@ -225,7 +239,7 @@ private struct FormFieldContainer<Content: View>: View {
             content
                 .padding()
                 .background(Theme.backgroundSecondary)
-                .cornerRadius(8)
+                .cornerRadius(Spacing.cornerRadius)
                 .foregroundColor(Theme.textPrimary)
 
             if let warning {

@@ -10,7 +10,7 @@ struct OnboardingSlideView: View {
             Image(systemName: page.imageSystemName)
                 .resizable()
                 .scaledToFit()
-                .frame(height: 150)
+                .frame(height: Spacing.heroIconSize)
                 .foregroundColor(Theme.accent)
                 .padding(.bottom, Spacing.lg)
                 .accessibilityHidden(true)

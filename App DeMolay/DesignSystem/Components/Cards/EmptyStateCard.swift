@@ -6,7 +6,8 @@ public enum CardType {
     case committee
     case member
     case task
-    
+    case chapter
+
     var icon: String {
         switch self {
         case .event: return "calendar.badge.exclamationmark"
@@ -14,36 +15,40 @@ public enum CardType {
         case .committee: return "person.2.fill"
         case .member: return "person.fill.xmark"
         case .task: return "checklist.checked"
+        case .chapter: return "building.2.crop.circle"
         }
     }
-    
+
     var title: String {
         switch self {
-        case .event: return "Nenhum evento agendado"
-        case .goal: return "Nenhuma meta definida"
-        case .committee: return "Nenhuma comissão criada"
-        case .member: return "Nenhum membro encontrado"
-        case .task: return "Tudo em dia!"
+        case .event: return String(localized: "Nenhum evento agendado")
+        case .goal: return String(localized: "Nenhuma meta definida")
+        case .committee: return String(localized: "Nenhuma comissão criada")
+        case .member: return String(localized: "Nenhum membro encontrado")
+        case .task: return String(localized: "Tudo em dia!")
+        case .chapter: return String(localized: "Nenhum Capítulo cadastrado")
         }
     }
-    
+
     var subtitle: String {
         switch self {
-        case .event: return "Agende um evento e ele aparecerá aqui."
-        case .goal: return "Defina uma meta e ela aparecerá aqui."
-        case .committee: return "Crie uma comissão e ela aparecerá aqui."
-        case .member: return "Adicione um membro e ele aparecerá aqui."
-        case .task: return "Crie uma tarefa e ela aparecerá aqui."
+        case .event: return String(localized: "Agende um evento e ele aparecerá aqui.")
+        case .goal: return String(localized: "Defina uma meta e ela aparecerá aqui.")
+        case .committee: return String(localized: "Crie uma comissão e ela aparecerá aqui.")
+        case .member: return String(localized: "Adicione um membro e ele aparecerá aqui.")
+        case .task: return String(localized: "Crie uma tarefa e ela aparecerá aqui.")
+        case .chapter: return String(localized: "Crie o primeiro Capítulo para começar.")
         }
     }
-    
+
     var buttonText: String {
         switch self {
-        case .event: return "Agendar evento"
-        case .goal: return "Definir meta"
-        case .committee: return "Criar comissão"
-        case .member: return "Adicionar membro"
-        case .task: return "Criar tarefa"
+        case .event: return String(localized: "Agendar evento")
+        case .goal: return String(localized: "Definir meta")
+        case .committee: return String(localized: "Criar comissão")
+        case .member: return String(localized: "Adicionar membro")
+        case .task: return String(localized: "Criar tarefa")
+        case .chapter: return String(localized: "Criar novo capítulo")
         }
     }
 }

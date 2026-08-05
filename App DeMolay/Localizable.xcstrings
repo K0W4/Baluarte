@@ -267,6 +267,18 @@
     },
     "%@, Capítulo número %lld" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, Chapter number %lld"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, Capítulo número %lld"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "new",
@@ -276,10 +288,36 @@
       }
     },
     "%@:" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@:"
+          }
+        }
+      }
     },
     "%@." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@."
+          }
+        }
+      }
     },
     "%@. %@" : {
       "localizations" : {
@@ -521,7 +559,20 @@
       }
     },
     "Abre a tela de acesso por e-mail e senha" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opens the email and password sign-in screen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre la pantalla de acceso por correo electrónico y contraseña"
+          }
+        }
+      }
     },
     "Ações da Conta" : {
       "extractionState" : "manual",
@@ -616,6 +667,15 @@
           }
         }
       }
+    },
+    "Adicione um membro e ele aparecerá aqui." : {
+
+    },
+    "Agendar evento" : {
+
+    },
+    "Agende um evento e ele aparecerá aqui." : {
+
     },
     "Alvo:" : {
       "extractionState" : "manual",
@@ -1003,7 +1063,20 @@
       }
     },
     "Carregando Capítulos" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading Chapters"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cargando Capítulos"
+          }
+        }
+      }
     },
     "Carregando comissões..." : {
       "localizations" : {
@@ -1329,7 +1402,43 @@
       }
     },
     "Criando capítulo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Creating chapter"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Creando capítulo"
+          }
+        }
+      }
+    },
+    "Criando capítulo..." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Creating chapter..."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Creando capítulo..."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Criando capítulo..."
+          }
+        }
+      }
     },
     "Criando comissão..." : {
       "extractionState" : "manual",
@@ -1439,6 +1548,9 @@
         }
       }
     },
+    "Criar comissão" : {
+
+    },
     "Criar conta" : {
       "localizations" : {
         "en" : {
@@ -1494,7 +1606,29 @@
         }
       }
     },
+    "Criar tarefa" : {
+
+    },
     "Crie o primeiro Capítulo para começar." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create the first Chapter to get started."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crea el primer Capítulo para empezar."
+          }
+        }
+      }
+    },
+    "Crie uma comissão e ela aparecerá aqui." : {
+
+    },
+    "Crie uma tarefa e ela aparecerá aqui." : {
 
     },
     "Dados Pessoais" : {
@@ -1598,6 +1732,9 @@
         }
       }
     },
+    "Defina uma meta e ela aparecerá aqui." : {
+
+    },
     "Definir como presidente" : {
       "localizations" : {
         "en" : {
@@ -1629,6 +1766,9 @@
           }
         }
       }
+    },
+    "Definir meta" : {
+
     },
     "Delegação" : {
       "extractionState" : "manual",
@@ -1995,7 +2135,20 @@
       }
     },
     "Encerra a sessão e volta para a tela de acesso" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signs out and returns to the sign-in screen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cierra la sesión y vuelve a la pantalla de acceso"
+          }
+        }
+      }
     },
     "Encontre seu Capítulo" : {
       "extractionState" : "manual",
@@ -2021,7 +2174,20 @@
       }
     },
     "Entrando" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signing in"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iniciando sesión"
+          }
+        }
+      }
     },
     "Entrar" : {
       "localizations" : {
@@ -2063,7 +2229,20 @@
       }
     },
     "Envia um link de redefinição para o e-mail informado" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sends a reset link to the provided email"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envía un enlace de restablecimiento al correo electrónico indicado"
+          }
+        }
+      }
     },
     "Erro ao carregar dados" : {
       "localizations" : {
@@ -2098,7 +2277,20 @@
       }
     },
     "Esqueci minha senha" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forgot my password"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Olvidé mi contraseña"
+          }
+        }
+      }
     },
     "Esta ação é irreversível. Todos os seus dados serão apagados e você perderá o acesso ao app." : {
       "extractionState" : "manual",
@@ -2844,9 +3036,38 @@
       }
     },
     "Nenhum Capítulo cadastrado" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Chapters registered"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ningún Capítulo registrado"
+          }
+        }
+      }
     },
     "Nenhum Capítulo para “%@”" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Chapter found for “%@”"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se encontró ningún Capítulo para “%@”"
+          }
+        }
+      }
+    },
+    "Nenhum evento agendado" : {
 
     },
     "Nenhum membro disponível" : {
@@ -2871,6 +3092,9 @@
           }
         }
       }
+    },
+    "Nenhum membro encontrado" : {
+
     },
     "Nenhum membro na comissão." : {
       "extractionState" : "manual",
@@ -2918,6 +3142,9 @@
         }
       }
     },
+    "Nenhuma comissão criada" : {
+
+    },
     "Nenhuma comissão disponível" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2940,6 +3167,9 @@
           }
         }
       }
+    },
+    "Nenhuma meta definida" : {
+
     },
     "Nome Completo" : {
       "extractionState" : "manual",
@@ -3484,7 +3714,20 @@
       }
     },
     "Pula a apresentação e vai para o acesso" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skips the introduction and goes to sign-in"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Omite la presentación y va al acceso"
+          }
+        }
+      }
     },
     "Pular" : {
       "localizations" : {
@@ -3574,7 +3817,20 @@
       }
     },
     "Revise o termo buscado ou limpe a busca para ver todos." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check the search term or clear the search to see all."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revisa el término buscado o borra la búsqueda para ver todos."
+          }
+        }
+      }
     },
     "Sair" : {
       "localizations" : {
@@ -4068,7 +4324,20 @@
       }
     },
     "Tem certeza que deseja sair do seu Capítulo atual? Você deixará de ver os eventos, metas e tarefas dele, mas poderá entrar em outro Capítulo quando quiser." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Are you sure you want to leave your current Chapter? You will stop seeing its events, goals, and tasks, but you can join another Chapter whenever you want."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Estás seguro de que deseas salir de tu Capítulo actual? Dejarás de ver sus eventos, metas y tareas, pero podrás unirte a otro Capítulo cuando quieras."
+          }
+        }
+      }
     },
     "Tentar novamente" : {
       "extractionState" : "manual",
@@ -4190,7 +4459,20 @@
       }
     },
     "Toca duas vezes para entrar neste Capítulo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Double tap to enter this Chapter"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca dos veces para entrar en este Capítulo"
+          }
+        }
+      }
     },
     "Toca duas vezes para recarregar os dados" : {
       "localizations" : {
@@ -4518,10 +4800,36 @@
       }
     },
     "Você tem informações pendentes no seu perfil." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You have pending information in your profile."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tienes información pendiente en tu perfil."
+          }
+        }
+      }
     },
     "Voltar" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Back"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volver"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

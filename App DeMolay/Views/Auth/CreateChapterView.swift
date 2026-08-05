@@ -75,12 +75,20 @@ struct CreateChapterView: View {
             }
             .overlay {
                 if viewModel.isLoading {
-                    Color.black.opacity(0.3).ignoresSafeArea()
-                    ProgressView()
-                        .padding()
-                        .background(Theme.backgroundSecondary)
-                        .cornerRadius(8)
+                    ZStack {
+                        Color.black.opacity(0.3).ignoresSafeArea()
+                        VStack(spacing: Spacing.sm) {
+                            ProgressView()
+                                .tint(Theme.accent)
+                            Text("Criando capítulo...")
+                                .font(Typography.subheadline)
+                                .foregroundColor(Theme.textSecondary)
+                        }
+                        .padding(Spacing.lg)
+                        .background(.regularMaterial)
+                        .clipShape(RoundedRectangle(cornerRadius: Spacing.cornerRadius))
                         .accessibilityLabel("Criando capítulo")
+                    }
                 }
             }
         }

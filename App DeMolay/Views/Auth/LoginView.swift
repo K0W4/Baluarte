@@ -28,7 +28,7 @@ struct LoginView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: 80, height: 80)
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                            .clipShape(RoundedRectangle(cornerRadius: Spacing.cornerRadius))
                             .accessibilityHidden(true)
 
                         Text("Baluarte")
@@ -44,16 +44,13 @@ struct LoginView: View {
                     Spacer()
 
                     if let errorMessage = authViewModel.errorMessage {
-                        Text(errorMessage)
-                            .font(Typography.subheadline)
-                            .foregroundColor(Theme.textPrimary)
-                            .multilineTextAlignment(.center)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            .padding(Spacing.md)
-                            .background(Theme.cardBackground)
-                            .clipShape(RoundedRectangle(cornerRadius: Spacing.cornerRadius))
-                            .padding(.horizontal, Spacing.screenEdgePadding)
-                            .accessibilityAddTraits(.isStaticText)
+                        ErrorBannerView(
+                            message: errorMessage,
+                            onRetry: {
+                                withAnimation { authViewModel.errorMessage = nil }
+                            }
+                        )
+                        .padding(.horizontal, Spacing.screenEdgePadding)
                     }
 
                     VStack(spacing: Spacing.md) {
@@ -72,13 +69,16 @@ struct LoginView: View {
                                         do {
                                             let credentials = try AppleSignInHelper.shared.credentials(from: authorization)
                                             await authViewModel.signInWithApple(credentials: credentials)
+                                            HapticManager.shared.notification(type: .success)
                                         } catch {
                                             authViewModel.failAppleSignIn(with: error)
+                                            HapticManager.shared.notification(type: .error)
                                         }
                                     }
                                 case .failure(let error):
                                     guard (error as? ASAuthorizationError)?.code != .canceled else { return }
                                     authViewModel.failAppleSignIn(with: error)
+                                    HapticManager.shared.notification(type: .error)
                                 }
                             }
                             .signInWithAppleButtonStyle(.white)
@@ -99,14 +99,11 @@ struct LoginView: View {
 
                     NavigationLink(destination: EmailAuthView()) {
                         Text("Entrar com E-mail")
-                            .font(Typography.headline)
-                            .foregroundColor(Theme.onAccent)
-                            .frame(maxWidth: .infinity, minHeight: Spacing.minTouchTarget)
-                            .contentShape(Rectangle())
-                            .overlay(
-                                Capsule().stroke(Theme.onAccent.opacity(0.6), lineWidth: 1)
-                            )
                     }
+                    .buttonStyle(OnAccentButtonStyle())
+                    .simultaneousGesture(TapGesture().onEnded {
+                        HapticManager.shared.impact(style: .light)
+                    })
                     .padding(.horizontal, Spacing.screenEdgePadding)
                     .padding(.bottom, Spacing.xl)
                     .accessibilityHint("Abre a tela de acesso por e-mail e senha")

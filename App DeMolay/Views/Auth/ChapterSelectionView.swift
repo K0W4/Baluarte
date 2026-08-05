@@ -91,58 +91,48 @@ struct ChapterSelectionView: View {
             Spacer()
         } else if viewModel.chapters.isEmpty {
             Spacer()
-            VStack(spacing: Spacing.md) {
-                Image(systemName: "building.2.crop.circle")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: 100)
-                    .foregroundColor(Theme.accent)
-                    .accessibilityHidden(true)
+            if searchText.isEmpty {
+                EmptyStateCard(cardType: .chapter) {
+                    HapticManager.shared.impact(style: .light)
+                    showCreateChapter = true
+                }
+                .padding(.horizontal, Spacing.screenEdgePadding)
+            } else {
+                VStack(spacing: Spacing.md) {
+                    Image(systemName: "building.2.crop.circle")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: Spacing.heroIconSize)
+                        .foregroundColor(Theme.accent)
+                        .accessibilityHidden(true)
 
-                Text(searchText.isEmpty ? "Nenhum Capítulo cadastrado" : "Nenhum Capítulo para “\(searchText)”")
-                    .font(Typography.headline)
-                    .foregroundColor(Theme.textPrimary)
-                    .multilineTextAlignment(.center)
+                    Text("Nenhum Capítulo para “\(searchText)”")
+                        .font(Typography.headline)
+                        .foregroundColor(Theme.textPrimary)
+                        .multilineTextAlignment(.center)
 
-                Text(searchText.isEmpty
-                     ? "Crie o primeiro Capítulo para começar."
-                     : "Revise o termo buscado ou limpe a busca para ver todos.")
-                    .font(Typography.subheadline)
-                    .foregroundColor(Theme.textSecondary)
-                    .multilineTextAlignment(.center)
+                    Text("Revise o termo buscado ou limpe a busca para ver todos.")
+                        .font(Typography.subheadline)
+                        .foregroundColor(Theme.textSecondary)
+                        .multilineTextAlignment(.center)
+                }
             }
             Spacer()
         } else {
-            List(viewModel.chapters) { chapter in
-                Button(action: { select(chapter) }) {
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(chapter.name)
-                                .font(Typography.headline)
-                                .foregroundColor(Theme.textPrimary)
-                            Text("Capítulo nº \(chapter.number)")
-                                .font(Typography.subheadline)
-                                .foregroundColor(Theme.textSecondary)
-                        }
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .foregroundColor(Theme.textSecondary)
-                            .accessibilityHidden(true)
+            ScrollView {
+                VStack(spacing: Spacing.sm) {
+                    ForEach(viewModel.chapters) { chapter in
+                        ChapterCard(chapter: chapter)
+                            .onTapGesture { select(chapter) }
                     }
-                    .padding(.vertical, Spacing.xs)
-                    .contentShape(Rectangle())
                 }
-                .listRowBackground(Theme.backgroundSecondary)
-                .accessibilityLabel("\(chapter.name), Capítulo número \(chapter.number)")
-                .accessibilityHint("Toca duas vezes para entrar neste Capítulo")
             }
-            .listStyle(.plain)
-            .cornerRadius(8)
         }
     }
 
     private func select(_ chapter: Chapter) {
         guard case let .authenticated(_, member) = authViewModel.state, let member else { return }
+        HapticManager.shared.impact(style: .light)
         Task {
             let joined = await viewModel.selectChapter(chapter, for: member)
             if joined {
