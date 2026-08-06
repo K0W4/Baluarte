@@ -20,8 +20,10 @@ struct TasksProvider: AppIntentTimelineProvider {
         } catch {
             fetchError = error.localizedDescription
             print("Widget Error: \(error)")
+
+            fetchedTasks = WidgetDataManager.shared.cachedTasks() ?? []
         }
-        
+
         let totalCount = fetchedTasks.count
         let entry = TasksEntry(date: Date(), tasks: Array(fetchedTasks.prefix(3)), totalPendingCount: totalCount, errorMessage: fetchError, configuration: configuration)
         let nextUpdate = Calendar.current.date(byAdding: .minute, value: 15, to: Date())!

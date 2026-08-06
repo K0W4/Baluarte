@@ -42,6 +42,45 @@ struct WidgetDataManager {
         return headers
     }
     
+    private var sharedDefaults: UserDefaults? {
+        UserDefaults(suiteName: "group.com.kowa.baluarte")
+    }
+
+    private let cachedEventsKey = "widgetCachedEvents"
+    private let cachedTasksKey = "widgetCachedTasks"
+
+    private func getCacheEncoder() -> JSONEncoder {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        return encoder
+    }
+
+    private func getCacheDecoder() -> JSONDecoder {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return decoder
+    }
+
+    private func cacheEvents(_ events: [Event]) {
+        guard let data = try? getCacheEncoder().encode(events) else { return }
+        sharedDefaults?.set(data, forKey: cachedEventsKey)
+    }
+
+    func cachedEvents() -> [Event]? {
+        guard let data = sharedDefaults?.data(forKey: cachedEventsKey) else { return nil }
+        return try? getCacheDecoder().decode([Event].self, from: data)
+    }
+
+    private func cacheTasks(_ tasks: [ChapterTask]) {
+        guard let data = try? getCacheEncoder().encode(tasks) else { return }
+        sharedDefaults?.set(data, forKey: cachedTasksKey)
+    }
+
+    func cachedTasks() -> [ChapterTask]? {
+        guard let data = sharedDefaults?.data(forKey: cachedTasksKey) else { return nil }
+        return try? getCacheDecoder().decode([ChapterTask].self, from: data)
+    }
+
     private func getSupabaseDecoder() -> JSONDecoder {
         let decoder = JSONDecoder()
         
@@ -89,7 +128,8 @@ struct WidgetDataManager {
         let now = Date()
         events = events.filter { Calendar.current.startOfDay(for: $0.scheduledDate) >= Calendar.current.startOfDay(for: now) }
         events.sort { $0.scheduledDate < $1.scheduledDate }
-        
+
+        cacheEvents(events)
         return events
     }
     
@@ -117,7 +157,8 @@ struct WidgetDataManager {
             (task.assigneeId?.uuidString.lowercased() == currentUserId.lowercased() ||
              task.creatorId.uuidString.lowercased() == currentUserId.lowercased())
         }
-        
+
+        cacheTasks(myTasks)
         return myTasks
     }
     

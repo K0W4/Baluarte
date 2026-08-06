@@ -27,8 +27,15 @@ struct EventProvider: AppIntentTimelineProvider {
         } catch {
             fetchError = error.localizedDescription
             print("Widget Error: \(error)")
+
+            nextEvent = WidgetDataManager.shared.cachedEvents()?.first
+            if let attendees = nextEvent?.confirmedAttendees,
+               let userIdString = UserDefaults(suiteName: "group.com.kowa.baluarte")?.string(forKey: "currentUserId"),
+               let userUUID = UUID(uuidString: userIdString) {
+                isConfirmed = attendees.contains(userUUID)
+            }
         }
-        
+
         let entry = EventEntry(date: Date(), event: nextEvent, isUserConfirmed: isConfirmed, errorMessage: fetchError, configuration: configuration)
         let nextUpdate = Calendar.current.date(byAdding: .minute, value: 15, to: Date())!
         return Timeline(entries: [entry], policy: .after(nextUpdate))
