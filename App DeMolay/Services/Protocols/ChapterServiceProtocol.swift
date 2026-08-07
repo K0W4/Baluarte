@@ -1,8 +1,8 @@
 import Foundation
 
+/// The chapter registry is curated reference data: readable by anyone, writable by
+/// nobody through the app. A chapter that is missing is requested, not created.
 public protocol ChapterServiceProtocol {
-    func fetchChapters() async throws -> [Chapter]
-    func searchChapters(query: String) async throws -> [Chapter]
-    func createChapter(_ chapter: Chapter) async throws -> Chapter
-    func chapterExists(number: Int) async throws -> Bool
+    func searchChapters(query: String?, uf: String?) async throws -> [Chapter]
+    func requestChapter(_ request: ChapterRequest) async throws
 }

@@ -1,0 +1,139 @@
+import Foundation
+import Supabase
+
+public final class SupabaseJoinRequestService: JoinRequestServiceProtocol {
+    private var client: SupabaseClient {
+        SupabaseManager.shared.client
+    }
+
+    public init() {}
+
+    private struct RequestInsert: Encodable {
+        let chapter_id: UUID
+        let member_id: UUID
+        let kind: String
+        let message: String?
+        let cid_snapshot: String?
+    }
+
+    private struct StatusUpdate: Encodable {
+        let status: String
+    }
+
+    private struct ApproveParams: Encodable {
+        let p_request_id: UUID
+        let p_access_level: String
+        let p_category: String
+        let p_role: String?
+    }
+
+    private struct RejectParams: Encodable {
+        let p_request_id: UUID
+        let p_reason: String?
+    }
+
+    /// The request row plus the applicant's name, which PostgREST can embed through the
+    /// member foreign key — one round trip instead of N.
+    private struct PendingRow: Decodable {
+        struct Applicant: Decodable { let full_name: String }
+        let id: UUID
+        let chapter_id: UUID
+        let member_id: UUID
+        let kind: JoinRequestKind
+        let status: JoinRequestStatus
+        let message: String?
+        let cid_snapshot: String?
+        let created_at: Date
+        let reject_reason: String?
+        let member: Applicant?
+    }
+
+    public func createRequest(chapterId: UUID, memberId: UUID, message: String?, cid: String?) async throws -> JoinRequest {
+        let payload = RequestInsert(
+            chapter_id: chapterId,
+            member_id: memberId,
+            kind: JoinRequestKind.chapterJoin.rawValue,
+            message: message,
+            cid_snapshot: cid
+        )
+
+        return try await client
+            .from("join_request")
+            .insert(payload)
+            .select()
+            .single()
+            .execute()
+            .value
+    }
+
+    public func fetchMyPendingRequest(memberId: UUID) async throws -> JoinRequest? {
+        let rows: [JoinRequest] = try await client
+            .from("join_request")
+            .select()
+            .eq("member_id", value: memberId)
+            .eq("status", value: JoinRequestStatus.pending.rawValue)
+            .order("created_at", ascending: false)
+            .limit(1)
+            .execute()
+            .value
+
+        return rows.first
+    }
+
+    public func fetchPendingRequests(for chapterId: UUID) async throws -> [PendingJoinRequest] {
+        let rows: [PendingRow] = try await client
+            .from("join_request")
+            .select("*, member(full_name)")
+            .eq("chapter_id", value: chapterId)
+            .eq("status", value: JoinRequestStatus.pending.rawValue)
+            .order("created_at", ascending: true)
+            .execute()
+            .value
+
+        return rows.map { row in
+            PendingJoinRequest(
+                request: JoinRequest(
+                    id: row.id,
+                    chapterId: row.chapter_id,
+                    memberId: row.member_id,
+                    kind: row.kind,
+                    status: row.status,
+                    message: row.message,
+                    cidSnapshot: row.cid_snapshot,
+                    createdAt: row.created_at,
+                    rejectReason: row.reject_reason
+                ),
+                applicantName: row.member?.full_name ?? "Membro DeMolay"
+            )
+        }
+    }
+
+    public func cancelRequest(id: UUID) async throws {
+        try await client
+            .from("join_request")
+            .update(StatusUpdate(status: JoinRequestStatus.cancelled.rawValue))
+            .eq("id", value: id)
+            .execute()
+    }
+
+    public func approve(requestId: UUID, accessLevel: AccessLevel, category: MembershipCategory, role: String?) async throws {
+        try await client
+            .rpc("approve_join_request", params: ApproveParams(
+                p_request_id: requestId,
+                p_access_level: accessLevel.rawValue,
+                p_category: category.rawValue,
+                p_role: role
+            ))
+            .execute()
+        WidgetManager.shared.reloadTimelines()
+    }
+
+    public func reject(requestId: UUID, reason: String?) async throws {
+        try await client
+            .rpc("reject_join_request", params: RejectParams(
+                p_request_id: requestId,
+                p_reason: reason
+            ))
+            .execute()
+    }
+}

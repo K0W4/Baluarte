@@ -2,13 +2,18 @@ import SwiftUI
 
 public struct CalendarView: View {
     @Environment(AuthViewModel.self) private var authViewModel
+    @Environment(\.permissions) private var permissions
     @State private var viewModel = CalendarViewModel()
     @State private var monthTransitionDirection: Edge = .trailing
     @State private var showingCreateEvent = false
     @State private var selectedEvent: Event?
-    
+
     private let calendar = Calendar.current
     private let daysInWeek = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"]
+
+    private var createEventAction: (() -> Void)? {
+        permissions.can(.manageEvents) ? { showingCreateEvent = true } : nil
+    }
     
     public init() {}
     
@@ -65,12 +70,12 @@ public struct CalendarView: View {
                 await viewModel.loadEvents()
             }
             .task {
-                viewModel.currentUserId = authViewModel.currentUserId
+                viewModel.currentMembershipId = authViewModel.currentMembershipId
                 viewModel.currentChapterId = authViewModel.currentChapterId
                 await viewModel.loadEvents()
             }
             .onAppear {
-                viewModel.currentUserId = authViewModel.currentUserId
+                viewModel.currentMembershipId = authViewModel.currentMembershipId
                 viewModel.currentChapterId = authViewModel.currentChapterId
                 Task {
                     await viewModel.loadEvents(showLoading: false)
@@ -86,8 +91,8 @@ public struct CalendarView: View {
             .sheet(item: $selectedEvent, onDismiss: {
                 Task { await viewModel.loadEvents() }
             }) { event in
-                if let currentUserId = authViewModel.currentUserId {
-                    EventDetailView(event: event, currentUserId: currentUserId)
+                if let currentMembershipId = authViewModel.currentMembershipId {
+                    EventDetailView(event: event, currentMembershipId: currentMembershipId)
                 }
             }
         }
@@ -178,18 +183,15 @@ public struct CalendarView: View {
             SectionHeaderView(
                 title: "Eventos do Dia",
                 actionLabel: "Adicionar evento",
-                actionHint: "Toca duas vezes para adicionar evento no calendário"
-            ) {
-                showingCreateEvent = true
-            }
+                actionHint: "Toca duas vezes para adicionar evento no calendário",
+                action: createEventAction
+            )
             .padding(.horizontal, Spacing.screenEdgePadding)
-            
+
             let selectedEvents = viewModel.isLoading ? Event.skeletonList : viewModel.events(for: viewModel.selectedDate)
-            
+
             if selectedEvents.isEmpty && !viewModel.isLoading {
-                EmptyStateCard(cardType: .event) {
-                    showingCreateEvent = true
-                }
+                EmptyStateCard(cardType: .event, action: createEventAction)
                     .padding(.horizontal, Spacing.screenEdgePadding)
             } else {
                 ForEach(selectedEvents) { event in

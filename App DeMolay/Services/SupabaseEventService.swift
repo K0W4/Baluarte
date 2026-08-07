@@ -24,55 +24,30 @@ public final class SupabaseEventService: BaseSupabaseService<Event>, EventServic
         try await delete(id: eventId)
     }
     
-    public func confirmAttendance(eventId: UUID, userId: UUID) async throws {
-        let event: Event = try await client
-            .from("event")
-            .select()
-            .eq("id", value: eventId)
-            .single()
-            .execute()
-            .value
-        
-        var attendees = event.confirmedAttendees ?? []
-        if !attendees.contains(userId) {
-            attendees.append(userId)
-            
-            struct UpdateAttendees: Codable {
-                let confirmed_attendees: [UUID]
-            }
-            
-            try await client
-                .from("event")
-                .update(UpdateAttendees(confirmed_attendees: attendees))
-                .eq("id", value: eventId)
-                .execute()
-            WidgetManager.shared.reloadTimelines()
-        }
+    private struct SetAttendanceParams: Encodable {
+        let p_event_id: UUID
+        let p_confirmed: Bool
     }
-    
-    public func removeAttendance(eventId: UUID, userId: UUID) async throws {
-        let event: Event = try await client
-            .from("event")
-            .select()
-            .eq("id", value: eventId)
-            .single()
+
+    /// Attendance is written server-side: an UPDATE policy cannot inspect an array
+    /// delta, so it could not stop one member confirming on another's behalf. The
+    /// RPC also removes the read-modify-write race this method used to have.
+    /// `userId` is ignored — the server derives the membership from the caller's JWT.
+    private func setAttendance(eventId: UUID, confirmed: Bool) async throws {
+        try await client
+            .rpc("set_event_attendance", params: SetAttendanceParams(
+                p_event_id: eventId,
+                p_confirmed: confirmed
+            ))
             .execute()
-            .value
-        
-        var attendees = event.confirmedAttendees ?? []
-        if attendees.contains(userId) {
-            attendees.removeAll { $0 == userId }
-            
-            struct UpdateAttendees: Codable {
-                let confirmed_attendees: [UUID]
-            }
-            
-            try await client
-                .from("event")
-                .update(UpdateAttendees(confirmed_attendees: attendees))
-                .eq("id", value: eventId)
-                .execute()
-            WidgetManager.shared.reloadTimelines()
-        }
+        WidgetManager.shared.reloadTimelines()
+    }
+
+    public func confirmAttendance(eventId: UUID, userId: UUID) async throws {
+        try await setAttendance(eventId: eventId, confirmed: true)
+    }
+
+    public func removeAttendance(eventId: UUID, userId: UUID) async throws {
+        try await setAttendance(eventId: eventId, confirmed: false)
     }
 }

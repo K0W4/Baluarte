@@ -80,13 +80,16 @@ public struct EmptyStateCard: View {
                     .foregroundStyle(Theme.textSecondary)
             }
             
-            Button {
-                action?()
-            } label: {
-                Text(cardType.buttonText)
+            if let action {
+                Button {
+                    action()
+                } label: {
+                    Text(cardType.buttonText)
+                }
+                .buttonStyle(PrimaryButtonStyle())
             }
-            .buttonStyle(PrimaryButtonStyle())
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(cardType.title). \(cardType.subtitle)")
         .padding(Spacing.md)

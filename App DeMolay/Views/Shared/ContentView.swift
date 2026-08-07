@@ -8,9 +8,10 @@ struct ContentView: View {
         case tasks
         case analysis
     }
-    
+
+    @Environment(AuthViewModel.self) private var authViewModel
     @State private var selectedTab: Tab = .home
-    
+
     var body: some View {
         TabView(selection: $selectedTab) {
             HomeView()
@@ -44,6 +45,7 @@ struct ContentView: View {
                 .tag(Tab.analysis)
         }
         .tint(Theme.accent)
+        .environment(\.permissions, authViewModel.permissions)
     }
 }
 

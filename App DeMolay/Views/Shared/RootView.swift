@@ -5,25 +5,16 @@ struct RootView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
 
-    private var stateKey: String {
-        switch authViewModel.state {
-        case .loading: return "loading"
-        case .unauthenticated: return "unauth"
-        case .authenticated(_, let member):
-            return (member == nil || member?.chapterId == nil) ? "chapterSelect" : "app"
-        }
-    }
-
     var body: some View {
         Group {
-            switch authViewModel.state {
+            switch authViewModel.route {
             case .loading:
                 ZStack {
                     Theme.backgroundPrimary.ignoresSafeArea()
                     ProgressView()
                         .tint(Theme.accent)
                 }
-                
+
             case .unauthenticated:
                 if !hasSeenOnboarding {
                     OnboardingView {
@@ -37,24 +28,22 @@ struct RootView: View {
                     LoginView()
                         .transition(.opacity)
                 }
-                
-            case .authenticated(_, let member):
-                if let member = member {
-                    if member.chapterId == nil {
-                        ChapterSelectionView()
-                            .transition(.opacity)
-                    } else {
-                        ContentView()
-                            .transition(.opacity)
-                    }
-                } else {
-                    ChapterSelectionView()
-                        .transition(.opacity)
-                }
+
+            case .chapterSelection:
+                ChapterSelectionView()
+                    .transition(.opacity)
+
+            case .pendingApproval:
+                PendingApprovalView()
+                    .transition(.opacity)
+
+            case .app:
+                ContentView()
+                    .transition(.opacity)
             }
         }
         .animation(reduceMotion ? nil : .easeInOut, value: hasSeenOnboarding)
-        .animation(reduceMotion ? nil : .easeInOut, value: stateKey)
+        .animation(reduceMotion ? nil : .easeInOut, value: authViewModel.route)
     }
 }
 

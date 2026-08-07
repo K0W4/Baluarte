@@ -1,4 +1,5 @@
 import Foundation
+import Supabase
 
 public enum AppError: Error, LocalizedError {
     case networkUnavailable
@@ -39,6 +40,21 @@ public enum AppError: Error, LocalizedError {
         }
 
         let description = String(describing: error)
+
+        // Business rules now live in Postgres and raise their own Portuguese messages.
+        // 42501 is what every authorization failure raises; 23514 carries a message
+        // meant to be read by the person who triggered it.
+        if let postgrestError = error as? PostgrestError {
+            switch postgrestError.code {
+            case "42501":
+                return .permissionDenied
+            case "PGRST116", "P0002":
+                return .notFound
+            default:
+                let message = postgrestError.message
+                return message.isEmpty ? .unknown : .validationFailed(message)
+            }
+        }
 
         if let urlError = error as? URLError {
             switch urlError.code {

@@ -8,7 +8,7 @@ struct CreateTaskViewModelTests {
     
     @Test("Initialization sets default values")
     func testInitialization() {
-        let viewModel = CreateTaskViewModel(chapterId: UUID(), currentUserId: UUID())
+        let viewModel = CreateTaskViewModel(chapterId: UUID(), currentMembershipId: UUID())
         
         #expect(viewModel.title == "")
 
@@ -19,7 +19,7 @@ struct CreateTaskViewModelTests {
     
     @Test("Validation logic")
     func testValidation() {
-        let viewModel = CreateTaskViewModel(chapterId: UUID(), currentUserId: UUID())
+        let viewModel = CreateTaskViewModel(chapterId: UUID(), currentMembershipId: UUID())
         
         viewModel.title = "   "
         #expect(viewModel.isValid == false)
@@ -28,25 +28,41 @@ struct CreateTaskViewModelTests {
         #expect(viewModel.isValid == true)
     }
     
-    @Test("loadCommittees fetches committees")
+    @Test("loadCommittees fetches committees the member belongs to")
     func testLoadCommittees() async {
+        let membershipId = UUID()
         let mockService = TestMockCommitteeService()
         mockService.committeesToReturn = [
-            Committee(id: UUID(), chapterId: UUID(), name: "Committee 1", chairmanId: UUID(), memberIds: [], createdAt: Date())
+            Committee(id: UUID(), chapterId: UUID(), name: "Committee 1", chairmanId: UUID(), memberIds: [membershipId], createdAt: Date())
         ]
-        
-        let viewModel = CreateTaskViewModel(chapterId: UUID(), currentUserId: UUID(), committeeService: mockService)
-        
+
+        let viewModel = CreateTaskViewModel(chapterId: UUID(), currentMembershipId: membershipId, committeeService: mockService)
+
         await viewModel.loadCommittees()
-        
+
         #expect(viewModel.committees.count == 1)
+        #expect(mockService.fetchCommitteesCallCount == 1)
+    }
+
+    @Test("loadCommittees hides committees the member does not belong to")
+    func testLoadCommitteesExcludesForeign() async {
+        let mockService = TestMockCommitteeService()
+        mockService.committeesToReturn = [
+            Committee(id: UUID(), chapterId: UUID(), name: "Committee 1", chairmanId: UUID(), memberIds: [UUID()], createdAt: Date())
+        ]
+
+        let viewModel = CreateTaskViewModel(chapterId: UUID(), currentMembershipId: UUID(), committeeService: mockService)
+
+        await viewModel.loadCommittees()
+
+        #expect(viewModel.committees.isEmpty)
         #expect(mockService.fetchCommitteesCallCount == 1)
     }
     
     @Test("saveTask succeeds")
     func testSaveTaskSuccess() async {
         let mockService = TestMockTaskService()
-        let viewModel = CreateTaskViewModel(chapterId: UUID(), currentUserId: UUID(), taskService: mockService)
+        let viewModel = CreateTaskViewModel(chapterId: UUID(), currentMembershipId: UUID(), taskService: mockService)
         
         viewModel.title = "Task Title"
         
@@ -60,7 +76,7 @@ struct CreateTaskViewModelTests {
     func testSaveTaskFailure() async {
         let mockService = TestMockTaskService()
         mockService.shouldThrowError = true
-        let viewModel = CreateTaskViewModel(chapterId: UUID(), currentUserId: UUID(), taskService: mockService)
+        let viewModel = CreateTaskViewModel(chapterId: UUID(), currentMembershipId: UUID(), taskService: mockService)
         
         viewModel.title = "Task Title"
         

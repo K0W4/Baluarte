@@ -7,13 +7,14 @@ struct ProfileView: View {
     @State private var showLeaveChapterAlert = false
     @State private var showDeleteAccountAlert = false
     @State private var showEditProfile = false
+    @State private var showJoinRequests = false
     
     var body: some View {
         NavigationStack {
             ZStack {
                 Theme.backgroundPrimary.ignoresSafeArea()
                 
-                if case let .authenticated(user, member) = authViewModel.state {
+                if case let .authenticated(user, profile) = authViewModel.state {
                     List {
                         Section {
                             VStack(spacing: Spacing.md) {
@@ -23,11 +24,11 @@ struct ProfileView: View {
                                     .frame(width: 100, height: 100)
                                     .foregroundColor(Theme.accent)
                                 
-                                Text(member?.fullName ?? user.email ?? "Membro DeMolay")
+                                Text(profile?.fullName ?? user.email ?? "Membro DeMolay")
                                     .font(Typography.title1)
                                     .foregroundColor(Theme.textPrimary)
-                                
-                                if let cid = member?.cid {
+
+                                if let cid = profile?.cid {
                                     Text("ID: \(cid)")
                                         .font(Typography.callout)
                                         .foregroundColor(Theme.textSecondary)
@@ -40,15 +41,40 @@ struct ProfileView: View {
                         .listRowSeparator(.hidden)
                         
                         Section {
-                            ProfileInfoRow(icon: "shield.fill", title: "Nível de Acesso", value: member?.accessLevel ?? "Padrão")
-                            if let birthdate = member?.birthdate {
+                            ProfileInfoRow(icon: "shield.fill", title: "Nível de Acesso", value: authViewModel.accessLevel.displayName)
+                            if let birthdate = profile?.birthdate {
                                 ProfileInfoRow(icon: "calendar", title: "Data de Nascimento", value: birthdate.formatted(.dateTime.day().month(.twoDigits).year()))
                             }
-                            ProfileInfoRow(icon: "star.fill", title: "Cargo", value: member?.role ?? "Sem Cargo")
+                            ProfileInfoRow(icon: "star.fill", title: "Cargo", value: authViewModel.activeMembership?.role ?? "Sem Cargo")
                         } header: {
                             Text("Informações")
                         }
                         
+                        if let chapterId = authViewModel.currentChapterId {
+                            Section {
+                                Button(action: { showJoinRequests = true }) {
+                                    HStack(spacing: Spacing.md) {
+                                        Image(systemName: "person.badge.clock")
+                                            .foregroundColor(Theme.textPrimary)
+                                            .frame(width: 24)
+                                        Text("Solicitações de entrada")
+                                            .foregroundColor(Theme.textPrimary)
+                                        Spacer()
+                                        Image(systemName: "chevron.right")
+                                            .font(Typography.footnote)
+                                            .foregroundColor(Theme.textSecondary)
+                                    }
+                                }
+                                .accessibilityHint("Abre a fila de quem pediu para entrar no Capítulo")
+                            } header: {
+                                Text("Administração")
+                            }
+                            .requires(.reviewJoinRequests)
+                            .sheet(isPresented: $showJoinRequests) {
+                                JoinRequestsView(chapterId: chapterId)
+                            }
+                        }
+
                         Section {
                             Button(action: {
                                 showLeaveChapterAlert = true
@@ -95,8 +121,8 @@ struct ProfileView: View {
                 }
             }
             .sheet(isPresented: $showEditProfile) {
-                if case let .authenticated(_, member) = authViewModel.state, let member = member {
-                    EditProfileView(member: member)
+                if case let .authenticated(_, profile) = authViewModel.state, let profile = profile {
+                    EditProfileView(profile: profile)
                 }
             }
             .alert("Sair do capítulo", isPresented: $showLeaveChapterAlert) {

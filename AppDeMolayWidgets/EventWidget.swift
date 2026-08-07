@@ -20,9 +20,9 @@ struct EventProvider: AppIntentTimelineProvider {
             let events = try await WidgetDataManager.shared.fetchUpcomingEvents()
             nextEvent = events.first
             if let attendees = nextEvent?.confirmedAttendees,
-               let userIdString = UserDefaults(suiteName: "group.com.kowa.baluarte")?.string(forKey: "currentUserId"),
-               let userUUID = UUID(uuidString: userIdString) {
-                isConfirmed = attendees.contains(userUUID)
+               let membershipIdString = UserDefaults(suiteName: "group.com.kowa.baluarte")?.string(forKey: "currentMembershipId"),
+               let membershipUUID = UUID(uuidString: membershipIdString) {
+                isConfirmed = attendees.contains(membershipUUID)
             }
         } catch {
             fetchError = error.localizedDescription
@@ -30,9 +30,9 @@ struct EventProvider: AppIntentTimelineProvider {
 
             nextEvent = WidgetDataManager.shared.cachedEvents()?.first
             if let attendees = nextEvent?.confirmedAttendees,
-               let userIdString = UserDefaults(suiteName: "group.com.kowa.baluarte")?.string(forKey: "currentUserId"),
-               let userUUID = UUID(uuidString: userIdString) {
-                isConfirmed = attendees.contains(userUUID)
+               let membershipIdString = UserDefaults(suiteName: "group.com.kowa.baluarte")?.string(forKey: "currentMembershipId"),
+               let membershipUUID = UUID(uuidString: membershipIdString) {
+                isConfirmed = attendees.contains(membershipUUID)
             }
         }
 

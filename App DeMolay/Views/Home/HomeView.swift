@@ -52,7 +52,7 @@ public struct HomeView: View {
                     EventsSection(
                         events: displayEvents,
                         isLoading: viewModel.isLoading,
-                        currentUserId: viewModel.currentUserId ?? UUID(),
+                        currentMembershipId: viewModel.currentMembershipId ?? UUID(),
                         onConfirmAttendance: { eventId in
                             if !viewModel.isLoading {
                                 Task { await viewModel.confirmAttendance(eventId: eventId) }
@@ -124,7 +124,7 @@ public struct HomeView: View {
                 await viewModel.loadData()
             }
             .task {
-                viewModel.currentUserId = authViewModel.currentUserId
+                viewModel.currentMembershipId = authViewModel.currentMembershipId
                 viewModel.currentChapterId = authViewModel.currentChapterId
                 await viewModel.loadData()
             }
@@ -155,8 +155,8 @@ public struct HomeView: View {
             .sheet(item: $selectedEvent, onDismiss: {
                 Task { await viewModel.loadData() }
             }) { event in
-                if let currentUserId = authViewModel.currentUserId {
-                    EventDetailView(event: event, currentUserId: currentUserId)
+                if let currentMembershipId = authViewModel.currentMembershipId {
+                    EventDetailView(event: event, currentMembershipId: currentMembershipId)
                 }
             }
             .sheet(item: $selectedGoal, onDismiss: {
@@ -167,8 +167,8 @@ public struct HomeView: View {
             .sheet(item: $selectedCommittee, onDismiss: {
                 Task { await viewModel.loadData() }
             }) { committee in
-                if let currentUserId = authViewModel.currentUserId, let currentChapterId = authViewModel.currentChapterId {
-                    CommitteeDetailView(committee: committee, chapterId: currentChapterId, currentUserId: currentUserId)
+                if let currentMembershipId = authViewModel.currentMembershipId, let currentChapterId = authViewModel.currentChapterId {
+                    CommitteeDetailView(committee: committee, chapterId: currentChapterId, currentMembershipId: currentMembershipId)
                 }
             }
         }
@@ -176,34 +176,36 @@ public struct HomeView: View {
 }
 
 private struct EventsSection: View {
+    @Environment(\.permissions) private var permissions
     let events: [Event]
     let isLoading: Bool
-    let currentUserId: UUID
+    let currentMembershipId: UUID
     let onConfirmAttendance: (UUID) -> Void
     let onCreateEvent: () -> Void
     let onSelectEvent: (Event) -> Void
-    
+
+    private var createAction: (() -> Void)? {
+        permissions.can(.manageEvents) ? onCreateEvent : nil
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
             SectionHeaderView(
                 title: "Eventos",
                 actionLabel: "Adicionar evento",
-                actionHint: "Toca duas vezes para criar um novo evento"
-            ) {
-                onCreateEvent()
-            }
+                actionHint: "Toca duas vezes para criar um novo evento",
+                action: createAction
+            )
             .padding(.horizontal, Spacing.screenEdgePadding)
 
             if events.isEmpty && !isLoading {
-                EmptyStateCard(cardType: .event) {
-                    onCreateEvent()
-                }
+                EmptyStateCard(cardType: .event, action: createAction)
                 .padding(.horizontal, Spacing.screenEdgePadding)
             } else {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: Spacing.xs) {
                         ForEach(events) { event in
-                            let isConfirmed = event.confirmedAttendees?.contains(currentUserId) ?? false
+                            let isConfirmed = event.confirmedAttendees?.contains(currentMembershipId) ?? false
                             EventCard(event: event, isUserConfirmed: isConfirmed) {
                                 onConfirmAttendance(event.id)
                             }
@@ -223,28 +225,30 @@ private struct EventsSection: View {
 }
 
 private struct GoalsSection: View {
+    @Environment(\.permissions) private var permissions
     let goals: [Goal]
     let hasCompletedGoals: Bool
     let isLoading: Bool
     let onCreateGoal: () -> Void
     let onSelectGoal: (Goal) -> Void
     let onViewCompletedGoals: () -> Void
-    
+
+    private var createAction: (() -> Void)? {
+        permissions.can(.manageGoals) ? onCreateGoal : nil
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
             SectionHeaderView(
                 title: "Metas",
                 actionLabel: "Adicionar meta",
-                actionHint: "Toca duas vezes para criar uma nova meta"
-            ) {
-                onCreateGoal()
-            }
+                actionHint: "Toca duas vezes para criar uma nova meta",
+                action: createAction
+            )
             .padding(.horizontal, Spacing.screenEdgePadding)
-            
+
             if goals.isEmpty && !hasCompletedGoals && !isLoading {
-                EmptyStateCard(cardType: .goal) {
-                    onCreateGoal()
-                }
+                EmptyStateCard(cardType: .goal, action: createAction)
                 .padding(.horizontal, Spacing.screenEdgePadding)
             } else {
                 ScrollView(.horizontal, showsIndicators: false) {
@@ -303,27 +307,29 @@ private struct GoalsSection: View {
 }
 
 private struct CommitteesSection: View {
+    @Environment(\.permissions) private var permissions
     let committees: [Committee]
     let tasks: [ChapterTask]
     let isLoading: Bool
     let onTaskToggled: (UUID) -> Void
     let onCreateCommittee: () -> Void
     let onSelectCommittee: (Committee) -> Void
-    
+
+    private var createAction: (() -> Void)? {
+        permissions.can(.manageCommittees) ? onCreateCommittee : nil
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
             SectionHeaderView(
                 title: "Comissões",
                 actionLabel: "Adicionar comissão",
-                actionHint: "Toca duas vezes para criar uma nova comissão"
-            ) {
-                onCreateCommittee()
-            }
-            
+                actionHint: "Toca duas vezes para criar uma nova comissão",
+                action: createAction
+            )
+
             if committees.isEmpty && !isLoading {
-                EmptyStateCard(cardType: .committee) {
-                    onCreateCommittee()
-                }
+                EmptyStateCard(cardType: .committee, action: createAction)
             } else {
                 ForEach(committees) { committee in
                     let committeeTasks = tasks.filter { $0.committeeId == committee.id }

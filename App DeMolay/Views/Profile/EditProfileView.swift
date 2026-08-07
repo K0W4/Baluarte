@@ -5,18 +5,18 @@ struct EditProfileView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(AuthViewModel.self) private var authViewModel
     
-    let member: Member
-    
+    let profile: UserProfile
+
     @State private var fullName: String
     @State private var cid: String
     @State private var birthdate: Date
     @State private var isLoading = false
-    
-    init(member: Member) {
-        self.member = member
-        self._fullName = State(initialValue: member.fullName)
-        self._cid = State(initialValue: member.cid ?? "")
-        self._birthdate = State(initialValue: member.birthdate ?? Date())
+
+    init(profile: UserProfile) {
+        self.profile = profile
+        self._fullName = State(initialValue: profile.fullName)
+        self._cid = State(initialValue: profile.cid ?? "")
+        self._birthdate = State(initialValue: profile.birthdate ?? Date())
     }
     
     var body: some View {

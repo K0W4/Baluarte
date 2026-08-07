@@ -45,7 +45,7 @@ public final class HomeViewModel {
     private let taskService: TaskServiceProtocol
     private let memberService: MemberServiceProtocol
 
-    public var currentUserId: UUID?
+    public var currentMembershipId: UUID?
     public var currentChapterId: UUID?
 
     public init(
@@ -91,7 +91,7 @@ public final class HomeViewModel {
         let originalAttendees = events[index].confirmedAttendees
 
         var attendees = events[index].confirmedAttendees ?? []
-        guard let userId = currentUserId else { return }
+        guard let userId = currentMembershipId else { return }
         let isRemoving = attendees.contains(userId)
         
         if isRemoving {
@@ -120,7 +120,7 @@ public final class HomeViewModel {
         errorMessage = nil
 
         do {
-            guard let currentUserId = currentUserId, let currentChapterId = currentChapterId else { return }
+            guard let currentMembershipId = currentMembershipId, let currentChapterId = currentChapterId else { return }
             
             async let fetchedEvents = eventService.fetchEvents(for: currentChapterId)
             async let fetchedGoals = goalService.fetchGoals(for: currentChapterId)
@@ -134,16 +134,9 @@ public final class HomeViewModel {
             tasks = try await fetchedTasks
             
             let allMembers = try await fetchedMembers
-            currentUser = allMembers.first { $0.id == currentUserId }
+            currentUser = allMembers.first { $0.id == currentMembershipId }
         } catch {
-            if String(describing: error).contains("23503") || String(describing: error).contains("PGRST") || events.isEmpty {
-                if let currentChapterId = currentChapterId {
-                    let defaultChapter = Chapter(id: currentChapterId, name: "Meu Capítulo", number: 1)
-                    _ = try? await Services.chapter.createChapter(defaultChapter)
-                }
-            }
-            
-            if error is CancellationError { 
+            if error is CancellationError {
                 withAnimation(.easeInOut(duration: 0.3)) { self.isLoading = false }
                 return 
             }

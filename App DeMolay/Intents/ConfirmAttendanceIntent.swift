@@ -11,7 +11,7 @@ public struct ConfirmAttendanceIntent: AppIntent {
     
     public func perform() async throws -> some IntentResult & ProvidesDialog {
         guard let chapterId = await UserDefaultsManager.shared.currentChapterId,
-              let userId = await UserDefaultsManager.shared.currentUserId else {
+              let userId = await UserDefaultsManager.shared.currentMembershipId else {
             return .result(dialog: "Você precisa estar autenticado para confirmar presença.")
         }
         

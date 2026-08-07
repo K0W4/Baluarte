@@ -80,6 +80,7 @@ public struct MemberDetailView: View {
                     .listRowBackground(Color.clear)
                     .listRowInsets(EdgeInsets())
                 }
+                .requires(.manageRoster)
                 
                 if let errorMessage = viewModel.errorMessage {
                     Section {
@@ -130,6 +131,7 @@ public struct MemberDetailView: View {
                         }
                         .foregroundColor(Theme.accent)
                         .accessibilityLabel("Editar")
+                        .requires(.manageRoster)
                     }
                 }
             }

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct AnalysisView: View {
     @Environment(AuthViewModel.self) private var authViewModel
+    @Environment(\.permissions) private var permissions
     @State private var viewModel = AnalysisViewModel()
     @State private var showingCreateEvent = false
     @State private var showingCreateCommittee = false
@@ -56,9 +57,10 @@ struct AnalysisView: View {
                                 VStack(spacing: Spacing.md) {
                                     ForEach(displayGrouped, id: \.key) { group in
                                         if let insight = group.value.first {
-                                            InsightSectionCard(insight: insight) {
-                                                handleAction(for: group.key)
-                                            }
+                                            InsightSectionCard(
+                                                insight: insight,
+                                                onActionTapped: action(for: group.key)
+                                            )
                                             .padding(.horizontal, Spacing.screenEdgePadding)
                                             .skeleton(isLoading: viewModel.isLoading)
                                         }
@@ -111,16 +113,20 @@ struct AnalysisView: View {
         }
     }
     
-    private func handleAction(for category: AnalysisCategory) {
+    /// Returns nil when the person cannot perform the suggested action, so the card
+    /// renders the insight without a button they would only be denied on.
+    private func action(for category: AnalysisCategory) -> (() -> Void)? {
         switch category {
         case .membership:
-            showingMembers = true
+            return { showingMembers = true }
         case .structure:
-            showingCreateCommittee = true
+            guard permissions.can(.manageCommittees) else { return nil }
+            return { showingCreateCommittee = true }
         case .calendar:
-            showingCreateEvent = true
+            guard permissions.can(.manageEvents) else { return nil }
+            return { showingCreateEvent = true }
         default:
-            break
+            return nil
         }
     }
     

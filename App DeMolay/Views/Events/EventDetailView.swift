@@ -6,8 +6,8 @@ public struct EventDetailView: View {
     @State private var showingDeleteAlert = false
     @State private var isEditing = false
     
-    public init(event: Event, currentUserId: UUID) {
-        self._viewModel = State(initialValue: EventDetailViewModel(event: event, currentUserId: currentUserId))
+    public init(event: Event, currentMembershipId: UUID) {
+        self._viewModel = State(initialValue: EventDetailViewModel(event: event, currentMembershipId: currentMembershipId))
     }
     
     public var body: some View {
@@ -116,6 +116,7 @@ public struct EventDetailView: View {
                     }
                     .buttonStyle(DestructiveButtonStyle())
                 }
+                .requires(.manageEvents)
                 .listRowBackground(Color.clear)
                 .listRowInsets(EdgeInsets())
                 
@@ -173,6 +174,7 @@ public struct EventDetailView: View {
                         }
                         .foregroundColor(Theme.accent)
                         .accessibilityLabel("Editar")
+                        .requires(.manageEvents)
                     }
                 }
             }

@@ -38,9 +38,9 @@ struct InsightSectionCard: View {
                     }
                 }
 
-                if let actionLabel = insight.primaryActionLabel {
+                if let actionLabel = insight.primaryActionLabel, let onActionTapped {
                     Button {
-                        onActionTapped?()
+                        onActionTapped()
                     } label: {
                         Text(actionLabel)
                     }
@@ -49,6 +49,7 @@ struct InsightSectionCard: View {
                 }
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding(Spacing.md)
         .background(Theme.cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: Spacing.cornerRadius))

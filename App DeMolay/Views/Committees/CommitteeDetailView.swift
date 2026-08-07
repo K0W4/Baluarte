@@ -7,8 +7,8 @@ public struct CommitteeDetailView: View {
     @State private var showingAddMember = false
     @State private var isEditing = false
     
-    public init(committee: Committee, chapterId: UUID, currentUserId: UUID) {
-        self._viewModel = State(initialValue: CommitteeDetailViewModel(committee: committee, chapterId: chapterId, currentUserId: currentUserId))
+    public init(committee: Committee, chapterId: UUID, currentMembershipId: UUID) {
+        self._viewModel = State(initialValue: CommitteeDetailViewModel(committee: committee, chapterId: chapterId, currentMembershipId: currentMembershipId))
     }
     
     public var body: some View {
@@ -84,6 +84,7 @@ public struct CommitteeDetailView: View {
                                 .padding(.trailing, 0) // Ensures it doesn't push too far left
                         }
                         .buttonStyle(.plain)
+                        .requires(.manageCommittees)
                     }
                 } footer: {
                     if !viewModel.isFetchingMembers {
@@ -103,6 +104,7 @@ public struct CommitteeDetailView: View {
                     .listRowBackground(Color.clear)
                     .listRowInsets(EdgeInsets())
                 }
+                .requires(.manageCommittees)
                 
                 if let errorMessage = viewModel.errorMessage {
                     Section {
@@ -148,6 +150,7 @@ public struct CommitteeDetailView: View {
                                 .font(.body.weight(.semibold))
                         }
                         .foregroundColor(Theme.accent)
+                        .requires(.manageCommittees)
                     }
                 }
             }

@@ -40,7 +40,7 @@ public final class CommitteeDetailViewModel {
     public init(
         committee: Committee,
         chapterId: UUID,
-        currentUserId: UUID,
+        currentMembershipId: UUID,
         committeeService: CommitteeServiceProtocol = Services.committee,
         memberService: MemberServiceProtocol = Services.member,
         taskService: TaskServiceProtocol = Services.task

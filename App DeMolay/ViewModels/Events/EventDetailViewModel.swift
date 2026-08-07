@@ -21,7 +21,7 @@ public final class EventDetailViewModel {
     private let eventService: EventServiceProtocol
     private let memberService: MemberServiceProtocol
     private var event: Event
-    private let currentUserId: UUID
+    private let currentMembershipId: UUID
     
     public var isValid: Bool {
         !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
@@ -35,14 +35,14 @@ public final class EventDetailViewModel {
     }
     
     public var isUserConfirmed: Bool {
-        event.confirmedAttendees?.contains(currentUserId) ?? false
+        event.confirmedAttendees?.contains(currentMembershipId) ?? false
     }
     
-    public init(event: Event, currentUserId: UUID, eventService: EventServiceProtocol = Services.event, memberService: MemberServiceProtocol = Services.member) {
+    public init(event: Event, currentMembershipId: UUID, eventService: EventServiceProtocol = Services.event, memberService: MemberServiceProtocol = Services.member) {
         self.event = event
         self.eventService = eventService
         self.memberService = memberService
-        self.currentUserId = currentUserId
+        self.currentMembershipId = currentMembershipId
         
         self.title = event.title
         self.eventType = event.eventType
@@ -82,15 +82,15 @@ public final class EventDetailViewModel {
         
         do {
             if isUserConfirmed {
-                try await eventService.removeAttendance(eventId: event.id, userId: currentUserId)
-                event.confirmedAttendees?.removeAll(where: { $0 == currentUserId })
+                try await eventService.removeAttendance(eventId: event.id, userId: currentMembershipId)
+                event.confirmedAttendees?.removeAll(where: { $0 == currentMembershipId })
                 NotificationService.shared.cancelEventReminder(eventId: event.id.uuidString)
             } else {
-                try await eventService.confirmAttendance(eventId: event.id, userId: currentUserId)
+                try await eventService.confirmAttendance(eventId: event.id, userId: currentMembershipId)
                 if event.confirmedAttendees == nil {
                     event.confirmedAttendees = []
                 }
-                event.confirmedAttendees?.append(currentUserId)
+                event.confirmedAttendees?.append(currentMembershipId)
                 NotificationService.shared.scheduleEventReminder(for: event.title, date: event.scheduledDate, eventId: event.id.uuidString)
             }
             await loadMembers()

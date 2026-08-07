@@ -7,17 +7,37 @@ public struct ChapterCard: View {
         self.chapter = chapter
     }
 
+    private var accessibilityDescription: String {
+        var parts = ["\(chapter.name), Capítulo número \(chapter.number)"]
+        if let location = chapter.locationLabel { parts.append(location) }
+        if chapter.status == .dormant { parts.append("Capítulo dormente") }
+        return parts.joined(separator: ", ")
+    }
+
     public var body: some View {
         HStack(alignment: .center, spacing: Spacing.md) {
             VStack(alignment: .leading, spacing: Spacing.xxs) {
-                Text(chapter.name)
-                    .font(Typography.headline)
-                    .foregroundColor(Theme.textPrimary)
-                    .lineLimit(1)
+                HStack(spacing: Spacing.xs) {
+                    Text(chapter.name)
+                        .font(Typography.headline)
+                        .foregroundColor(Theme.textPrimary)
+                        .lineLimit(1)
 
-                Text("Capítulo nº \(chapter.number)")
+                    if chapter.status == .dormant {
+                        Text("Dormente")
+                            .font(Typography.caption2)
+                            .foregroundColor(Theme.textSecondary)
+                            .padding(.horizontal, Spacing.xs)
+                            .padding(.vertical, 2)
+                            .background(Theme.backgroundTertiary)
+                            .clipShape(Capsule())
+                    }
+                }
+
+                Text(subtitle)
                     .font(Typography.subheadline)
                     .foregroundColor(Theme.textSecondary)
+                    .lineLimit(1)
             }
 
             Spacer(minLength: Spacing.xs)
@@ -26,8 +46,9 @@ public struct ChapterCard: View {
                 .font(Typography.body)
                 .foregroundColor(Theme.accent)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(chapter.name), Capítulo número \(chapter.number)")
+        .accessibilityLabel(accessibilityDescription)
         .accessibilityHint("Toca duas vezes para entrar neste Capítulo")
         .accessibilityAddTraits(.isButton)
         .padding(Spacing.md)
@@ -38,19 +59,24 @@ public struct ChapterCard: View {
                 .stroke(Theme.border, lineWidth: 1)
         )
     }
+
+    private var subtitle: String {
+        if let location = chapter.locationLabel {
+            return "nº \(chapter.number) · \(location)"
+        }
+        return "Capítulo nº \(chapter.number)"
+    }
 }
 
 #Preview {
-    ChapterCard(
-        chapter: Chapter(
-            id: UUID(),
-            name: "Capítulo Exemplo",
-            number: 42,
-            currentTermStart: nil,
-            currentTermEnd: nil,
-            createdAt: nil
+    VStack(spacing: Spacing.sm) {
+        ChapterCard(
+            chapter: Chapter(id: UUID(), name: "Capítulo Exemplo", number: 42, uf: "RS", city: "Porto Alegre")
         )
-    )
+        ChapterCard(
+            chapter: Chapter(id: UUID(), name: "Capítulo Dormente", number: 7, uf: "RS", city: "Pelotas", status: .dormant)
+        )
+    }
     .padding()
     .background(Theme.backgroundPrimary)
 }

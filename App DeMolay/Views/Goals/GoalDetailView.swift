@@ -53,8 +53,9 @@ public struct GoalDetailView: View {
                         .listRowBackground(Color.clear)
                         .listRowInsets(EdgeInsets())
                     }
+                    .requires(.manageGoals)
                 }
-                
+
                 Section {
                     Button(action: {
                         HapticManager.shared.notification(type: .warning)
@@ -66,6 +67,7 @@ public struct GoalDetailView: View {
                     .listRowBackground(Color.clear)
                     .listRowInsets(EdgeInsets())
                 }
+                .requires(.manageGoals)
                 
                 if let errorMessage = viewModel.errorMessage {
                     Section {
@@ -117,6 +119,7 @@ public struct GoalDetailView: View {
                             }
                             .foregroundColor(Theme.accent)
                             .accessibilityLabel("Editar")
+                            .requires(.manageGoals)
                         }
                     }
                 }

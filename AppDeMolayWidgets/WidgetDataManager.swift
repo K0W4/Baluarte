@@ -3,51 +3,155 @@ import Security
 
 struct WidgetDataManager {
     static let shared = WidgetDataManager()
-    
+
     private let baseURL = SupabaseSecrets.projectURL
     private let apiKey = SupabaseSecrets.anonKey
-    private var currentUserId: String? {
-        UserDefaults(suiteName: "group.com.kowa.baluarte")?.string(forKey: "currentUserId")
+    private let keychainService = "com.kowa.baluarte.supabase"
+    private let appGroup = "group.com.kowa.baluarte"
+
+    private var sharedDefaults: UserDefaults? {
+        UserDefaults(suiteName: appGroup)
     }
+
+    /// The chapter-scoped actor id. Task ownership and attendance are recorded against
+    /// the membership, not the account.
+    private var membershipId: String? {
+        sharedDefaults?.string(forKey: "currentMembershipId")
+    }
+
     private var chapterId: String? {
-        UserDefaults(suiteName: "group.com.kowa.baluarte")?.string(forKey: "currentChapterId")
+        sharedDefaults?.string(forKey: "currentChapterId")
     }
-    private var accessToken: String? {
+
+    // MARK: - Keychain
+
+    private func keychainRead(account: String) -> String? {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: "com.kowa.baluarte.supabase",
-            kSecAttrAccount as String: "accessToken",
+            kSecAttrService as String: keychainService,
+            kSecAttrAccount as String: account,
             kSecReturnData as String: true,
             kSecMatchLimit as String: kSecMatchLimitOne
         ]
         var dataTypeRef: AnyObject?
         let status = SecItemCopyMatching(query as CFDictionary, &dataTypeRef)
-        if status == errSecSuccess, let data = dataTypeRef as? Data {
-            return String(data: data, encoding: .utf8)
-        }
-        // Fallback para quem estiver com o app antigo, migração:
-        return UserDefaults(suiteName: "group.com.kowa.baluarte")?.string(forKey: "accessToken")
-    }
-    
-    private var defaultHeaders: [String: String] {
-        var headers = [
-            "apikey": apiKey,
-            "Content-Type": "application/json"
-        ]
-        if let token = accessToken {
-            headers["Authorization"] = "Bearer \(token)"
-        } else {
-            headers["Authorization"] = "Bearer \(apiKey)"
-        }
-        return headers
-    }
-    
-    private var sharedDefaults: UserDefaults? {
-        UserDefaults(suiteName: "group.com.kowa.baluarte")
+        guard status == errSecSuccess, let data = dataTypeRef as? Data else { return nil }
+        return String(data: data, encoding: .utf8)
     }
 
-    private let cachedEventsKey = "widgetCachedEvents"
-    private let cachedTasksKey = "widgetCachedTasks"
+    private func keychainWrite(_ value: String, account: String) {
+        guard let data = value.data(using: .utf8) else { return }
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: keychainService,
+            kSecAttrAccount as String: account,
+            kSecValueData as String: data
+        ]
+        SecItemDelete(query as CFDictionary)
+        SecItemAdd(query as CFDictionary, nil)
+    }
+
+    // MARK: - Token
+
+    private struct RefreshResponse: Decodable {
+        let access_token: String
+        let refresh_token: String
+    }
+
+    /// Reads the `exp` claim without verifying the signature — the server is the one
+    /// that validates; this only decides when to refresh preemptively.
+    private func expiry(of jwt: String) -> Date? {
+        let segments = jwt.split(separator: ".")
+        guard segments.count > 1 else { return nil }
+
+        var payload = String(segments[1])
+            .replacingOccurrences(of: "-", with: "+")
+            .replacingOccurrences(of: "_", with: "/")
+        while payload.count % 4 != 0 { payload += "=" }
+
+        guard let data = Data(base64Encoded: payload),
+              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let exp = json["exp"] as? TimeInterval else { return nil }
+
+        return Date(timeIntervalSince1970: exp)
+    }
+
+    private func refreshSession() async throws -> String {
+        guard let refreshToken = keychainRead(account: "refreshToken") else {
+            throw WidgetError.notAuthenticated
+        }
+
+        guard let url = URL(string: "\(baseURL)/auth/v1/token?grant_type=refresh_token") else {
+            throw WidgetError.notAuthenticated
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue(apiKey, forHTTPHeaderField: "apikey")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try JSONSerialization.data(withJSONObject: ["refresh_token": refreshToken])
+
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard let http = response as? HTTPURLResponse, (200...299).contains(http.statusCode) else {
+            throw WidgetError.notAuthenticated
+        }
+
+        let refreshed = try JSONDecoder().decode(RefreshResponse.self, from: data)
+        keychainWrite(refreshed.access_token, account: "accessToken")
+        // Supabase rotates refresh tokens, so the new one has to be persisted or the
+        // next refresh fails.
+        keychainWrite(refreshed.refresh_token, account: "refreshToken")
+        return refreshed.access_token
+    }
+
+    private func validAccessToken() async throws -> String {
+        guard let token = keychainRead(account: "accessToken") else {
+            throw WidgetError.notAuthenticated
+        }
+
+        if let expiry = expiry(of: token), expiry.timeIntervalSinceNow > 60 {
+            return token
+        }
+
+        return try await refreshSession()
+    }
+
+    /// There is deliberately no anon-key fallback. With RLS scoped to `authenticated`,
+    /// an anonymous read returns `200 OK` with an empty array rather than an error —
+    /// which would sail past the status check and overwrite a good cache with nothing.
+    private func authorizedHeaders() async throws -> [String: String] {
+        let token = try await validAccessToken()
+        return [
+            "apikey": apiKey,
+            "Content-Type": "application/json",
+            "Authorization": "Bearer \(token)"
+        ]
+    }
+
+    enum WidgetError: LocalizedError {
+        case notAuthenticated
+        case noChapter
+
+        var errorDescription: String? {
+            switch self {
+            case .notAuthenticated: return "Sessão expirada. Abra o app para entrar novamente."
+            case .noChapter: return "Nenhum Capítulo selecionado."
+            }
+        }
+    }
+
+    // MARK: - Cache
+    //
+    // Keyed by chapter (and membership, for tasks) so switching or leaving a chapter
+    // cannot leave the previous chapter's data readable on the Home Screen.
+
+    private func cachedEventsKey(_ chapterId: String) -> String {
+        "widgetCachedEvents_\(chapterId)"
+    }
+
+    private func cachedTasksKey(_ chapterId: String, _ membershipId: String) -> String {
+        "widgetCachedTasks_\(chapterId)_\(membershipId)"
+    }
 
     private func getCacheEncoder() -> JSONEncoder {
         let encoder = JSONEncoder()
@@ -62,172 +166,156 @@ struct WidgetDataManager {
     }
 
     private func cacheEvents(_ events: [Event]) {
-        guard let data = try? getCacheEncoder().encode(events) else { return }
-        sharedDefaults?.set(data, forKey: cachedEventsKey)
+        guard let chapterId = self.chapterId,
+              let data = try? getCacheEncoder().encode(events) else { return }
+        sharedDefaults?.set(data, forKey: cachedEventsKey(chapterId))
     }
 
     func cachedEvents() -> [Event]? {
-        guard let data = sharedDefaults?.data(forKey: cachedEventsKey) else { return nil }
+        guard let chapterId = self.chapterId,
+              let data = sharedDefaults?.data(forKey: cachedEventsKey(chapterId)) else { return nil }
         return try? getCacheDecoder().decode([Event].self, from: data)
     }
 
     private func cacheTasks(_ tasks: [ChapterTask]) {
-        guard let data = try? getCacheEncoder().encode(tasks) else { return }
-        sharedDefaults?.set(data, forKey: cachedTasksKey)
+        guard let chapterId = self.chapterId,
+              let membershipId = self.membershipId,
+              let data = try? getCacheEncoder().encode(tasks) else { return }
+        sharedDefaults?.set(data, forKey: cachedTasksKey(chapterId, membershipId))
     }
 
     func cachedTasks() -> [ChapterTask]? {
-        guard let data = sharedDefaults?.data(forKey: cachedTasksKey) else { return nil }
+        guard let chapterId = self.chapterId,
+              let membershipId = self.membershipId,
+              let data = sharedDefaults?.data(forKey: cachedTasksKey(chapterId, membershipId)) else { return nil }
         return try? getCacheDecoder().decode([ChapterTask].self, from: data)
     }
 
     private func getSupabaseDecoder() -> JSONDecoder {
         let decoder = JSONDecoder()
-        
+
         decoder.dateDecodingStrategy = .custom { decoder in
             let container = try decoder.singleValueContainer()
             let dateString = try container.decode(String.self)
-            
+
             let formatter = ISO8601DateFormatter()
             formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
             if let date = formatter.date(from: dateString) { return date }
-            
+
             let withoutFractions = ISO8601DateFormatter()
             if let date = withoutFractions.date(from: dateString) { return date }
-            
+
             let fallback = DateFormatter()
             fallback.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
             fallback.timeZone = TimeZone(abbreviation: "UTC")
             if let date = fallback.date(from: dateString) { return date }
-            
+
             fallback.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
             if let date = fallback.date(from: dateString) { return date }
-            
+
             throw DecodingError.dataCorruptedError(in: container, debugDescription: "Invalid date format: \(dateString)")
         }
         return decoder
     }
-    
-    func fetchUpcomingEvents() async throws -> [Event] {
-        guard let chapterId = self.chapterId else { return [] }
-        let url = URL(string: "\(baseURL)/rest/v1/event?chapter_id=eq.\(chapterId)&select=*")!
+
+    // MARK: - Requests
+
+    private func get(path: String) async throws -> Data {
+        guard let url = URL(string: "\(baseURL)\(path)") else {
+            throw URLError(.badURL)
+        }
+
         var request = URLRequest(url: url)
         request.cachePolicy = .reloadIgnoringLocalCacheData
-        request.allHTTPHeaderFields = defaultHeaders
-        
+        request.allHTTPHeaderFields = try await authorizedHeaders()
+
         let (data, response) = try await URLSession.shared.data(for: request)
-        
-        guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
+        guard let http = response as? HTTPURLResponse, (200...299).contains(http.statusCode) else {
             let statusCode = (response as? HTTPURLResponse)?.statusCode ?? -1
-            throw NSError(domain: "Widget", code: statusCode, userInfo: [NSLocalizedDescriptionKey: "HTTP Error: \(statusCode)"])
+            throw NSError(domain: "Widget", code: statusCode,
+                          userInfo: [NSLocalizedDescriptionKey: "HTTP Error: \(statusCode)"])
         }
-        
-        let decoder = getSupabaseDecoder()
-        
-        var events = try decoder.decode([Event].self, from: data)
-        let now = Date()
-        events = events.filter { Calendar.current.startOfDay(for: $0.scheduledDate) >= Calendar.current.startOfDay(for: now) }
+        return data
+    }
+
+    private func send(method: String, path: String, body: [String: Any]) async throws {
+        guard let url = URL(string: "\(baseURL)\(path)") else {
+            throw URLError(.badURL)
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = method
+        request.allHTTPHeaderFields = try await authorizedHeaders()
+        request.httpBody = try JSONSerialization.data(withJSONObject: body)
+
+        let (_, response) = try await URLSession.shared.data(for: request)
+        guard let http = response as? HTTPURLResponse, (200...299).contains(http.statusCode) else {
+            let statusCode = (response as? HTTPURLResponse)?.statusCode ?? -1
+            throw NSError(domain: "Widget", code: statusCode,
+                          userInfo: [NSLocalizedDescriptionKey: "\(method) Failed: \(statusCode)"])
+        }
+    }
+
+    func fetchUpcomingEvents() async throws -> [Event] {
+        guard let chapterId = self.chapterId else { throw WidgetError.noChapter }
+
+        let data = try await get(path: "/rest/v1/event?chapter_id=eq.\(chapterId)&select=*")
+
+        var events = try getSupabaseDecoder().decode([Event].self, from: data)
+        let today = Calendar.current.startOfDay(for: Date())
+        events = events.filter { Calendar.current.startOfDay(for: $0.scheduledDate) >= today }
         events.sort { $0.scheduledDate < $1.scheduledDate }
 
         cacheEvents(events)
         return events
     }
-    
+
     func fetchPendingTasks() async throws -> [ChapterTask] {
-        guard let chapterId = self.chapterId else { return [] }
-        let url = URL(string: "\(baseURL)/rest/v1/task?chapter_id=eq.\(chapterId)&select=*")!
-        var request = URLRequest(url: url)
-        request.cachePolicy = .reloadIgnoringLocalCacheData
-        request.allHTTPHeaderFields = defaultHeaders
-        
-        let (data, response) = try await URLSession.shared.data(for: request)
-        
-        guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
-            let statusCode = (response as? HTTPURLResponse)?.statusCode ?? -1
-            throw NSError(domain: "Widget", code: statusCode, userInfo: [NSLocalizedDescriptionKey: "HTTP Error: \(statusCode)"])
-        }
-        
-        let decoder = getSupabaseDecoder()
-        let allTasks = try decoder.decode([ChapterTask].self, from: data)
-        
-        guard let currentUserId = self.currentUserId else { return [] }
-        
+        guard let chapterId = self.chapterId else { throw WidgetError.noChapter }
+        guard let membershipId = self.membershipId else { throw WidgetError.notAuthenticated }
+
+        let data = try await get(path: "/rest/v1/task?chapter_id=eq.\(chapterId)&select=*")
+        let allTasks = try getSupabaseDecoder().decode([ChapterTask].self, from: data)
+
         let myTasks = allTasks.filter { task in
-            (!task.isCompleted) &&
-            (task.assigneeId?.uuidString.lowercased() == currentUserId.lowercased() ||
-             task.creatorId.uuidString.lowercased() == currentUserId.lowercased())
+            !task.isCompleted &&
+            (task.assigneeId?.uuidString.lowercased() == membershipId.lowercased() ||
+             task.creatorId.uuidString.lowercased() == membershipId.lowercased())
         }
 
         cacheTasks(myTasks)
         return myTasks
     }
-    
+
+    /// Attendance is written by `set_event_attendance`, which derives the membership
+    /// from the caller's JWT. A plain PATCH here could rewrite the whole array.
     func confirmAttendance(eventId: String) async throws {
-        let fetchUrl = URL(string: "\(baseURL)/rest/v1/event?id=eq.\(eventId)&select=*")!
-        var fetchRequest = URLRequest(url: fetchUrl)
-        fetchRequest.allHTTPHeaderFields = defaultHeaders
-        
-        let (data, fetchResponse) = try await URLSession.shared.data(for: fetchRequest)
-        guard let httpResponse = fetchResponse as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-            throw URLError(.badServerResponse)
+        guard let membershipId = self.membershipId, let membershipUUID = UUID(uuidString: membershipId) else {
+            throw WidgetError.notAuthenticated
         }
-        
-        let decoder = getSupabaseDecoder()
-        
-        let events = try decoder.decode([Event].self, from: data)
+
+        let data = try await get(path: "/rest/v1/event?id=eq.\(eventId)&select=*")
+        let events = try getSupabaseDecoder().decode([Event].self, from: data)
         guard let event = events.first else { return }
-        
-        var attendees = event.confirmedAttendees ?? []
-        guard let currentUserId = self.currentUserId, let userUUID = UUID(uuidString: currentUserId) else { return }
-        
-        if attendees.contains(userUUID) {
-            attendees.removeAll { $0 == userUUID }
-        } else {
-            attendees.append(userUUID)
-        }
-            
-            let updateUrl = URL(string: "\(baseURL)/rest/v1/event?id=eq.\(eventId)")!
-            var updateRequest = URLRequest(url: updateUrl)
-            updateRequest.httpMethod = "PATCH"
-            updateRequest.allHTTPHeaderFields = defaultHeaders
-            
-            let payload: [String: Any] = ["confirmed_attendees": attendees.map { $0.uuidString }]
-            updateRequest.httpBody = try JSONSerialization.data(withJSONObject: payload)
-            
-            let (_, patchResponse) = try await URLSession.shared.data(for: updateRequest)
-            guard let patchHttp = patchResponse as? HTTPURLResponse, (200...299).contains(patchHttp.statusCode) else {
-                let statusCode = (patchResponse as? HTTPURLResponse)?.statusCode ?? -1
-                throw NSError(domain: "Widget", code: statusCode, userInfo: [NSLocalizedDescriptionKey: "PATCH Failed: \(statusCode)"])
-            }
+
+        let isConfirmed = event.confirmedAttendees?.contains(membershipUUID) ?? false
+
+        try await send(
+            method: "POST",
+            path: "/rest/v1/rpc/set_event_attendance",
+            body: ["p_event_id": eventId, "p_confirmed": !isConfirmed]
+        )
     }
-    
+
     func toggleTaskCompletion(taskId: String) async throws {
-        let fetchUrl = URL(string: "\(baseURL)/rest/v1/task?id=eq.\(taskId)&select=*")!
-        var fetchRequest = URLRequest(url: fetchUrl)
-        fetchRequest.allHTTPHeaderFields = defaultHeaders
-        
-        let (data, fetchResponse) = try await URLSession.shared.data(for: fetchRequest)
-        guard let httpResponse = fetchResponse as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-            throw URLError(.badServerResponse)
-        }
-        
-        let decoder = getSupabaseDecoder()
-        
-        let tasks = try decoder.decode([ChapterTask].self, from: data)
+        let data = try await get(path: "/rest/v1/task?id=eq.\(taskId)&select=*")
+        let tasks = try getSupabaseDecoder().decode([ChapterTask].self, from: data)
         guard let task = tasks.first else { return }
-        
-        let updateUrl = URL(string: "\(baseURL)/rest/v1/task?id=eq.\(taskId)")!
-        var updateRequest = URLRequest(url: updateUrl)
-        updateRequest.httpMethod = "PATCH"
-        updateRequest.allHTTPHeaderFields = defaultHeaders
-        
-        let payload: [String: Any] = ["is_completed": !task.isCompleted]
-        updateRequest.httpBody = try JSONSerialization.data(withJSONObject: payload)
-        
-        let (_, patchResponse) = try await URLSession.shared.data(for: updateRequest)
-        guard let patchHttp = patchResponse as? HTTPURLResponse, (200...299).contains(patchHttp.statusCode) else {
-            let statusCode = (patchResponse as? HTTPURLResponse)?.statusCode ?? -1
-            throw NSError(domain: "Widget", code: statusCode, userInfo: [NSLocalizedDescriptionKey: "PATCH Failed: \(statusCode)"])
-        }
+
+        try await send(
+            method: "PATCH",
+            path: "/rest/v1/task?id=eq.\(taskId)",
+            body: ["is_completed": !task.isCompleted]
+        )
     }
 }

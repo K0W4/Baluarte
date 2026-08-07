@@ -105,15 +105,19 @@ public struct TasksView: View {
                 }
             }
             .task {
-                viewModel.currentUserId = authViewModel.currentUserId
+                viewModel.currentMembershipId = authViewModel.currentMembershipId
                 viewModel.currentChapterId = authViewModel.currentChapterId
                 await viewModel.loadData()
             }
             .sheet(isPresented: $showingCreateTask, onDismiss: {
                 Task { await viewModel.loadData() }
             }) {
-                if let chapterId = authViewModel.currentChapterId, let currentUserId = authViewModel.currentUserId {
-                    CreateTaskView(chapterId: chapterId, currentUserId: currentUserId)
+                if let chapterId = authViewModel.currentChapterId, let currentMembershipId = authViewModel.currentMembershipId {
+                    CreateTaskView(
+                        chapterId: chapterId,
+                        currentMembershipId: currentMembershipId,
+                        accessLevel: authViewModel.accessLevel
+                    )
                 }
             }
             .toast(isPresented: $showToast, message: "Tarefa atualizada com sucesso!")

@@ -13,7 +13,7 @@ public final class CalendarViewModel {
     public var errorMessage: String?
 
     private let eventService: EventServiceProtocol
-    public var currentUserId: UUID?
+    public var currentMembershipId: UUID?
     public var currentChapterId: UUID?
 
     public init(eventService: EventServiceProtocol = Services.event) {
@@ -50,12 +50,12 @@ public final class CalendarViewModel {
     }
 
     public func isUserConfirmed(for event: Event) -> Bool {
-        guard let userId = currentUserId else { return false }
+        guard let userId = currentMembershipId else { return false }
         return event.confirmedAttendees?.contains(userId) ?? false
     }
 
     public func confirmAttendance(eventId: UUID) async {
-        guard let index = events.firstIndex(where: { $0.id == eventId }), let userId = currentUserId else { return }
+        guard let index = events.firstIndex(where: { $0.id == eventId }), let userId = currentMembershipId else { return }
         let originalAttendees = events[index].confirmedAttendees
 
         var attendees = events[index].confirmedAttendees ?? []

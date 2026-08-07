@@ -26,7 +26,7 @@ public final class TasksViewModel {
         self.committeeService = committeeService
     }
 
-    public var currentUserId: UUID?
+    public var currentMembershipId: UUID?
     public var currentChapterId: UUID?
 
     public func loadData(showLoading: Bool = true) async {
@@ -77,7 +77,7 @@ public final class TasksViewModel {
         if selectedSegment == .gerais {
             return []
         }
-        return generalTasks.filter { $0.assigneeId == currentUserId || $0.creatorId == currentUserId }
+        return generalTasks.filter { $0.assigneeId == currentMembershipId || $0.creatorId == currentMembershipId }
     }
 
     public var displayCommitteeTasks: [UUID: [ChapterTask]] {
@@ -89,7 +89,7 @@ public final class TasksViewModel {
         }
         var filtered: [UUID: [ChapterTask]] = [:]
         for (key, value) in committeeTasks {
-            let myTasks = value.filter { $0.assigneeId == currentUserId || $0.creatorId == currentUserId }
+            let myTasks = value.filter { $0.assigneeId == currentMembershipId || $0.creatorId == currentMembershipId }
             if !myTasks.isEmpty { filtered[key] = myTasks }
         }
         return filtered
@@ -100,7 +100,7 @@ public final class TasksViewModel {
         if selectedSegment == .gerais {
             return completedTasks.filter { $0.committeeId != nil }
         }
-        return completedTasks.filter { $0.assigneeId == currentUserId || $0.creatorId == currentUserId }
+        return completedTasks.filter { $0.assigneeId == currentMembershipId || $0.creatorId == currentMembershipId }
     }
 
     public var progressCounts: (completed: Int, total: Int) {

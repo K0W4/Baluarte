@@ -12,8 +12,12 @@ public struct CreateTaskView: View {
     enum FocusField { case title }
     @FocusState private var focusedField: FocusField?
     
-    public init(chapterId: UUID, currentUserId: UUID) {
-        _viewModel = State(initialValue: CreateTaskViewModel(chapterId: chapterId, currentUserId: currentUserId))
+    public init(chapterId: UUID, currentMembershipId: UUID, accessLevel: AccessLevel = .member) {
+        _viewModel = State(initialValue: CreateTaskViewModel(
+            chapterId: chapterId,
+            currentMembershipId: currentMembershipId,
+            accessLevel: accessLevel
+        ))
     }
     
     public var body: some View {
@@ -126,5 +130,5 @@ public struct CreateTaskView: View {
 }
 
 #Preview {
-    CreateTaskView(chapterId: UUID(), currentUserId: UUID())
+    CreateTaskView(chapterId: UUID(), currentMembershipId: UUID())
 }

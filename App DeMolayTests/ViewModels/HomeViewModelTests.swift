@@ -12,7 +12,8 @@ struct HomeViewModelTests {
             eventService: TestMockEventService(),
             goalService: TestMockGoalService(),
             committeeService: TestMockCommitteeService(),
-            taskService: TestMockTaskService()
+            taskService: TestMockTaskService(),
+            memberService: TestMockMemberService()
         )
         
         #expect(viewModel.events.isEmpty)
@@ -39,9 +40,10 @@ struct HomeViewModelTests {
             eventService: eventService,
             goalService: TestMockGoalService(),
             committeeService: TestMockCommitteeService(),
-            taskService: taskService
+            taskService: taskService,
+            memberService: TestMockMemberService()
         )
-        viewModel.currentUserId = UUID()
+        viewModel.currentMembershipId = UUID()
         viewModel.currentChapterId = UUID()
         
         await viewModel.loadData()
@@ -64,9 +66,10 @@ struct HomeViewModelTests {
             eventService: eventService,
             goalService: TestMockGoalService(),
             committeeService: TestMockCommitteeService(),
-            taskService: TestMockTaskService()
+            taskService: TestMockTaskService(),
+            memberService: TestMockMemberService()
         )
-        viewModel.currentUserId = UUID()
+        viewModel.currentMembershipId = UUID()
         viewModel.currentChapterId = UUID()
         
         await viewModel.loadData()
@@ -88,9 +91,10 @@ struct HomeViewModelTests {
             eventService: TestMockEventService(),
             goalService: TestMockGoalService(),
             committeeService: TestMockCommitteeService(),
-            taskService: taskService
+            taskService: taskService,
+            memberService: TestMockMemberService()
         )
-        viewModel.currentUserId = UUID()
+        viewModel.currentMembershipId = UUID()
         viewModel.currentChapterId = UUID()
         
         await viewModel.loadData()
@@ -118,9 +122,10 @@ struct HomeViewModelTests {
             eventService: TestMockEventService(),
             goalService: TestMockGoalService(),
             committeeService: TestMockCommitteeService(),
-            taskService: taskService
+            taskService: taskService,
+            memberService: TestMockMemberService()
         )
-        viewModel.currentUserId = UUID()
+        viewModel.currentMembershipId = UUID()
         viewModel.currentChapterId = UUID()
         
         await viewModel.loadData()
@@ -144,20 +149,21 @@ struct HomeViewModelTests {
             eventService: eventService,
             goalService: TestMockGoalService(),
             committeeService: TestMockCommitteeService(),
-            taskService: TestMockTaskService()
+            taskService: TestMockTaskService(),
+            memberService: TestMockMemberService()
         )
-        viewModel.currentUserId = UUID()
+        viewModel.currentMembershipId = UUID()
         viewModel.currentChapterId = UUID()
         
         await viewModel.loadData()
         eventService.shouldThrowError = true
         
-        #expect(viewModel.events.first?.confirmedAttendees?.contains(viewModel.currentUserId ?? UUID()) == false)
+        #expect(viewModel.events.first?.confirmedAttendees?.contains(viewModel.currentMembershipId ?? UUID()) == false)
         
         await viewModel.confirmAttendance(eventId: eventId)
         
         #expect(eventService.confirmAttendanceCallCount == 1)
         
-        #expect(viewModel.events.first?.confirmedAttendees?.contains(viewModel.currentUserId ?? UUID()) == false)
+        #expect(viewModel.events.first?.confirmedAttendees?.contains(viewModel.currentMembershipId ?? UUID()) == false)
     }
 }

@@ -17,28 +17,42 @@ public final class CreateTaskViewModel {
     private let taskService: TaskServiceProtocol
     private let committeeService: CommitteeServiceProtocol
     private let chapterId: UUID
-    private let currentUserId: UUID
-    
+    private let currentMembershipId: UUID
+    private let accessLevel: AccessLevel
+
     public var isValid: Bool {
         !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
-    
+
     public init(
         chapterId: UUID,
-        currentUserId: UUID,
+        currentMembershipId: UUID,
+        accessLevel: AccessLevel = .member,
         taskService: TaskServiceProtocol = Services.task,
         committeeService: CommitteeServiceProtocol = Services.committee
     ) {
         self.taskService = taskService
         self.committeeService = committeeService
         self.chapterId = chapterId
-        self.currentUserId = currentUserId
+        self.currentMembershipId = currentMembershipId
+        self.accessLevel = accessLevel
     }
-    
+
+    /// Only committees the person belongs to, because `task_insert` rejects anything
+    /// else. Admins keep the full list — they may create work for any committee.
+    func selectableCommittees(from all: [Committee]) -> [Committee] {
+        guard accessLevel < .admin else { return all }
+        return all.filter {
+            $0.chairmanId == currentMembershipId ||
+            $0.memberIds?.contains(currentMembershipId) == true
+        }
+    }
+
     public func loadCommittees() async {
         isFetchingCommittees = true
         do {
-            self.committees = try await committeeService.fetchCommittees(for: chapterId)
+            let all = try await committeeService.fetchCommittees(for: chapterId)
+            self.committees = selectableCommittees(from: all)
             isFetchingCommittees = false
         } catch {
             if error is CancellationError { return }
@@ -55,8 +69,8 @@ public final class CreateTaskViewModel {
         let newTask = ChapterTask(
             id: UUID(),
             chapterId: chapterId,
-            creatorId: currentUserId,
-            assigneeId: currentUserId,
+            creatorId: currentMembershipId,
+            assigneeId: currentMembershipId,
             committeeId: selectedCommitteeId,
             title: title.trimmingCharacters(in: .whitespacesAndNewlines),
             description: "",

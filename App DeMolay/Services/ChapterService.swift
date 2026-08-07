@@ -1,51 +1,48 @@
 import Foundation
 import Supabase
 
-public class ChapterService: ChapterServiceProtocol {
-    private let client = SupabaseManager.shared.client
-    
+public final class ChapterService: ChapterServiceProtocol {
+    private var client: SupabaseClient {
+        SupabaseManager.shared.client
+    }
+
     public init() {}
-    
-    public func fetchChapters() async throws -> [Chapter] {
-        return try await client
-            .from("chapter")
-            .select()
-            .order("name", ascending: true)
-            .execute()
-            .value
-    }
-    
-    public func searchChapters(query: String) async throws -> [Chapter] {
-        return try await client
-            .from("chapter")
-            .select()
-            .ilike("name", pattern: "%\(query)%")
-            .order("name", ascending: true)
-            .execute()
-            .value
-    }
-    
-    public func chapterExists(number: Int) async throws -> Bool {
-        let matches: [Chapter] = try await client
-            .from("chapter")
-            .select()
-            .eq("number", value: number)
-            .limit(1)
-            .execute()
-            .value
 
-        return !matches.isEmpty
+    private struct SearchParams: Encodable {
+        let p_query: String?
+        let p_uf: String?
     }
 
-    public func createChapter(_ chapter: Chapter) async throws -> Chapter {
-        let insertedChapter: Chapter = try await client
-            .from("chapter")
-            .insert(chapter)
-            .select()
-            .single()
+    /// Only the columns granted to `authenticated`: `status`, `reviewed_by` and
+    /// `reviewed_at` are withheld so a request always starts as pending.
+    private struct RequestInsert: Encodable {
+        let requested_by: UUID
+        let name: String
+        let number: Int
+        let uf: String
+        let city: String?
+        let note: String?
+    }
+
+    /// Search runs server-side so accents and case are handled by the same `unaccent`
+    /// index the registry is built on — "sao" finds "São".
+    public func searchChapters(query: String?, uf: String?) async throws -> [Chapter] {
+        try await client
+            .rpc("search_chapters", params: SearchParams(p_query: query, p_uf: uf))
             .execute()
             .value
-            
-        return insertedChapter
+    }
+
+    public func requestChapter(_ request: ChapterRequest) async throws {
+        let payload = RequestInsert(
+            requested_by: request.requestedBy,
+            name: request.name,
+            number: request.number,
+            uf: request.uf,
+            city: request.city,
+            note: request.note
+        )
+
+        try await client.from("chapter_request").insert(payload).execute()
     }
 }

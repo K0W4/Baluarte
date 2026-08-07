@@ -17,7 +17,7 @@ struct CommitteeDetailViewModelTests {
     
     @Test("Initialization populates fields correctly")
     func testInitialization() {
-        let viewModel = CommitteeDetailViewModel(committee: sampleCommittee, chapterId: UUID(), currentUserId: UUID())
+        let viewModel = CommitteeDetailViewModel(committee: sampleCommittee, chapterId: UUID(), currentMembershipId: UUID())
         
         #expect(viewModel.name == "Initial Committee")
         #expect(viewModel.chairmanId == sampleCommittee.chairmanId)
@@ -28,7 +28,7 @@ struct CommitteeDetailViewModelTests {
     
     @Test("hasChanges and isValid properties work correctly")
     func testValidationAndChanges() {
-        let viewModel = CommitteeDetailViewModel(committee: sampleCommittee, chapterId: UUID(), currentUserId: UUID())
+        let viewModel = CommitteeDetailViewModel(committee: sampleCommittee, chapterId: UUID(), currentMembershipId: UUID())
         
         viewModel.name = "New Name"
         #expect(viewModel.hasChanges == true)
@@ -44,7 +44,7 @@ struct CommitteeDetailViewModelTests {
     
     @Test("removeMember and addMember update sets correctly")
     func testMemberManagement() {
-        let viewModel = CommitteeDetailViewModel(committee: sampleCommittee, chapterId: UUID(), currentUserId: UUID())
+        let viewModel = CommitteeDetailViewModel(committee: sampleCommittee, chapterId: UUID(), currentMembershipId: UUID())
         let memberToRemove = sampleCommittee.memberIds![0]
         
         viewModel.removeMember(memberToRemove)
@@ -58,7 +58,7 @@ struct CommitteeDetailViewModelTests {
     
     @Test("removeMember removes chairman if chairman is removed")
     func testRemoveChairman() {
-        let viewModel = CommitteeDetailViewModel(committee: sampleCommittee, chapterId: UUID(), currentUserId: UUID())
+        let viewModel = CommitteeDetailViewModel(committee: sampleCommittee, chapterId: UUID(), currentMembershipId: UUID())
         let chairmanId = sampleCommittee.chairmanId!
         
         viewModel.removeMember(chairmanId)
@@ -85,7 +85,7 @@ struct CommitteeDetailViewModelTests {
         let viewModel = CommitteeDetailViewModel(
             committee: sampleCommittee,
             chapterId: UUID(),
-            currentUserId: UUID(),
+            currentMembershipId: UUID(),
             memberService: memberService,
             taskService: taskService
         )
@@ -100,7 +100,7 @@ struct CommitteeDetailViewModelTests {
     @Test("saveChanges succeeds and updates internal committee")
     func testSaveChangesSuccess() async {
         let mockService = TestMockCommitteeService()
-        let viewModel = CommitteeDetailViewModel(committee: sampleCommittee, chapterId: UUID(), currentUserId: UUID(), committeeService: mockService)
+        let viewModel = CommitteeDetailViewModel(committee: sampleCommittee, chapterId: UUID(), currentMembershipId: UUID(), committeeService: mockService)
         
         viewModel.name = "New Name"
         let result = await viewModel.saveChanges()
@@ -113,7 +113,7 @@ struct CommitteeDetailViewModelTests {
     @Test("deleteCommittee succeeds")
     func testDeleteCommitteeSuccess() async {
         let mockService = TestMockCommitteeService()
-        let viewModel = CommitteeDetailViewModel(committee: sampleCommittee, chapterId: UUID(), currentUserId: UUID(), committeeService: mockService)
+        let viewModel = CommitteeDetailViewModel(committee: sampleCommittee, chapterId: UUID(), currentMembershipId: UUID(), committeeService: mockService)
         
         let result = await viewModel.deleteCommittee()
         
@@ -127,7 +127,7 @@ struct CommitteeDetailViewModelTests {
         let viewModel = CommitteeDetailViewModel(
             committee: sampleCommittee,
             chapterId: UUID(),
-            currentUserId: UUID(),
+            currentMembershipId: UUID(),
             taskService: taskService
         )
         

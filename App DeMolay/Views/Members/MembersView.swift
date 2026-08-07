@@ -2,6 +2,7 @@ import SwiftUI
 
 public struct MembersView: View {
     @Environment(AuthViewModel.self) private var authViewModel
+    @Environment(\.permissions) private var permissions
     @State private var viewModel = MembersViewModel()
     @State private var showingCreateMember = false
     @State private var selectedMember: Member?
@@ -46,9 +47,10 @@ public struct MembersView: View {
                         }
                         
                         if members.isEmpty && !viewModel.isLoading {
-                            EmptyStateCard(cardType: .member) {
-                                showingCreateMember = true
-                            }
+                            EmptyStateCard(
+                                cardType: .member,
+                                action: permissions.can(.manageRoster) ? { showingCreateMember = true } : nil
+                            )
                         } else {
                             ForEach(members) { member in
                                 MemberCard(member: member)
@@ -82,6 +84,7 @@ public struct MembersView: View {
                             .foregroundColor(Theme.accent)
                     }
                     .accessibilityLabel("Adicionar novo membro")
+                    .requires(.manageRoster)
                 }
             }
             .searchable(text: $viewModel.searchText, prompt: "Buscar membro ou cargo")
