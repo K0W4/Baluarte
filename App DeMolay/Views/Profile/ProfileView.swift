@@ -8,6 +8,7 @@ struct ProfileView: View {
     @State private var showDeleteAccountAlert = false
     @State private var showEditProfile = false
     @State private var showJoinRequests = false
+    @State private var showInvites = false
     
     var body: some View {
         NavigationStack {
@@ -52,20 +53,19 @@ struct ProfileView: View {
                         
                         if let chapterId = authViewModel.currentChapterId {
                             Section {
-                                Button(action: { showJoinRequests = true }) {
-                                    HStack(spacing: Spacing.md) {
-                                        Image(systemName: "person.badge.clock")
-                                            .foregroundColor(Theme.textPrimary)
-                                            .frame(width: 24)
-                                        Text("Solicitações de entrada")
-                                            .foregroundColor(Theme.textPrimary)
-                                        Spacer()
-                                        Image(systemName: "chevron.right")
-                                            .font(Typography.footnote)
-                                            .foregroundColor(Theme.textSecondary)
-                                    }
-                                }
-                                .accessibilityHint("Abre a fila de quem pediu para entrar no Capítulo")
+                                ProfileNavigationRow(
+                                    icon: "person.badge.clock",
+                                    title: "Solicitações de entrada",
+                                    hint: "Abre a fila de quem pediu para entrar no Capítulo"
+                                ) { showJoinRequests = true }
+                                .requires(.reviewJoinRequests)
+
+                                ProfileNavigationRow(
+                                    icon: "ticket",
+                                    title: "Convites",
+                                    hint: "Gera um código para alguém entrar direto no Capítulo"
+                                ) { showInvites = true }
+                                .requires(.manageInvites)
                             } header: {
                                 Text("Administração")
                             }
@@ -73,13 +73,19 @@ struct ProfileView: View {
                             .sheet(isPresented: $showJoinRequests) {
                                 JoinRequestsView(chapterId: chapterId)
                             }
+                            .sheet(isPresented: $showInvites) {
+                                InviteManagementView(
+                                    chapterId: chapterId,
+                                    chapterName: authViewModel.activeChapterName
+                                )
+                            }
                         }
 
                         Section {
                             Button(action: {
                                 showLeaveChapterAlert = true
                             }) {
-                                Text("Sair do capítulo")
+                                Text("Sair do Capítulo")
                                     .foregroundColor(Theme.textPrimary)
                             }
                             
@@ -145,7 +151,43 @@ struct ProfileView: View {
             } message: {
                 Text("Esta ação é irreversível. Todos os seus dados serão apagados e você perderá o acesso ao app.")
             }
+            // Sem isto, uma recusa do servidor (sair sendo o único Fundador, por
+            // exemplo) morre no ViewModel e o botão parece simplesmente não funcionar.
+            .toast(
+                isPresented: Binding(
+                    get: { authViewModel.errorMessage != nil },
+                    set: { if !$0 { authViewModel.errorMessage = nil } }
+                ),
+                message: authViewModel.errorMessage ?? ""
+            )
         }
+    }
+}
+
+struct ProfileNavigationRow: View {
+    let icon: String
+    let title: String
+    let hint: String
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: Spacing.md) {
+                Image(systemName: icon)
+                    .foregroundColor(Theme.textPrimary)
+                    .frame(width: 24)
+
+                Text(title)
+                    .foregroundColor(Theme.textPrimary)
+
+                Spacer()
+
+                Image(systemName: "chevron.right")
+                    .font(Typography.footnote)
+                    .foregroundColor(Theme.textSecondary)
+            }
+        }
+        .accessibilityHint(hint)
     }
 }
 

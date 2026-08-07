@@ -7,6 +7,7 @@ public struct Services {
     public nonisolated(unsafe) static let profile: ProfileServiceProtocol = SupabaseProfileService()
     public nonisolated(unsafe) static let membership: MembershipServiceProtocol = SupabaseMembershipService()
     public nonisolated(unsafe) static let joinRequest: JoinRequestServiceProtocol = SupabaseJoinRequestService()
+    public nonisolated(unsafe) static let invite: InviteServiceProtocol = SupabaseInviteService()
     public nonisolated(unsafe) static let task: TaskServiceProtocol = SupabaseTaskService()
     public nonisolated(unsafe) static let committee: CommitteeServiceProtocol = SupabaseCommitteeService()
     public nonisolated(unsafe) static let chapter: ChapterServiceProtocol = ChapterService()

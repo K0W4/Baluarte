@@ -25,6 +25,12 @@ public final class AuthViewModel {
     public private(set) var activeMembership: ChapterMembership?
     public private(set) var pendingRequest: JoinRequest?
     public private(set) var pendingRequestChapter: Chapter?
+    public private(set) var activeChapter: Chapter?
+
+    /// A code captured from a shared link before the person is ready to redeem it.
+    public var pendingInviteCode: String?
+
+    public var activeChapterName: String { activeChapter?.name ?? "seu Capítulo" }
 
     public var currentChapterId: UUID? { activeMembership?.chapterId }
 
@@ -140,22 +146,24 @@ public final class AuthViewModel {
         self.activeMembership = fetched.first { $0.chapterId == profile.activeChapterId }
             ?? fetched.first
 
-        guard activeMembership == nil else {
+        if let activeMembership {
             self.pendingRequest = nil
             self.pendingRequestChapter = nil
+            self.activeChapter = try await chapterService.fetchChapter(id: activeMembership.chapterId)
             return
         }
 
+        self.activeChapter = nil
+
         // Without a membership, the person is either choosing a chapter or waiting on
         // one. Which of the two decides the whole root route.
-        self.pendingRequest = try await joinRequestService.fetchMyPendingRequest(memberId: user.id)
-        self.pendingRequestChapter = try await chapterForPendingRequest()
-    }
-
-    private func chapterForPendingRequest() async throws -> Chapter? {
-        guard let chapterId = pendingRequest?.chapterId else { return nil }
-        let matches = try await chapterService.searchChapters(query: nil, uf: nil)
-        return matches.first { $0.id == chapterId }
+        let request = try await joinRequestService.fetchMyPendingRequest(memberId: user.id)
+        self.pendingRequest = request
+        self.pendingRequestChapter = if let chapterId = request?.chapterId {
+            try await chapterService.fetchChapter(id: chapterId)
+        } else {
+            nil
+        }
     }
 
     @MainActor

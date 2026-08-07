@@ -20,6 +20,10 @@ struct AppDeMolay: App {
                         isFirstLaunch = false
                     }
                 }
+                .onOpenURL { url in
+                    guard case let .invite(code) = DeepLink(url: url) else { return }
+                    authViewModel.pendingInviteCode = code
+                }
         }
     }
 }

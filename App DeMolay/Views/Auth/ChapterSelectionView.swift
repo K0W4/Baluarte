@@ -7,6 +7,7 @@ struct ChapterSelectionView: View {
     @State private var searchText = ""
     @State private var showSignOutAlert = false
     @State private var requesting: Chapter?
+    @State private var showRedeemInvite = false
 
     var body: some View {
         NavigationStack {
@@ -30,13 +31,25 @@ struct ChapterSelectionView: View {
 
                     content
 
-                    Button(action: {
-                        HapticManager.shared.impact(style: .light)
-                        showRequestChapter = true
-                    }) {
-                        Text("Não encontrei meu Capítulo")
+                    // O convite tem peso visual maior de propósito: é o caminho rápido,
+                    // e quem chega com um código não deveria ter que buscar antes.
+                    VStack(spacing: Spacing.sm) {
+                        Button(action: {
+                            HapticManager.shared.impact(style: .light)
+                            showRedeemInvite = true
+                        }) {
+                            Label("Tenho um código de convite", systemImage: "ticket.fill")
+                        }
+                        .buttonStyle(PrimaryButtonStyle())
+
+                        Button(action: {
+                            HapticManager.shared.impact(style: .light)
+                            showRequestChapter = true
+                        }) {
+                            Text("Não encontrei meu Capítulo")
+                        }
+                        .buttonStyle(SecondaryButtonStyle())
                     }
-                    .buttonStyle(PrimaryButtonStyle())
                 }
                 .padding(Spacing.screenEdgePadding)
             }
@@ -54,6 +67,19 @@ struct ChapterSelectionView: View {
             }
             .sheet(item: $requesting) { chapter in
                 RequestToJoinSheet(chapter: chapter)
+            }
+            .sheet(isPresented: $showRedeemInvite, onDismiss: {
+                authViewModel.pendingInviteCode = nil
+            }) {
+                RedeemInviteView(prefilledCode: authViewModel.pendingInviteCode)
+            }
+            // Um código que chegou por link abre a folha sozinho — pedir para a pessoa
+            // tocar num botão logo depois de ter tocado no link é atrito à toa.
+            .onChange(of: authViewModel.pendingInviteCode) { _, newValue in
+                if newValue != nil { showRedeemInvite = true }
+            }
+            .task {
+                if authViewModel.pendingInviteCode != nil { showRedeemInvite = true }
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {

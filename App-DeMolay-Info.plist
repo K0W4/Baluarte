@@ -9,5 +9,18 @@
 		<key>UIColorName</key>
 		<string>AccentColor</string>
 	</dict>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.kowa.baluarte.invite</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>baluarte</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

@@ -4,5 +4,6 @@ import Foundation
 /// nobody through the app. A chapter that is missing is requested, not created.
 public protocol ChapterServiceProtocol {
     func searchChapters(query: String?, uf: String?) async throws -> [Chapter]
+    func fetchChapter(id: UUID) async throws -> Chapter?
     func requestChapter(_ request: ChapterRequest) async throws
 }

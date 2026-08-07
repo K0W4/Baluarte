@@ -33,6 +33,20 @@ public final class ChapterService: ChapterServiceProtocol {
             .value
     }
 
+    /// Direct read rather than filtering a search result: a chapter under review is
+    /// excluded from search, but someone already bonded to it still needs its name.
+    public func fetchChapter(id: UUID) async throws -> Chapter? {
+        let rows: [Chapter] = try await client
+            .from("chapter")
+            .select()
+            .eq("id", value: id)
+            .limit(1)
+            .execute()
+            .value
+
+        return rows.first
+    }
+
     public func requestChapter(_ request: ChapterRequest) async throws {
         let payload = RequestInsert(
             requested_by: request.requestedBy,
