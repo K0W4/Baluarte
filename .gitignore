@@ -39,7 +39,7 @@ fastlane/screenshots/**/*.png
 fastlane/test_output
 
 # Environment / Secrets
-App DeMolay/Core/SupabaseSecrets.swift
+Baluarte/Core/SupabaseSecrets.swift
 Config.xcconfig
 
 # Supabase CLI local state

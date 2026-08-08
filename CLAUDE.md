@@ -4,33 +4,33 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-App DeMolay is a native iOS SwiftUI app (iOS 26+) for managing DeMolay Chapters: attendance/roster, event scheduling, gamified goals, tasks, committees, and on-device AI-generated insights. Backend is Supabase (Postgres/PostgREST) with Row Level Security; the only third-party dependency is `supabase-swift` (SPM) — everything else favors native Apple frameworks (EventKit, AppIntents, WidgetKit, NaturalLanguage/Foundation Models) per the project's YAGNI/native-first philosophy.
+Baluarte is a native iOS SwiftUI app (iOS 26+) for managing DeMolay Chapters: attendance/roster, event scheduling, gamified goals, tasks, committees, and on-device AI-generated insights. Backend is Supabase (Postgres/PostgREST) with Row Level Security; the only third-party dependency is `supabase-swift` (SPM) — everything else favors native Apple frameworks (EventKit, AppIntents, WidgetKit, NaturalLanguage/Foundation Models) per the project's YAGNI/native-first philosophy.
 
 ## Commands
 
-Build and test via `xcodebuild` (no Package.swift/Makefile at the root — this is an Xcode project, `App DeMolay.xcodeproj`).
+Build and test via `xcodebuild` (no Package.swift/Makefile at the root — this is an Xcode project, `Baluarte.xcodeproj`).
 
 ```bash
-xcodebuild -scheme "App DeMolay" -destination 'platform=iOS Simulator,name=iPhone 17' build
+xcodebuild -scheme Baluarte -destination 'platform=iOS Simulator,name=iPhone 17' build
 ```
 
 ```bash
-xcodebuild -scheme "App DeMolay" -destination 'platform=iOS Simulator,name=iPhone 17' test
+xcodebuild -scheme Baluarte -destination 'platform=iOS Simulator,name=iPhone 17' test
 ```
 
 Run a single test class or method (`-only-testing`):
 
 ```bash
-xcodebuild -scheme "App DeMolay" -destination 'platform=iOS Simulator,name=iPhone 17' test -only-testing:App_DeMolayTests/HomeViewModelTests
+xcodebuild -scheme Baluarte -destination 'platform=iOS Simulator,name=iPhone 17' test -only-testing:BaluarteTests/HomeViewModelTests
 ```
 
 ```bash
-xcodebuild -scheme "App DeMolay" -destination 'platform=iOS Simulator,name=iPhone 17' test -only-testing:App_DeMolayTests/HomeViewModelTests/testSomeMethod
+xcodebuild -scheme Baluarte -destination 'platform=iOS Simulator,name=iPhone 17' test -only-testing:BaluarteTests/HomeViewModelTests/testSomeMethod
 ```
 
-Targets: `App DeMolay` (app), `App DeMolayTests` (unit tests), `App DeMolayUITests` (UI tests), `AppDeMolayWidgetsExtension` (WidgetKit extension, own scheme).
+Targets: `Baluarte` (app), `BaluarteTests` (unit tests), `BaluarteUITests` (UI tests), `BaluarteWidgetsExtension` (WidgetKit extension, own scheme).
 
-Requires Xcode 26+ and an active Supabase project. `App DeMolay/Core/SupabaseSecrets.swift` is gitignored and must exist locally (provides `SupabaseSecrets.projectURL`/`anonKey`); `Config.xcconfig` + `setup_xcconfig.rb` wire equivalent keys into `Info.plist` build settings.
+Requires Xcode 26+ and an active Supabase project. `Baluarte/Core/SupabaseSecrets.swift` is gitignored and must exist locally (provides `SupabaseSecrets.projectURL`/`anonKey`); `Config.xcconfig` + `setup_xcconfig.rb` wire equivalent keys into `Info.plist` build settings.
 
 Database schema is versioned in `supabase/migrations/` and applied with the Supabase CLI. Never change schema, RLS policies or grants through the dashboard — write a migration so the change is reviewable and replayable.
 
@@ -45,11 +45,11 @@ supabase db push
 - **Models** (`Models/`): plain `Codable`/`Identifiable`/`Hashable` structs, no logic. `CodingKeys` map to the database's `snake_case`.
 - **Views** (`Views/<Feature>/`): zero business logic. A view owns `@State private var viewModel = XxxViewModel()` and only calls ViewModel methods from actions/`.task`/`.onAppear`.
 - **ViewModels** (`ViewModels/<Feature>/`): `@Observable` (never legacy `@ObservableObject`/`@Published`). One per main View. Hold all business logic and receive services via protocol-typed `init` params defaulting to the real implementation (e.g. `AuthViewModel.init(authService: AuthServiceProtocol = AuthService(), memberService: MemberServiceProtocol = Services.member)`), which is what makes them independently testable with mocks.
-- **Services** (`Services/`, protocols in `Services/Protocols/`): every external data source (Supabase, EventKit, on-device ML) is accessed through a protocol with a real Supabase-backed implementation and a Mock counterpart used in tests/`App DeMolayTests/Mocks/`. `Core/Services.swift` is the composition root — a `Services` struct exposing the shared singleton instance of each protocol (`Services.event`, `.goal`, `.member`, `.profile`, `.membership`, `.task`, `.committee`, `.chapter`, `.intelligence`).
-- **Core/**: app entry point (`AppDeMolay.swift`, `@main`) plus cross-cutting singletons — `SupabaseManager` (wraps `SupabaseClient`), `KeychainHelper` (Keychain-backed secure storage), `EventKitManager`, `WidgetManager`, `UserDefaultsManager`, `HapticManager`, `AppError`.
+- **Services** (`Services/`, protocols in `Services/Protocols/`): every external data source (Supabase, EventKit, on-device ML) is accessed through a protocol with a real Supabase-backed implementation and a Mock counterpart used in tests/`BaluarteTests/Mocks/`. `Core/Services.swift` is the composition root — a `Services` struct exposing the shared singleton instance of each protocol (`Services.event`, `.goal`, `.member`, `.profile`, `.membership`, `.task`, `.committee`, `.chapter`, `.intelligence`).
+- **Core/**: app entry point (`BaluarteApp.swift`, `@main`) plus cross-cutting singletons — `SupabaseManager` (wraps `SupabaseClient`), `KeychainHelper` (Keychain-backed secure storage), `EventKitManager`, `WidgetManager`, `UserDefaultsManager`, `HapticManager`, `AppError`.
 - **DesignSystem/**: `Theme` (semantic colors), `Typography` (type scale), `Spacing` (spacing tokens), and `Components/{Buttons,Cards}` for reusable visual pieces. Views must not use literal colors, `.font(.system(size:))`, or magic padding values — always go through Theme/Typography/Spacing.
 
-**App flow / navigation state machine**: `RootView` (`Views/Shared/RootView.swift`) switches on `AuthViewModel.route` (`RootRoute`: `.loading` / `.unauthenticated` / `.chapterSelection` / `.app`) to route between `OnboardingView` → `LoginView` → `ChapterSelectionView` (when the person has no active membership) → `ContentView` (main `TabView`). `AuthViewModel` is injected app-wide via `@Environment` from `AppDeMolay.swift`.
+**App flow / navigation state machine**: `RootView` (`Views/Shared/RootView.swift`) switches on `AuthViewModel.route` (`RootRoute`: `.loading` / `.unauthenticated` / `.chapterSelection` / `.app`) to route between `OnboardingView` → `LoginView` → `ChapterSelectionView` (when the person has no active membership) → `ContentView` (main `TabView`). `AuthViewModel` is injected app-wide via `@Environment` from `BaluarteApp.swift`.
 
 **Membership, identity and permissions** — the three distinctions the whole data model rests on:
 
@@ -83,7 +83,7 @@ supabase db push
 
 **Navigation**: `NavigationStack` with value-based routes only — `NavigationView` is banned.
 
-**Extensions beyond the main app target**: `Intents/` holds AppIntents (Siri Shortcuts, e.g. `ConfirmAttendanceIntent`, `NextEventIntent`) and `AppDeMolayWidgets/` is a separate WidgetKit extension target with its own data manager (`WidgetDataManager`) that talks to PostgREST over raw `URLSession`. It authenticates with the session token from the shared keychain and refreshes it itself when expired — there is deliberately **no anon-key fallback**, because under RLS an anonymous read returns `200 OK` with an empty array rather than an error, which would silently overwrite the widget's cache with nothing. Caches are keyed per chapter so a chapter switch cannot leak the previous chapter's data.
+**Extensions beyond the main app target**: `Intents/` holds AppIntents (Siri Shortcuts, e.g. `ConfirmAttendanceIntent`, `NextEventIntent`) and `BaluarteWidgets/` is a separate WidgetKit extension target with its own data manager (`WidgetDataManager`) that talks to PostgREST over raw `URLSession`. It authenticates with the session token from the shared keychain and refreshes it itself when expired — there is deliberately **no anon-key fallback**, because under RLS an anonymous read returns `200 OK` with an empty array rather than an error, which would silently overwrite the widget's cache with nothing. Caches are keyed per chapter so a chapter switch cannot leak the previous chapter's data.
 
 ## Conventions (from `.agents/AGENTS.md`)
 
@@ -93,6 +93,6 @@ supabase db push
 - No inline `//` comments except `MARK:` in long files — code should be self-explanatory through naming.
 - Optimistic UI updates for toggle/quick-update interactions (apply immediately, revert on API failure).
 - UI/UX changes must account for Nielsen's heuristics, WCAG (contrast, 44x44pt touch targets, VoiceOver/Dynamic Type), and cognitive-load principles (Hick's Law, Von Restorff effect) — this is treated as mandatory, not optional polish.
-- Unit tests cover ViewModels and Models only (business logic, data transforms, computed properties); Mocks under `App DeMolayTests/Mocks/` must stay deterministic.
+- Unit tests cover ViewModels and Models only (business logic, data transforms, computed properties); Mocks under `BaluarteTests/Mocks/` must stay deterministic.
 - Git commit messages must be written in English following Conventional Commits (`feat:`, `fix:`, `refactor:`, `chore:`), even though chat/docs are in Portuguese (pt-BR).
 - Native-first: exhaust native iOS/SwiftUI APIs (EventKit, Foundation Models, AppIntents, WidgetKit) before adding any third-party SPM dependency.
