@@ -1,0 +1,106 @@
+name: CI
+
+# Build, suíte e sondas de RLS. Até aqui as três coisas só rodavam na máquina de
+# quem estava desenvolvendo, e as políticas do banco só eram conferidas quando
+# alguém lembrava de rodar curl à mão -- que é a camada onde a falha é silenciosa.
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ios:
+    name: Build e testes
+    # iOS 26 precisa de Xcode 26. Se este runner não existir mais, ou se a imagem
+    # mudar de Xcode padrão, é aqui que se ajusta -- e o passo abaixo imprime o que
+    # está instalado justamente para o log dizer o motivo em vez de "falhou".
+    runs-on: macos-26
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Xcode disponível
+        run: |
+          ls /Applications | grep -i '^Xcode' || true
+          xcodebuild -version
+
+      # SupabaseSecrets.swift e Config.xcconfig são gitignored de propósito: a anon
+      # key vai dentro do binário, mas não dentro do repositório. O CI recria os dois
+      # a partir de secrets, sem nunca ecoá-los.
+      - name: Recriar segredos locais
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${SUPABASE_URL:-}" ] || [ -z "${SUPABASE_ANON_KEY:-}" ]; then
+            echo "::error::Faltam os secrets SUPABASE_URL e SUPABASE_ANON_KEY."
+            exit 1
+          fi
+          cat > "Baluarte/Core/SupabaseSecrets.swift" <<SWIFT
+          import Foundation
+
+          enum SupabaseSecrets {
+              static let projectURL = "${SUPABASE_URL}"
+              static let anonKey = "${SUPABASE_ANON_KEY}"
+          }
+          SWIFT
+          cp Config.xcconfig.template Config.xcconfig
+          sed -i '' "s|SUPABASE_URL = .*|SUPABASE_URL = ${SUPABASE_URL}|" Config.xcconfig
+          sed -i '' "s|SUPABASE_ANON_KEY = .*|SUPABASE_ANON_KEY = ${SUPABASE_ANON_KEY}|" Config.xcconfig
+
+      - name: Resolver dependências
+        run: xcodebuild -resolvePackageDependencies -project Baluarte.xcodeproj
+
+      - name: Testes
+        run: |
+          set -o pipefail
+          xcodebuild -scheme Baluarte \
+            -destination 'platform=iOS Simulator,name=iPhone 17' \
+            -resultBundlePath TestResults.xcresult \
+            test
+
+      - name: Build do widget
+        run: |
+          set -o pipefail
+          xcodebuild -scheme BaluarteWidgetsExtension \
+            -destination 'platform=iOS Simulator,name=iPhone 17' \
+            build
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: xcresult
+          path: TestResults.xcresult
+          retention-days: 7
+
+  rls:
+    name: Sondas de RLS
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Um fork não recebe os secrets, e sem eles o script não tem o que sondar. Falhar
+    # aí seria ruído: a checagem que importa roda quando o commit chega ao repositório.
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # As sondas só leem ou tentam escrever esperando recusa, então rodar contra o
+      # projeto real não deixa rastro. É de propósito: um banco de teste com outras
+      # policies não provaria nada sobre o que está no ar.
+      - name: Rodar a matriz
+        env:
+          BALUARTE_URL: ${{ secrets.SUPABASE_URL }}
+          BALUARTE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          RLS_USER_A_EMAIL: ${{ secrets.RLS_USER_A_EMAIL }}
+          RLS_USER_A_PASSWORD: ${{ secrets.RLS_USER_A_PASSWORD }}
+          RLS_USER_B_EMAIL: ${{ secrets.RLS_USER_B_EMAIL }}
+          RLS_USER_B_PASSWORD: ${{ secrets.RLS_USER_B_PASSWORD }}
+        run: supabase/tests/rls.sh

@@ -38,6 +38,8 @@ Database schema is versioned in `supabase/migrations/` and applied with the Supa
 supabase db push
 ```
 
+Permission changes are proved by `supabase/tests/rls.sh`, not by the UI — the anon key ships in the binary, so raw HTTP is exactly what an attacker uses. It signs in two users from environment variables (it never creates an account or handles a password itself), then walks the probe matrix. `probe_denied` asserts the HTTP status, for what a column grant or policy blocks; `probe_raise` asserts the **SQLSTATE and hint in the body** rather than the status, because that is what `AppError.from` consumes and because PostgREST does not document a status for `23514` or `P0002`; `probe_empty` asserts `200` with an empty collection, since a `SELECT` denied by RLS returns `[]` and not an error — checking only the status would go green on a leak. `.github/workflows/ci.yml` runs it alongside `xcodebuild test` on every push.
+
 ## Architecture
 
 **MVVM, strictly.** Models → Views → ViewModels → Services (protocol-oriented), per `.agents/AGENTS.md`:
