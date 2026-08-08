@@ -8,6 +8,7 @@ struct ChapterSelectionView: View {
     @State private var showSignOutAlert = false
     @State private var requesting: Chapter?
     @State private var showRedeemInvite = false
+    @State private var founding: Chapter?
 
     var body: some View {
         NavigationStack {
@@ -67,6 +68,9 @@ struct ChapterSelectionView: View {
             }
             .sheet(item: $requesting) { chapter in
                 RequestToJoinSheet(chapter: chapter)
+            }
+            .sheet(item: $founding) { chapter in
+                BootstrapRequestView(chapter: chapter)
             }
             .sheet(isPresented: $showRedeemInvite, onDismiss: {
                 authViewModel.pendingInviteCode = nil
@@ -153,7 +157,13 @@ struct ChapterSelectionView: View {
 
     private func select(_ chapter: Chapter) {
         HapticManager.shared.impact(style: .light)
-        requesting = chapter
+        // Capítulo sem Fundador não tem quem aprove — pedir entrada ali seria uma
+        // solicitação que ninguém no mundo pode responder.
+        if chapter.hasOwner {
+            requesting = chapter
+        } else {
+            founding = chapter
+        }
     }
 }
 

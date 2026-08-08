@@ -9,6 +9,8 @@
 		<key>UIColorName</key>
 		<string>AccentColor</string>
 	</dict>
+	<key>SupportWhatsApp</key>
+	<string></string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>

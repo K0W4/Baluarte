@@ -69,18 +69,31 @@ public struct MemberDetailView: View {
                 }
                 .disabled(!isEditing)
                 
-                Section {
-                    Button(action: {
-                        HapticManager.shared.notification(type: .warning)
-                        showingDeleteAlert = true
-                    }) {
-                        Text("Excluir membro")
+                if viewModel.canDelete {
+                    Section {
+                        Button(action: {
+                            HapticManager.shared.notification(type: .warning)
+                            showingDeleteAlert = true
+                        }) {
+                            Text("Excluir membro")
+                        }
+                        .buttonStyle(DestructiveButtonStyle())
+                        .listRowBackground(Color.clear)
+                        .listRowInsets(EdgeInsets())
+                    } footer: {
+                        Text("Este cadastro foi feito à mão e ainda não pertence a ninguém, então pode ser removido.")
                     }
-                    .buttonStyle(DestructiveButtonStyle())
-                    .listRowBackground(Color.clear)
-                    .listRowInsets(EdgeInsets())
+                    .requires(.manageRoster)
+                } else {
+                    Section {
+                        Label("Cadastro vinculado a uma conta", systemImage: "person.badge.shield.checkmark")
+                            .font(Typography.subheadline)
+                            .foregroundColor(Theme.textSecondary)
+                    } footer: {
+                        Text("Quem tem conta sai do Capítulo por conta própria, pelo próprio perfil. Apagar o cadastro apagaria junto o histórico de presenças, tarefas e comissões dessa pessoa.")
+                    }
+                    .requires(.manageRoster)
                 }
-                .requires(.manageRoster)
                 
                 if let errorMessage = viewModel.errorMessage {
                     Section {

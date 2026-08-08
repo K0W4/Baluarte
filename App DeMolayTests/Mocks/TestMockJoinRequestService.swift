@@ -64,4 +64,60 @@ public final class TestMockJoinRequestService: JoinRequestServiceProtocol {
             throw NSError(domain: "TestMockJoinRequestService", code: 6, userInfo: [NSLocalizedDescriptionKey: "Failed to reject"])
         }
     }
+
+    // MARK: - Bootstrap
+
+    public var bootstrapToReturn: [BootstrapRequest] = []
+
+    public var uploadProofCallCount = 0
+    public var createBootstrapRequestCallCount = 0
+    public var fetchPendingBootstrapRequestsCallCount = 0
+    public var signedProofURLCallCount = 0
+
+    public private(set) var lastUploadedByteCount: Int?
+    public private(set) var lastBootstrapProofPath: String?
+
+    public func uploadProof(memberId: UUID, imageData: Data) async throws -> String {
+        uploadProofCallCount += 1
+        lastUploadedByteCount = imageData.count
+        if shouldThrowError {
+            throw NSError(domain: "TestMockJoinRequestService", code: 7, userInfo: [NSLocalizedDescriptionKey: "Failed to upload proof"])
+        }
+        return "\(memberId.uuidString)/\(UUID().uuidString).jpg"
+    }
+
+    public func createBootstrapRequest(chapterId: UUID, memberId: UUID, message: String?, cid: String?, proofPath: String) async throws -> JoinRequest {
+        createBootstrapRequestCallCount += 1
+        lastBootstrapProofPath = proofPath
+        if shouldThrowError {
+            throw NSError(domain: "TestMockJoinRequestService", code: 8, userInfo: [NSLocalizedDescriptionKey: "Failed to create bootstrap request"])
+        }
+        return JoinRequest(
+            id: UUID(),
+            chapterId: chapterId,
+            memberId: memberId,
+            kind: .chapterBootstrap,
+            message: message,
+            createdAt: Date()
+        )
+    }
+
+    public func fetchPendingBootstrapRequests() async throws -> [BootstrapRequest] {
+        fetchPendingBootstrapRequestsCallCount += 1
+        if shouldThrowError {
+            throw NSError(domain: "TestMockJoinRequestService", code: 9, userInfo: [NSLocalizedDescriptionKey: "Failed to fetch bootstrap requests"])
+        }
+        return bootstrapToReturn
+    }
+
+    public func signedProofURL(path: String) async throws -> URL {
+        signedProofURLCallCount += 1
+        if shouldThrowError {
+            throw NSError(domain: "TestMockJoinRequestService", code: 10, userInfo: [NSLocalizedDescriptionKey: "Failed to sign proof URL"])
+        }
+        guard let url = URL(string: "https://example.test/\(path)") else {
+            throw NSError(domain: "TestMockJoinRequestService", code: 11, userInfo: [NSLocalizedDescriptionKey: "Bad path"])
+        }
+        return url
+    }
 }

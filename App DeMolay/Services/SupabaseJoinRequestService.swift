@@ -8,12 +8,15 @@ public final class SupabaseJoinRequestService: JoinRequestServiceProtocol {
 
     public init() {}
 
+    private static let proofBucket = "bootstrap-proof"
+
     private struct RequestInsert: Encodable {
         let chapter_id: UUID
         let member_id: UUID
         let kind: String
         let message: String?
         let cid_snapshot: String?
+        let proof_path: String?
     }
 
     private struct StatusUpdate: Encodable {
@@ -54,7 +57,8 @@ public final class SupabaseJoinRequestService: JoinRequestServiceProtocol {
             member_id: memberId,
             kind: JoinRequestKind.chapterJoin.rawValue,
             message: message,
-            cid_snapshot: cid
+            cid_snapshot: cid,
+            proof_path: nil
         )
 
         return try await client
@@ -64,6 +68,52 @@ public final class SupabaseJoinRequestService: JoinRequestServiceProtocol {
             .single()
             .execute()
             .value
+    }
+
+    /// Caminho `{auth.uid()}/{uuid}.jpg`: a primeira pasta é o dono, que é exatamente
+    /// o que as policies do Storage conferem.
+    public func uploadProof(memberId: UUID, imageData: Data) async throws -> String {
+        let path = "\(memberId.uuidString)/\(UUID().uuidString).jpg"
+
+        try await client.storage
+            .from(Self.proofBucket)
+            .upload(path, data: imageData, options: FileOptions(contentType: "image/jpeg"))
+
+        return path
+    }
+
+    public func createBootstrapRequest(chapterId: UUID, memberId: UUID, message: String?, cid: String?, proofPath: String) async throws -> JoinRequest {
+        let payload = RequestInsert(
+            chapter_id: chapterId,
+            member_id: memberId,
+            kind: JoinRequestKind.chapterBootstrap.rawValue,
+            message: message,
+            cid_snapshot: cid,
+            proof_path: proofPath
+        )
+
+        return try await client
+            .from("join_request")
+            .insert(payload)
+            .select()
+            .single()
+            .execute()
+            .value
+    }
+
+    /// Vai por RPC porque quem revisa não é admin de nenhum desses Capítulos — é a
+    /// única leitura do app que atravessa Capítulos de propósito.
+    public func fetchPendingBootstrapRequests() async throws -> [BootstrapRequest] {
+        try await client
+            .rpc("pending_bootstrap_requests")
+            .execute()
+            .value
+    }
+
+    public func signedProofURL(path: String) async throws -> URL {
+        try await client.storage
+            .from(Self.proofBucket)
+            .createSignedURL(path: path, expiresIn: 300)
     }
 
     public func fetchMyPendingRequest(memberId: UUID) async throws -> JoinRequest? {

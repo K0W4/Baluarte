@@ -25,7 +25,8 @@ public struct MemberCard: View {
                     }
                     .layoutPriority(1)
                     
-                    if member.accessLevel == "admin" { tagView(text: "Admin") }
+                    if member.level >= .admin { tagView(text: member.level.displayName) }
+                    if !member.hasAccount { tagView(text: "Sem conta") }
                     if member.isSenior { tagView(text: "Sênior") }
                     if member.isMason { tagView(text: "Maçom") }
                     if member.isActive { tagView(text: "Ativo") }

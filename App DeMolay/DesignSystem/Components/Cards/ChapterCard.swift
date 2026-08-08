@@ -10,7 +10,11 @@ public struct ChapterCard: View {
     private var accessibilityDescription: String {
         var parts = ["\(chapter.name), Capítulo número \(chapter.number)"]
         if let location = chapter.locationLabel { parts.append(location) }
-        if chapter.status == .dormant { parts.append("Capítulo dormente") }
+        if chapter.status == .dormant {
+            parts.append("Capítulo dormente")
+        } else if !chapter.hasOwner {
+            parts.append("Ainda sem administrador no app")
+        }
         return parts.joined(separator: ", ")
     }
 
@@ -24,13 +28,9 @@ public struct ChapterCard: View {
                         .lineLimit(1)
 
                     if chapter.status == .dormant {
-                        Text("Dormente")
-                            .font(Typography.caption2)
-                            .foregroundColor(Theme.textSecondary)
-                            .padding(.horizontal, Spacing.xs)
-                            .padding(.vertical, 2)
-                            .background(Theme.backgroundTertiary)
-                            .clipShape(Capsule())
+                        badge("Dormente", tint: Theme.textSecondary)
+                    } else if !chapter.hasOwner {
+                        badge("Sem administrador", tint: Theme.accent)
                     }
                 }
 
@@ -58,6 +58,16 @@ public struct ChapterCard: View {
             RoundedRectangle(cornerRadius: Spacing.cornerRadius)
                 .stroke(Theme.border, lineWidth: 1)
         )
+    }
+
+    private func badge(_ text: String, tint: Color) -> some View {
+        Text(text)
+            .font(Typography.caption2)
+            .foregroundColor(tint)
+            .padding(.horizontal, Spacing.xs)
+            .padding(.vertical, 2)
+            .background(Theme.backgroundTertiary)
+            .clipShape(Capsule())
     }
 
     private var subtitle: String {

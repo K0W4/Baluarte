@@ -28,6 +28,13 @@ public final class MemberDetailViewModel {
         }
     }
     
+    /// Só cadastros feitos à mão podem ser apagados — é o mesmo limite que a policy
+    /// `cm_delete_admin` impõe no banco, trazido para a tela para não oferecer um
+    /// botão que só falharia no servidor.
+    public var canDelete: Bool { !member.hasAccount }
+
+    public var hasAccount: Bool { member.hasAccount }
+
     public var isValid: Bool {
         !fullName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
         (isActive || isSenior || isMason) &&
