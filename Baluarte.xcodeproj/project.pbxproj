@@ -19,7 +19,7 @@
 			containerPortal = 932EA1763006CB3D00CD22BF /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 932EA17D3006CB3D00CD22BF;
-			remoteInfo = "Baluarte";
+			remoteInfo = Baluarte;
 		};
 		9353B3F030127E3100D754B7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -33,7 +33,7 @@
 			containerPortal = 932EA1763006CB3D00CD22BF /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 932EA17D3006CB3D00CD22BF;
-			remoteInfo = "Baluarte";
+			remoteInfo = Baluarte;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -52,13 +52,13 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		932EA17E3006CB3D00CD22BF /* Baluarte.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Baluarte.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		932EA17E3006CB3D00CD22BF /* Baluarte.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Baluarte.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9340A984301947550041096D /* BaluarteWidgetsExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BaluarteWidgetsExtension.entitlements; sourceTree = "<group>"; };
-		9353B39C3011A47C00D754B7 /* BaluarteTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BaluarteTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9353B39C3011A47C00D754B7 /* BaluarteTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BaluarteTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9353B3DE30127E2F00D754B7 /* BaluarteWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = BaluarteWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		9353B3E030127E2F00D754B7 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		9353B3E230127E3000D754B7 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
-		938AD98D302118B200314177 /* BaluarteUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BaluarteUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		938AD98D302118B200314177 /* BaluarteUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BaluarteUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -87,12 +87,12 @@
 			exceptions = (
 				9353B4013012817900D754B7 /* Exceptions for "Baluarte" folder in "BaluarteWidgetsExtension" target */,
 			);
-			path = "Baluarte";
+			path = Baluarte;
 			sourceTree = "<group>";
 		};
 		9353B39D3011A47C00D754B7 /* BaluarteTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "BaluarteTests";
+			path = BaluarteTests;
 			sourceTree = "<group>";
 		};
 		9353B3E430127E3000D754B7 /* BaluarteWidgets */ = {
@@ -105,7 +105,7 @@
 		};
 		938AD98E302118B200314177 /* BaluarteUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "BaluarteUITests";
+			path = BaluarteUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -198,11 +198,11 @@
 			fileSystemSynchronizedGroups = (
 				932EA1803006CB3D00CD22BF /* Baluarte */,
 			);
-			name = "Baluarte";
+			name = Baluarte;
 			packageProductDependencies = (
 				0D227F8247D2E027CD98DB6A /* Supabase */,
 			);
-			productName = "Baluarte";
+			productName = Baluarte;
 			productReference = 932EA17E3006CB3D00CD22BF /* Baluarte.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -222,10 +222,10 @@
 			fileSystemSynchronizedGroups = (
 				9353B39D3011A47C00D754B7 /* BaluarteTests */,
 			);
-			name = "BaluarteTests";
+			name = BaluarteTests;
 			packageProductDependencies = (
 			);
-			productName = "BaluarteTests";
+			productName = BaluarteTests;
 			productReference = 9353B39C3011A47C00D754B7 /* BaluarteTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
@@ -267,10 +267,10 @@
 			fileSystemSynchronizedGroups = (
 				938AD98E302118B200314177 /* BaluarteUITests */,
 			);
-			name = "BaluarteUITests";
+			name = BaluarteUITests;
 			packageProductDependencies = (
 			);
-			productName = "BaluarteUITests";
+			productName = BaluarteUITests;
 			productReference = 938AD98D302118B200314177 /* BaluarteUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
@@ -535,9 +535,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-				CODE_SIGN_ENTITLEMENTS = "Baluarte/Baluarte.entitlements";
+				CODE_SIGN_ENTITLEMENTS = Baluarte/Baluarte.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2U54MVQ5ZR;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -556,7 +556,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kowa.baluarte;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -579,9 +579,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-				CODE_SIGN_ENTITLEMENTS = "Baluarte/Baluarte.entitlements";
+				CODE_SIGN_ENTITLEMENTS = Baluarte/Baluarte.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2U54MVQ5ZR;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -600,7 +600,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kowa.baluarte;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -676,7 +676,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = BaluarteWidgetsExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2U54MVQ5ZR;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BaluarteWidgets/Info.plist;
@@ -688,7 +688,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kowa.baluarte.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -712,7 +712,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = BaluarteWidgetsExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2U54MVQ5ZR;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BaluarteWidgets/Info.plist;
@@ -724,7 +724,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.1;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kowa.baluarte.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -762,7 +762,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
-				TEST_TARGET_NAME = "Baluarte";
+				TEST_TARGET_NAME = Baluarte;
 			};
 			name = Debug;
 		};
@@ -787,7 +787,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
-				TEST_TARGET_NAME = "Baluarte";
+				TEST_TARGET_NAME = Baluarte;
 			};
 			name = Release;
 		};

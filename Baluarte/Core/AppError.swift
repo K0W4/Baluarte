@@ -1,7 +1,7 @@
 import Foundation
 import Supabase
 
-public enum AppError: Error, LocalizedError {
+public enum AppError: Error, LocalizedError, Equatable {
     case networkUnavailable
     case serverError
     case authenticationRequired
@@ -41,19 +41,39 @@ public enum AppError: Error, LocalizedError {
 
         let description = String(describing: error)
 
-        // Business rules now live in Postgres and raise their own Portuguese messages.
-        // 42501 is what every authorization failure raises; 23514 carries a message
-        // meant to be read by the person who triggered it.
+        // Business rules live in Postgres. Each raise that can reach a person carries a
+        // stable `baluarte.` hint, which is what gets translated — the message itself is
+        // always Portuguese, because the server does not know the caller's language.
+        //
+        // The hint is consulted before the code on purpose: an authorization failure that
+        // names a real reason ("chapters cannot be moved") is more useful than the generic
+        // refusal, and none of those reasons discloses anyone's data. A bare
+        // `insufficient_privilege` carries no hint and still reads as a plain refusal.
         if let postgrestError = error as? PostgrestError {
+            if let message = ServerMessage.localized(hint: postgrestError.hint) {
+                return .validationFailed(message)
+            }
             switch postgrestError.code {
             case "42501":
                 return .permissionDenied
             case "PGRST116", "P0002":
                 return .notFound
-            default:
+            case "23514":
+                // Fallback for any raise the hints migration did not reach: the Portuguese
+                // message is worse than a translation but better than nothing.
                 let message = postgrestError.message
                 return message.isEmpty ? .unknown : .validationFailed(message)
+            default:
+                // Everything else is a constraint name, a PostgREST diagnostic or a
+                // Postgres internal — text written for a developer, never for a member.
+                return .serverError
             }
+        }
+
+        // PostgrestBuilder throws HTTPError when the body is not a PostgREST envelope.
+        // Without this the code below matches "403" against a stringified Data blob.
+        if let httpError = error as? HTTPError {
+            return from(statusCode: httpError.response.statusCode)
         }
 
         if let urlError = error as? URLError {
@@ -84,5 +104,16 @@ public enum AppError: Error, LocalizedError {
         }
         
         return .unknown
+    }
+
+    private static func from(statusCode: Int) -> AppError {
+        switch statusCode {
+        case 401: return .authenticationRequired
+        case 403: return .permissionDenied
+        case 404, 406: return .notFound
+        case 408: return .timeout
+        case 500...599: return .serverError
+        default: return .unknown
+        }
     }
 }

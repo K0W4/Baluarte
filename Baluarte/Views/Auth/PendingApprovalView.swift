@@ -94,7 +94,8 @@ struct PendingApprovalView: View {
                     get: { authViewModel.errorMessage != nil },
                     set: { if !$0 { authViewModel.errorMessage = nil } }
                 ),
-                message: authViewModel.errorMessage ?? ""
+                message: authViewModel.errorMessage ?? "",
+                style: .error
             )
             .task { await authViewModel.refreshMembershipState() }
         }

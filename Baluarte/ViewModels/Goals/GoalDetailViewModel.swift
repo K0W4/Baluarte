@@ -92,7 +92,7 @@ public final class GoalDetailViewModel {
         } catch {
             if error is CancellationError { return false }
             print("❌ Supabase Error: \(error)")
-            errorMessage = String(localized: "Erro ao atualizar a meta.")
+            errorMessage = AppError.from(error).userMessage
             isLoading = false
             return false
         }
@@ -115,7 +115,7 @@ public final class GoalDetailViewModel {
         } catch {
             if error is CancellationError { return false }
             print("❌ Supabase Error: \(error)")
-            errorMessage = String(localized: "Erro ao concluir a meta.")
+            errorMessage = AppError.from(error).userMessage
             isLoading = false
             return false
         }
@@ -132,7 +132,7 @@ public final class GoalDetailViewModel {
         } catch {
             if error is CancellationError { return false }
             print("❌ Supabase Error: \(error)")
-            errorMessage = String(localized: "Erro ao excluir a meta.")
+            errorMessage = AppError.from(error).userMessage
             isLoading = false
             return false
         }

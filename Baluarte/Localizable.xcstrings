@@ -7606,6 +7606,581 @@
           }
         }
       }
+    },
+    "Você já participa de dois Capítulos. Saia de um antes de entrar em outro.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You already belong to two Chapters. Leave one before joining another."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ya perteneces a dos Capítulos. Sal de uno antes de entrar en otro."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Você já participa de dois Capítulos. Saia de um antes de entrar em outro."
+          }
+        }
+      }
+    },
+    "O Capítulo de um registro não pode ser alterado.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A record's Chapter cannot be changed."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se puede cambiar el Capítulo de un registro."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O Capítulo de um registro não pode ser alterado."
+          }
+        }
+      }
+    },
+    "Evento não encontrado.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Event not found."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Evento no encontrado."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Evento não encontrado."
+          }
+        }
+      }
+    },
+    "Solicitação não encontrada.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Request not found."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solicitud no encontrada."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solicitação não encontrada."
+          }
+        }
+      }
+    },
+    "Esta solicitação já foi respondida.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This request has already been answered."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esta solicitud ya fue respondida."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esta solicitação já foi respondida."
+          }
+        }
+      }
+    },
+    "Este Capítulo já tem um Fundador. Quem quiser entrar deve solicitar a ele.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This Chapter already has a Founder. Anyone who wants to join should ask them."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Este Capítulo ya tiene un Fundador. Quien quiera entrar debe solicitárselo."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Este Capítulo já tem um Fundador. Quem quiser entrar deve solicitar a ele."
+          }
+        }
+      }
+    },
+    "Para tornar alguém Fundador, use a transferência de propriedade.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To make someone a Founder, use the ownership transfer."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Para hacer Fundador a alguien, usa la transferencia de propiedad."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Para tornar alguém Fundador, use a transferência de propriedade."
+          }
+        }
+      }
+    },
+    "O cadastro escolhido não existe mais ou já pertence a alguém.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The entry you picked no longer exists or already belongs to someone."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El registro que elegiste ya no existe o ya pertenece a alguien."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O cadastro escolhido não existe mais ou já pertence a alguém."
+          }
+        }
+      }
+    },
+    "Você não participa deste Capítulo.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You do not belong to this Chapter."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No perteneces a este Capítulo."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Você não participa deste Capítulo."
+          }
+        }
+      }
+    },
+    "Não foi possível gerar um código único.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not generate a unique code."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se pudo generar un código único."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Não foi possível gerar um código único."
+          }
+        }
+      }
+    },
+    "Informe o código do convite.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter the invite code."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Introduce el código de invitación."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Informe o código do convite."
+          }
+        }
+      }
+    },
+    "Muitas tentativas. Aguarde alguns minutos antes de tentar de novo.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Too many attempts. Wait a few minutes before trying again."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Demasiados intentos. Espera unos minutos antes de volver a intentarlo."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muitas tentativas. Aguarde alguns minutos antes de tentar de novo."
+          }
+        }
+      }
+    },
+    "Convite inválido ou expirado. Confira o código com quem enviou.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invalid or expired invite. Check the code with whoever sent it."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invitación inválida o vencida. Verifica el código con quien te lo envió."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Convite inválido ou expirado. Confira o código com quem enviou."
+          }
+        }
+      }
+    },
+    "Você já participa deste Capítulo.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You already belong to this Chapter."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ya perteneces a este Capítulo."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Você já participa deste Capítulo."
+          }
+        }
+      }
+    },
+    "O cadastro vinculado a este convite já pertence a alguém.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The entry linked to this invite already belongs to someone."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El registro vinculado a esta invitación ya pertenece a alguien."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O cadastro vinculado a este convite já pertence a alguém."
+          }
+        }
+      }
+    },
+    "Vínculo não encontrado.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Membership not found."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vínculo no encontrado."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vínculo não encontrado."
+          }
+        }
+      }
+    },
+    "Este cadastro ainda não pertence a ninguém, então não tem acesso para ajustar.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This entry does not belong to anyone yet, so there is no access to adjust."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Este registro todavía no pertenece a nadie, así que no hay acceso que ajustar."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Este cadastro ainda não pertence a ninguém, então não tem acesso para ajustar."
+          }
+        }
+      }
+    },
+    "Você não pode alterar o próprio nível de acesso.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You cannot change your own access level."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No puedes cambiar tu propio nivel de acceso."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Você não pode alterar o próprio nível de acesso."
+          }
+        }
+      }
+    },
+    "A propriedade só pode ser transferida para alguém ativo e com conta no app.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ownership can only be transferred to someone active who has an account in the app."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La propiedad solo puede transferirse a alguien activo y con cuenta en la app."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A propriedade só pode ser transferida para alguém ativo e com conta no app."
+          }
+        }
+      }
+    },
+    "Você já é o Fundador deste Capítulo.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are already this Chapter's Founder."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ya eres el Fundador de este Capítulo."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Você já é o Fundador deste Capítulo."
+          }
+        }
+      }
+    },
+    "Você é o único Fundador e ainda há gente no Capítulo. Promova outro Fundador antes de sair.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are the only Founder and there are still people in the Chapter. Promote another Founder before leaving."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eres el único Fundador y todavía hay gente en el Capítulo. Promueve a otro Fundador antes de salir."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Você é o único Fundador e ainda há gente no Capítulo. Promova outro Fundador antes de sair."
+          }
+        }
+      }
+    },
+    "Você é o único Fundador e ainda há %lld pessoa(s) no Capítulo. Promova outro Fundador antes de sair.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are the only Founder and there are still %lld person(s) in the Chapter. Promote another Founder before leaving."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eres el único Fundador y todavía hay %lld persona(s) en el Capítulo. Promueve a otro Fundador antes de salir."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Você é o único Fundador e ainda há %lld pessoa(s) no Capítulo. Promova outro Fundador antes de sair."
+          }
+        }
+      }
+    },
+    "Sucesso": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Success"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Éxito"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sucesso"
+          }
+        }
+      }
+    },
+    "Erro": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Error"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Error"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erro"
+          }
+        }
+      }
+    },
+    "Toque duas vezes para dispensar.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Double tap to dismiss."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca dos veces para descartar."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toque duas vezes para dispensar."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

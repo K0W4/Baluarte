@@ -61,7 +61,8 @@ struct BootstrapRequestView: View {
                     get: { viewModel.errorMessage != nil },
                     set: { if !$0 { viewModel.errorMessage = nil } }
                 ),
-                message: viewModel.errorMessage ?? ""
+                message: viewModel.errorMessage ?? "",
+                style: .error
             )
         }
     }

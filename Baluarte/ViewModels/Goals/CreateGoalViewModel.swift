@@ -55,7 +55,7 @@ public final class CreateGoalViewModel {
         } catch {
             if error is CancellationError { return false }
             print("❌ Supabase Error: \(error)")
-            errorMessage = String(localized: "Erro ao criar a meta. Tente novamente.")
+            errorMessage = AppError.from(error).userMessage
             isLoading = false
             return false
         }

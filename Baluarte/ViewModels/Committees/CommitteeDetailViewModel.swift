@@ -71,7 +71,7 @@ public final class CommitteeDetailViewModel {
         } catch {
             if error is CancellationError { return }
             print("❌ Supabase Error: \(error)")
-            errorMessage = String(localized: "Erro ao carregar dados da comissão.")
+            errorMessage = AppError.from(error).userMessage
             isFetchingMembers = false
         }
     }
@@ -100,7 +100,7 @@ public final class CommitteeDetailViewModel {
         } catch {
             if error is CancellationError { return }
             committeeTasks[index].isCompleted = !newStatus
-            errorMessage = String(localized: "Erro ao atualizar a tarefa.")
+            errorMessage = AppError.from(error).userMessage
         }
     }
     
@@ -123,7 +123,7 @@ public final class CommitteeDetailViewModel {
         } catch {
             if error is CancellationError { return false }
             print("❌ Supabase Error: \(error)")
-            errorMessage = String(localized: "Erro ao atualizar a comissão.")
+            errorMessage = AppError.from(error).userMessage
             isLoading = false
             return false
         }
@@ -140,7 +140,7 @@ public final class CommitteeDetailViewModel {
         } catch {
             if error is CancellationError { return false }
             print("❌ Supabase Error: \(error)")
-            errorMessage = String(localized: "Erro ao excluir a comissão.")
+            errorMessage = AppError.from(error).userMessage
             isLoading = false
             return false
         }
