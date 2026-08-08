@@ -131,6 +131,30 @@ public final class SupabaseJoinRequestService: JoinRequestServiceProtocol {
         return rows.first
     }
 
+    public func fetchMyLatestRejectedRequest(memberId: UUID) async throws -> JoinRequest? {
+        let rows: [JoinRequest] = try await client
+            .from("join_request")
+            .select()
+            .eq("member_id", value: memberId)
+            .eq("status", value: JoinRequestStatus.rejected.rawValue)
+            .order("reviewed_at", ascending: false)
+            .limit(1)
+            .execute()
+            .value
+
+        return rows.first
+    }
+
+    /// Marcar como cancelada tira a recusa do caminho sem apagar o registro do que
+    /// aconteceu — a mesma coluna de status que a policy já permite ao dono da linha.
+    public func acknowledgeRejection(id: UUID) async throws {
+        try await client
+            .from("join_request")
+            .update(StatusUpdate(status: JoinRequestStatus.cancelled.rawValue))
+            .eq("id", value: id)
+            .execute()
+    }
+
     public func fetchPendingRequests(for chapterId: UUID) async throws -> [PendingJoinRequest] {
         let rows: [PendingRow] = try await client
             .from("join_request")

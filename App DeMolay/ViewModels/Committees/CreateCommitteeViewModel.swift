@@ -95,7 +95,7 @@ public final class CreateCommitteeViewModel {
         } catch {
             if error is CancellationError { return false }
             print("❌ Supabase Error: \(error)")
-            errorMessage = "Erro ao criar a comissão. Tente novamente."
+            errorMessage = String(localized: "Erro ao criar a comissão. Tente novamente.")
             isLoading = false
             return false
         }

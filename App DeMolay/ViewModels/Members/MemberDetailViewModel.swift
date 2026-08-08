@@ -146,7 +146,7 @@ public final class MemberDetailViewModel {
         } catch {
             if error is CancellationError { return false }
             print("❌ Supabase Error: \(error)")
-            errorMessage = "Erro ao atualizar o membro."
+            errorMessage = String(localized: "Erro ao atualizar o membro.")
             isLoading = false
             return false
         }
@@ -163,7 +163,7 @@ public final class MemberDetailViewModel {
         } catch {
             if error is CancellationError { return false }
             print("❌ Supabase Error: \(error)")
-            errorMessage = "Erro ao excluir o membro."
+            errorMessage = String(localized: "Erro ao excluir o membro.")
             isLoading = false
             return false
         }

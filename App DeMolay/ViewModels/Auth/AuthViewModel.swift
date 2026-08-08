@@ -15,6 +15,7 @@ public final class AuthViewModel {
         case unauthenticated
         case chapterSelection
         case pendingApproval
+        case rejected
         case app
     }
 
@@ -26,6 +27,8 @@ public final class AuthViewModel {
     public private(set) var pendingRequest: JoinRequest?
     public private(set) var pendingRequestChapter: Chapter?
     public private(set) var activeChapter: Chapter?
+    public private(set) var rejectedRequest: JoinRequest?
+    public private(set) var rejectedRequestChapter: Chapter?
 
     /// A code captured from a shared link before the person is ready to redeem it.
     public var pendingInviteCode: String?
@@ -64,7 +67,8 @@ public final class AuthViewModel {
             return .unauthenticated
         case .authenticated:
             if activeMembership != nil { return .app }
-            return pendingRequest == nil ? .chapterSelection : .pendingApproval
+            if pendingRequest != nil { return .pendingApproval }
+            return rejectedRequest == nil ? .chapterSelection : .rejected
         }
     }
 
@@ -149,20 +153,51 @@ public final class AuthViewModel {
         if let activeMembership {
             self.pendingRequest = nil
             self.pendingRequestChapter = nil
+            self.rejectedRequest = nil
+            self.rejectedRequestChapter = nil
             self.activeChapter = try await chapterService.fetchChapter(id: activeMembership.chapterId)
             return
         }
 
         self.activeChapter = nil
 
-        // Without a membership, the person is either choosing a chapter or waiting on
-        // one. Which of the two decides the whole root route.
+        // Sem vínculo, a pessoa está escolhendo um Capítulo, esperando resposta, ou
+        // acabou de ser recusada. Qual dos três decide a rota inteira — e a recusa é o
+        // caso que antes sumia sem explicação.
         let request = try await joinRequestService.fetchMyPendingRequest(memberId: user.id)
         self.pendingRequest = request
         self.pendingRequestChapter = if let chapterId = request?.chapterId {
             try await chapterService.fetchChapter(id: chapterId)
         } else {
             nil
+        }
+
+        guard request == nil else {
+            self.rejectedRequest = nil
+            self.rejectedRequestChapter = nil
+            return
+        }
+
+        let rejected = try await joinRequestService.fetchMyLatestRejectedRequest(memberId: user.id)
+        self.rejectedRequest = rejected
+        self.rejectedRequestChapter = if let chapterId = rejected?.chapterId {
+            try await chapterService.fetchChapter(id: chapterId)
+        } else {
+            nil
+        }
+    }
+
+    @MainActor
+    public func acknowledgeRejection() async {
+        guard let rejected = rejectedRequest else { return }
+
+        errorMessage = nil
+        do {
+            try await joinRequestService.acknowledgeRejection(id: rejected.id)
+            self.rejectedRequest = nil
+            self.rejectedRequestChapter = nil
+        } catch {
+            errorMessage = AppError.from(error).userMessage
         }
     }
 

@@ -47,7 +47,7 @@ public final class SmartSummaryViewModel {
             }
             
         } catch {
-            self.errorMessage = "Falha ao gerar o resumo inteligente. Verifique o modelo."
+            self.errorMessage = String(localized: "Falha ao gerar o resumo inteligente. Verifique o modelo.")
             print("Intelligence error: \(error)")
         }
         

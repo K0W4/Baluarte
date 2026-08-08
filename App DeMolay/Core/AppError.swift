@@ -14,21 +14,21 @@ public enum AppError: Error, LocalizedError {
     public var userMessage: String {
         switch self {
         case .networkUnavailable:
-            return "Sem conexão com a internet. Verifique sua rede e tente novamente."
+            return String(localized: "Sem conexão com a internet. Verifique sua rede e tente novamente.")
         case .serverError:
-            return "O servidor está temporariamente indisponível. Tente novamente em alguns instantes."
+            return String(localized: "O servidor está temporariamente indisponível. Tente novamente em alguns instantes.")
         case .authenticationRequired:
-            return "Sua sessão expirou. Faça login novamente."
+            return String(localized: "Sua sessão expirou. Faça login novamente.")
         case .permissionDenied:
-            return "Você não tem permissão para realizar esta ação."
+            return String(localized: "Você não tem permissão para realizar esta ação.")
         case .notFound:
-            return "O recurso solicitado não foi encontrado."
+            return String(localized: "O recurso solicitado não foi encontrado.")
         case .validationFailed(let message):
             return message
         case .timeout:
-            return "A operação demorou mais do que o esperado. Tente novamente."
+            return String(localized: "A operação demorou mais do que o esperado. Tente novamente.")
         case .unknown:
-            return "Ocorreu um erro inesperado. Tente novamente."
+            return String(localized: "Ocorreu um erro inesperado. Tente novamente.")
         }
     }
     

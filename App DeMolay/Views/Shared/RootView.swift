@@ -37,6 +37,10 @@ struct RootView: View {
                 PendingApprovalView()
                     .transition(.opacity)
 
+            case .rejected:
+                RequestRejectedView()
+                    .transition(.opacity)
+
             case .app:
                 ContentView()
                     .transition(.opacity)

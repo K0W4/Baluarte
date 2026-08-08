@@ -35,6 +35,25 @@ public final class TestMockJoinRequestService: JoinRequestServiceProtocol {
         return myRequestToReturn
     }
 
+    public var rejectedToReturn: JoinRequest?
+    public var fetchMyLatestRejectedRequestCallCount = 0
+    public var acknowledgeRejectionCallCount = 0
+
+    public func fetchMyLatestRejectedRequest(memberId: UUID) async throws -> JoinRequest? {
+        fetchMyLatestRejectedRequestCallCount += 1
+        if shouldThrowError {
+            throw NSError(domain: "TestMockJoinRequestService", code: 12, userInfo: [NSLocalizedDescriptionKey: "Failed to fetch rejected request"])
+        }
+        return rejectedToReturn
+    }
+
+    public func acknowledgeRejection(id: UUID) async throws {
+        acknowledgeRejectionCallCount += 1
+        if shouldThrowError {
+            throw NSError(domain: "TestMockJoinRequestService", code: 13, userInfo: [NSLocalizedDescriptionKey: "Failed to acknowledge rejection"])
+        }
+    }
+
     public func fetchPendingRequests(for chapterId: UUID) async throws -> [PendingJoinRequest] {
         fetchPendingRequestsCallCount += 1
         if shouldThrowError {

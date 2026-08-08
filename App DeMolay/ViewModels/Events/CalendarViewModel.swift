@@ -95,7 +95,7 @@ public final class CalendarViewModel {
             }
         } catch {
             if error is CancellationError { return }
-            errorMessage = "Não foi possível adicionar ao calendário."
+            errorMessage = String(localized: "Não foi possível adicionar ao calendário.")
         }
     }
 }

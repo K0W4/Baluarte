@@ -86,7 +86,7 @@ public final class CreateTaskViewModel {
         } catch {
             if error is CancellationError { return false }
             print("❌ Supabase Error: \(error)")
-            errorMessage = "Erro ao criar a tarefa. Tente novamente."
+            errorMessage = String(localized: "Erro ao criar a tarefa. Tente novamente.")
             isLoading = false
             return false
         }

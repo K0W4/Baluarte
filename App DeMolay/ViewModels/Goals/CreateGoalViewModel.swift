@@ -29,7 +29,7 @@ public final class CreateGoalViewModel {
         
         let target = Double(targetValue.replacingOccurrences(of: ",", with: ".")) ?? 0
         guard target > 0 else {
-            errorMessage = "A meta alvo deve ser maior que zero."
+            errorMessage = String(localized: "A meta alvo deve ser maior que zero.")
             return false
         }
         
@@ -55,7 +55,7 @@ public final class CreateGoalViewModel {
         } catch {
             if error is CancellationError { return false }
             print("❌ Supabase Error: \(error)")
-            errorMessage = "Erro ao criar a meta. Tente novamente."
+            errorMessage = String(localized: "Erro ao criar a meta. Tente novamente.")
             isLoading = false
             return false
         }

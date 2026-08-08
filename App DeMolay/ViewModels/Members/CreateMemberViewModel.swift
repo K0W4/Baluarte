@@ -72,7 +72,7 @@ public final class CreateMemberViewModel {
         } catch {
             if error is CancellationError { return false }
             print("❌ Supabase Error: \(error)")
-            errorMessage = "Erro ao adicionar o membro. Tente novamente."
+            errorMessage = String(localized: "Erro ao adicionar o membro. Tente novamente.")
             isLoading = false
             return false
         }

@@ -52,7 +52,7 @@ public final class BootstrapRequestViewModel {
         errorMessage = nil
 
         guard let imageData = compressedProof(from: proofImage) else {
-            errorMessage = "Não foi possível preparar a imagem. Tente escolher outra foto."
+            errorMessage = String(localized: "Não foi possível preparar a imagem. Tente escolher outra foto.")
             isSending = false
             return false
         }

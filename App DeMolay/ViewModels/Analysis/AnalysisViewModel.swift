@@ -93,7 +93,7 @@ final class AnalysisViewModel {
             
             self.displayedAnalyses = newDisplayed
         } catch {
-            self.errorMessage = "Falha ao gerar análise da gestão. Tente novamente mais tarde."
+            self.errorMessage = String(localized: "Falha ao gerar análise da gestão. Tente novamente mais tarde.")
             print("Erro ao gerar análise: \(error)")
         }
         

@@ -66,12 +66,12 @@ public final class GoalDetailViewModel {
         let current = Double(currentValue.replacingOccurrences(of: ",", with: ".")) ?? 0
         
         guard target > 0 else {
-            errorMessage = "A meta alvo deve ser maior que zero."
+            errorMessage = String(localized: "A meta alvo deve ser maior que zero.")
             return false
         }
         
         guard current >= 0 else {
-            errorMessage = "O valor atual não pode ser negativo."
+            errorMessage = String(localized: "O valor atual não pode ser negativo.")
             return false
         }
         
@@ -92,7 +92,7 @@ public final class GoalDetailViewModel {
         } catch {
             if error is CancellationError { return false }
             print("❌ Supabase Error: \(error)")
-            errorMessage = "Erro ao atualizar a meta."
+            errorMessage = String(localized: "Erro ao atualizar a meta.")
             isLoading = false
             return false
         }
@@ -115,7 +115,7 @@ public final class GoalDetailViewModel {
         } catch {
             if error is CancellationError { return false }
             print("❌ Supabase Error: \(error)")
-            errorMessage = "Erro ao concluir a meta."
+            errorMessage = String(localized: "Erro ao concluir a meta.")
             isLoading = false
             return false
         }
@@ -132,7 +132,7 @@ public final class GoalDetailViewModel {
         } catch {
             if error is CancellationError { return false }
             print("❌ Supabase Error: \(error)")
-            errorMessage = "Erro ao excluir a meta."
+            errorMessage = String(localized: "Erro ao excluir a meta.")
             isLoading = false
             return false
         }

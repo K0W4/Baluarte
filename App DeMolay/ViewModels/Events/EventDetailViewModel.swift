@@ -70,7 +70,7 @@ public final class EventDetailViewModel {
         } catch {
             if error is CancellationError { return false }
             print("❌ Supabase Error: \(error)")
-            errorMessage = "Erro ao atualizar o evento."
+            errorMessage = String(localized: "Erro ao atualizar o evento.")
             isLoading = false
             return false
         }
@@ -98,7 +98,7 @@ public final class EventDetailViewModel {
         } catch {
             if error is CancellationError { return }
             print("❌ Supabase Error: \(error)")
-            errorMessage = "Erro ao atualizar presença."
+            errorMessage = String(localized: "Erro ao atualizar presença.")
             isLoading = false
         }
     }
@@ -114,7 +114,7 @@ public final class EventDetailViewModel {
         } catch {
             if error is CancellationError { return false }
             print("❌ Supabase Error: \(error)")
-            errorMessage = "Erro ao excluir o evento."
+            errorMessage = String(localized: "Erro ao excluir o evento.")
             isLoading = false
             return false
         }

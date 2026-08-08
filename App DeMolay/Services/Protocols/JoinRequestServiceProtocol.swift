@@ -3,6 +3,11 @@ import Foundation
 public protocol JoinRequestServiceProtocol {
     func createRequest(chapterId: UUID, memberId: UUID, message: String?, cid: String?) async throws -> JoinRequest
     func fetchMyPendingRequest(memberId: UUID) async throws -> JoinRequest?
+
+    /// A recusa é o único ponto do fluxo onde a pessoa ficaria sem resposta: a
+    /// solicitação deixa de ser pendente e ela voltaria à busca sem saber por quê.
+    func fetchMyLatestRejectedRequest(memberId: UUID) async throws -> JoinRequest?
+    func acknowledgeRejection(id: UUID) async throws
     func fetchPendingRequests(for chapterId: UUID) async throws -> [PendingJoinRequest]
     func cancelRequest(id: UUID) async throws
     /// `linkMembershipId` reaproveita um cadastro de roster feito à mão em vez de criar
