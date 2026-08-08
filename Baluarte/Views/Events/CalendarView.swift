@@ -9,7 +9,7 @@ public struct CalendarView: View {
     @State private var selectedEvent: Event?
 
     private let calendar = Calendar.current
-    private let daysInWeek = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"]
+    private let daysInWeek = [String(localized: "Dom"), String(localized: "Seg"), String(localized: "Ter"), String(localized: "Qua"), String(localized: "Qui"), String(localized: "Sex"), String(localized: "Sáb")]
 
     private var createEventAction: (() -> Void)? {
         permissions.can(.manageEvents) ? { showingCreateEvent = true } : nil

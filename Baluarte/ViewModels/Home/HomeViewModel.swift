@@ -23,9 +23,9 @@ public final class HomeViewModel {
     public var greetingTitle: String {
         guard let user = currentUser,
               let firstName = user.fullName.split(separator: " ").first else {
-            return "Olá, Irmão!"
+            return String(localized: "Olá, Irmão!")
         }
-        return "Olá, \(firstName)!"
+        return String(format: String(localized: "Olá, %@!"), String(firstName))
     }
 
     public var upcomingEvents: [Event] {

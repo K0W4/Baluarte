@@ -14,7 +14,7 @@ public struct MembersView: View {
             VStack(spacing: 0) {
                 Picker("Filtro", selection: $viewModel.selectedFilter) {
                     ForEach(MembersFilter.allCases) { filter in
-                        Text(filter.rawValue).tag(filter)
+                        Text(filter.displayName).tag(filter)
                     }
                 }
                 .pickerStyle(.segmented)

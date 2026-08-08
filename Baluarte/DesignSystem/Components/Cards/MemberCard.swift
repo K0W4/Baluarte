@@ -32,7 +32,7 @@ public struct MemberCard: View {
                     if member.isActive { tagView(text: "Ativo") }
                 }
                 
-                Text(member.role ?? "Sem cargo")
+                Text(member.role.map(ChapterRole.displayName) ?? ChapterRole.noRole)
                     .font(Typography.subheadline)
                     .foregroundColor(member.role != nil ? Theme.textSecondary : Theme.textTertiary)
                     .lineLimit(1)
@@ -45,7 +45,7 @@ public struct MemberCard: View {
                 .foregroundColor(Theme.accent)
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(member.fullName), \(member.role ?? "Sem cargo"), \(member.isActive ? "Ativo" : "Inativo")")
+        .accessibilityLabel("\(member.fullName), \(member.role.map(ChapterRole.displayName) ?? ChapterRole.noRole), \(member.isActive ? String(localized: "Ativo") : String(localized: "Inativo"))")
         .accessibilityHint("Toque para ver detalhes do membro")
         .accessibilityAddTraits(.isButton)
         .padding(Spacing.md)

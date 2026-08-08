@@ -19,13 +19,7 @@ public final class CreateMemberViewModel {
     private let chapterId: UUID
     
     public var roles: [String] {
-        if isMason {
-            return ["Membro", "Consultor", "Presidente do Conselho"]
-        } else if isSenior {
-            return ["Membro", "Consultor"]
-        } else {
-            return ["Membro", "Mestre Conselheiro", "1º Conselheiro", "2º Conselheiro", "Escrivão", "Tesoureiro", "Hospitalário"]
-        }
+        ChapterRole.roles(isSenior: isSenior, isMason: isMason)
     }
     
     public var isValid: Bool {
@@ -36,7 +30,7 @@ public final class CreateMemberViewModel {
     
     public func updateRoleIfNeeded() {
         if !roles.contains(role) {
-            role = roles.first ?? "Membro"
+            role = roles.first ?? ChapterRole.member
         }
     }
     

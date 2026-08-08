@@ -8,23 +8,23 @@ struct OnboardingView: View {
     private let pages: [OnboardingPage] = [
         OnboardingPage(
             imageSystemName: "crown.fill",
-            title: "Gestão Descomplicada",
-            description: "Acompanhe e organize todas as informações do seu Capítulo em um único lugar, de forma intuitiva e eficiente."
+            title: String(localized: "Gestão Descomplicada"),
+            description: String(localized: "Acompanhe e organize todas as informações do seu Capítulo em um único lugar, de forma intuitiva e eficiente.")
         ),
         OnboardingPage(
             imageSystemName: "calendar.badge.clock",
-            title: "Calendário Inteligente",
-            description: "Nunca mais perca um evento. Confirme presença, veja detalhes e mantenha os irmãos sempre informados."
+            title: String(localized: "Calendário Inteligente"),
+            description: String(localized: "Nunca mais perca um evento. Confirme presença, veja detalhes e mantenha os irmãos sempre informados.")
         ),
         OnboardingPage(
             imageSystemName: "building.columns.fill",
-            title: "Comissões Ativas",
-            description: "Delegue tarefas e acompanhe o progresso de cada comissão em tempo real. O segredo do sucesso é a colaboração."
+            title: String(localized: "Comissões Ativas"),
+            description: String(localized: "Delegue tarefas e acompanhe o progresso de cada comissão em tempo real. O segredo do sucesso é a colaboração.")
         ),
         OnboardingPage(
             imageSystemName: "apple.intelligence",
-            title: "Análise Estratégica",
-            description: "Deixe que a nossa Inteligência Artificial analise seus dados e gere insights valiosos e ações recomendadas para o crescimento do seu Capítulo."
+            title: String(localized: "Análise Estratégica"),
+            description: String(localized: "Deixe que a nossa Inteligência Artificial analise seus dados e gere insights valiosos e ações recomendadas para o crescimento do seu Capítulo.")
         )
     ]
     

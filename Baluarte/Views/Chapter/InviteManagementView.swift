@@ -183,9 +183,9 @@ private struct InviteCard: View {
     }
 
     private var statusLabel: String {
-        if invite.isRevoked { return "Revogado" }
-        if invite.isExpired { return "Expirado" }
-        if invite.isExhausted { return "Esgotado" }
+        if invite.isRevoked { return String(localized: "Revogado") }
+        if invite.isExpired { return String(localized: "Expirado") }
+        if invite.isExhausted { return String(localized: "Esgotado") }
         return "Ativo"
     }
 
@@ -195,11 +195,11 @@ private struct InviteCard: View {
         if let maxUses = invite.maxUses {
             parts.append("\(invite.usesCount) de \(maxUses) usos")
         } else {
-            parts.append(invite.usesCount == 1 ? "1 uso" : "\(invite.usesCount) usos")
+            parts.append(invite.usesCount == 1 ? String(localized: "1 uso") : "\(invite.usesCount) usos")
         }
 
         if let expiresAt = invite.expiresAt {
-            let prefix = invite.isExpired ? "expirou em" : "vale até"
+            let prefix = invite.isExpired ? String(localized: "expirou em") : String(localized: "vale até")
             parts.append("\(prefix) \(expiresAt.formatted(.dateTime.day().month(.abbreviated)))")
         } else {
             parts.append("sem prazo")
@@ -220,7 +220,7 @@ private struct CreateInviteSheet: View {
                 Section {
                     Picker("Validade", selection: $viewModel.validity) {
                         ForEach(InviteManagementViewModel.Validity.allCases) { option in
-                            Text(option.rawValue).tag(option)
+                            Text(option.displayName).tag(option)
                         }
                     }
                 } header: {

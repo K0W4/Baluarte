@@ -2,8 +2,25 @@ import Foundation
 import NaturalLanguage
 
 struct MandatoryDay {
+    /// Forma canônica em português. É contra ela que o título do evento é comparado,
+    /// então traduzir este valor quebraria o casamento semântico.
     let name: String
     let month: Int
+
+    var displayName: String {
+        switch name {
+        case "Dia Devocional": return String(localized: "Dia Devocional")
+        case "Dia em Memória a Jacques DeMolay": return String(localized: "Dia em Memória a Jacques DeMolay")
+        case "Dia das Mães": return String(localized: "Dia das Mães")
+        case "Dia dos Pais": return String(localized: "Dia dos Pais")
+        case "Dia do Patriota": return String(localized: "Dia do Patriota")
+        case "Dia Educacional": return String(localized: "Dia Educacional")
+        case "Dia do Meu Governo": return String(localized: "Dia do Meu Governo")
+        case "Dia em Memória a Frank S. Land": return String(localized: "Dia em Memória a Frank S. Land")
+        case "Dia do Conforto": return String(localized: "Dia do Conforto")
+        default: return name
+        }
+    }
 }
 
 final class ChapterAnalysisService: ChapterAnalysisServiceProtocol {
@@ -25,7 +42,7 @@ final class ChapterAnalysisService: ChapterAnalysisServiceProtocol {
         MandatoryDay(name: "Dia Educacional", month: 10),
         MandatoryDay(name: "Dia do Meu Governo", month: 11),
         MandatoryDay(name: "Dia em Memória a Frank S. Land", month: 11),
-        MandatoryDay(name: "Dia DeMolay de Conforto", month: 12)
+        MandatoryDay(name: "Dia do Conforto", month: 12)
     ]
     
     func generateAnalysis(members: [Member], events: [Event], committees: [Committee]) async throws -> [RawAnalysis] {
@@ -121,8 +138,8 @@ final class ChapterAnalysisService: ChapterAnalysisServiceProtocol {
                     category: .calendar,
                     severity: .warning,
                     contextData: ["upcomingEvent": mandatoryDay.name],
-                    fallbackTitle: "Dia Obrigatório Pendente",
-                    fallbackMessage: "O Capítulo ainda não tem um evento ou atividade planejada para o '\(mandatoryDay.name)' neste semestre."
+                    fallbackTitle: String(localized: "Dia Obrigatório Pendente"),
+                    fallbackMessage: String(format: String(localized: "O Capítulo ainda não tem um evento ou atividade planejada para o '%@' neste semestre."), mandatoryDay.displayName)
                 ))
             }
         }

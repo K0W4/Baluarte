@@ -10,6 +10,14 @@ public final class InviteManagementViewModel {
 
         public var id: String { rawValue }
 
+        public var displayName: String {
+            switch self {
+            case .week: return String(localized: "7 dias")
+            case .month: return String(localized: "30 dias")
+            case .never: return String(localized: "Sem prazo")
+            }
+        }
+
         public var expiryDate: Date? {
             switch self {
             case .week: return Calendar.current.date(byAdding: .day, value: 7, to: Date())

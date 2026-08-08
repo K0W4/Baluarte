@@ -6,6 +6,13 @@ public enum TasksFilterSegment: String, CaseIterable, Identifiable {
     case gerais = "Tarefas Gerais"
     case minhas = "Minhas Tarefas"
     public var id: String { rawValue }
+
+    public var displayName: String {
+        switch self {
+        case .gerais: return String(localized: "Tarefas Gerais")
+        case .minhas: return String(localized: "Minhas Tarefas")
+        }
+    }
 }
 
 @MainActor
@@ -138,7 +145,7 @@ public final class TasksViewModel {
     }
 
     public func committeeName(for id: UUID) -> String {
-        return committees.first(where: { $0.id == id })?.name ?? "Comissão"
+        return committees.first(where: { $0.id == id })?.name ?? String(localized: "Comissão")
     }
 
     public func deleteTask(task: ChapterTask) async {

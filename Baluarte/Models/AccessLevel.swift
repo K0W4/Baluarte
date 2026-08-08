@@ -15,9 +15,9 @@ public enum AccessLevel: String, Codable, Hashable, Sendable, CaseIterable, Comp
 
     public var displayName: String {
         switch self {
-        case .member: return "Membro"
-        case .admin: return "Administrador"
-        case .owner: return "Fundador"
+        case .member: return String(localized: "Membro")
+        case .admin: return String(localized: "Administrador")
+        case .owner: return String(localized: "Fundador")
         }
     }
 

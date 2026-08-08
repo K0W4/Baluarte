@@ -7,9 +7,9 @@ public enum ChapterStatus: String, Codable, Hashable, Sendable, CaseIterable {
 
     public var displayName: String {
         switch self {
-        case .active: return "Ativo"
-        case .dormant: return "Dormente"
-        case .pendingReview: return "Em análise"
+        case .active: return String(localized: "Ativo")
+        case .dormant: return String(localized: "Dormente")
+        case .pendingReview: return String(localized: "Em análise")
         }
     }
 }

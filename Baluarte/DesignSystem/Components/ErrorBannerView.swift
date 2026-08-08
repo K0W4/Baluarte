@@ -70,7 +70,7 @@ public struct ErrorBannerView: View {
     VStack {
         Spacer()
         ErrorBannerView(
-            message: "Não foi possível carregar os dados. Verifique sua conexão.",
+            message: String(localized: "Não foi possível carregar os dados. Verifique sua conexão."),
             onRetry: {},
             onDismiss: {}
         )

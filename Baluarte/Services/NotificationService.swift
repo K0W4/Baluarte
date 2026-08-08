@@ -37,7 +37,7 @@ public struct NotificationService: @unchecked Sendable {
     
     public func scheduleEventReminder(for eventName: String, date: Date, eventId: String) {
         let content = UNMutableNotificationContent()
-        content.title = "Evento se aproximando!"
+        content.title = String(localized: "Evento se aproximando!")
         
         // UX Copy: Welcoming, Motivating
         let copies = [

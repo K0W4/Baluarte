@@ -49,7 +49,7 @@ public struct CreateMemberView: View {
                 Section {
                     Picker("Cargo", selection: $viewModel.role) {
                         ForEach(viewModel.roles, id: \.self) { role in
-                            Text(role).tag(role)
+                            Text(ChapterRole.displayName(for: role)).tag(role)
                         }
                     }
                     

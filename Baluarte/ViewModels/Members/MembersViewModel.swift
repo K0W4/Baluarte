@@ -9,6 +9,15 @@ public enum MembersFilter: String, CaseIterable, Identifiable {
     case macons = "Maçons"
 
     public var id: String { self.rawValue }
+
+    public var displayName: String {
+        switch self {
+        case .todos: return String(localized: "Todos")
+        case .ativos: return String(localized: "Ativos")
+        case .seniors: return String(localized: "Sêniors")
+        case .macons: return String(localized: "Maçons")
+        }
+    }
 }
 
 @MainActor

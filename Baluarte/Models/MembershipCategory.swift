@@ -7,9 +7,9 @@ public enum MembershipCategory: String, Codable, Hashable, Sendable, CaseIterabl
 
     public var displayName: String {
         switch self {
-        case .ativo: return "Ativo"
-        case .senior: return "Sênior"
-        case .macom: return "Maçom"
+        case .ativo: return String(localized: "Ativo")
+        case .senior: return String(localized: "Sênior")
+        case .macom: return String(localized: "Maçom")
         }
     }
 

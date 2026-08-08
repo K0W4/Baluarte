@@ -27,7 +27,7 @@ struct EmailAuthView: View {
 
     private var emailWarning: String? {
         guard !trimmedEmail.isEmpty, !isEmailValid else { return nil }
-        return "Digite um e-mail válido, como nome@exemplo.com."
+        return String(localized: "Digite um e-mail válido, como nome@exemplo.com.")
     }
 
     private var passwordWarning: String? {
@@ -37,7 +37,7 @@ struct EmailAuthView: View {
 
     private var confirmWarning: String? {
         guard isSignUp, !confirmPassword.isEmpty, password != confirmPassword else { return nil }
-        return "As senhas não coincidem."
+        return String(localized: "As senhas não coincidem.")
     }
 
     private var canSubmit: Bool {
@@ -217,7 +217,7 @@ struct EmailAuthView: View {
             resetConfirmation = nil
             let sent = await authViewModel.sendPasswordReset(to: trimmedEmail)
             if sent {
-                resetConfirmation = "Se houver uma conta com esse e-mail, enviamos um link para redefinir a senha."
+                resetConfirmation = String(localized: "Se houver uma conta com esse e-mail, enviamos um link para redefinir a senha.")
             }
             isLoading = false
             HapticManager.shared.notification(type: sent ? .success : .error)

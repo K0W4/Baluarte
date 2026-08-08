@@ -1,17 +1,17 @@
 import SwiftUI
 
 public struct SectionHeaderView: View {
-    public let title: String
+    public let title: LocalizedStringKey
     public let actionIcon: String?
-    public let actionLabel: String?
-    public let actionHint: String?
+    public let actionLabel: LocalizedStringKey?
+    public let actionHint: LocalizedStringKey?
     public let action: (() -> Void)?
     
     public init(
-        title: String,
+        title: LocalizedStringKey,
         actionIcon: String? = "plus",
-        actionLabel: String? = nil,
-        actionHint: String? = nil,
+        actionLabel: LocalizedStringKey? = nil,
+        actionHint: LocalizedStringKey? = nil,
         action: (() -> Void)? = nil
     ) {
         self.title = title

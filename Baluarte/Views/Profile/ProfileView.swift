@@ -43,11 +43,11 @@ struct ProfileView: View {
                         .listRowSeparator(.hidden)
                         
                         Section {
-                            ProfileInfoRow(icon: "shield.fill", title: "Nível de Acesso", value: authViewModel.accessLevel.displayName)
+                            ProfileInfoRow(icon: "shield.fill", title: String(localized: "Nível de Acesso"), value: authViewModel.accessLevel.displayName)
                             if let birthdate = profile?.birthdate {
                                 ProfileInfoRow(icon: "calendar", title: "Data de Nascimento", value: birthdate.formatted(.dateTime.day().month(.twoDigits).year()))
                             }
-                            ProfileInfoRow(icon: "star.fill", title: "Cargo", value: authViewModel.activeMembership?.role ?? "Sem Cargo")
+                            ProfileInfoRow(icon: "star.fill", title: "Cargo", value: authViewModel.activeMembership?.role.map(ChapterRole.displayName) ?? ChapterRole.noRole)
                         } header: {
                             Text("Informações")
                         }
@@ -73,15 +73,15 @@ struct ProfileView: View {
                             Section {
                                 ProfileNavigationRow(
                                     icon: "person.badge.clock",
-                                    title: "Solicitações de entrada",
-                                    hint: "Abre a fila de quem pediu para entrar no Capítulo"
+                                    title: String(localized: "Solicitações de entrada"),
+                                    hint: String(localized: "Abre a fila de quem pediu para entrar no Capítulo")
                                 ) { showJoinRequests = true }
                                 .requires(.reviewJoinRequests)
 
                                 ProfileNavigationRow(
                                     icon: "ticket",
                                     title: "Convites",
-                                    hint: "Gera um código para alguém entrar direto no Capítulo"
+                                    hint: String(localized: "Gera um código para alguém entrar direto no Capítulo")
                                 ) { showInvites = true }
                                 .requires(.manageInvites)
                             } header: {

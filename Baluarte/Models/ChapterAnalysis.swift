@@ -68,11 +68,11 @@ struct ConsolidatedInsight: Identifiable, Hashable {
 
     var title: String {
         switch category {
-        case .membership: return "Membros e Iniciação"
-        case .structure: return "Estrutura e Comissões"
-        case .calendar: return "Calendário e Eventos"
-        case .engagement: return "Engajamento e Frequência"
-        case .financial: return "Planejamento Financeiro"
+        case .membership: return String(localized: "Membros e Iniciação")
+        case .structure: return String(localized: "Estrutura e Comissões")
+        case .calendar: return String(localized: "Calendário e Eventos")
+        case .engagement: return String(localized: "Engajamento e Frequência")
+        case .financial: return String(localized: "Planejamento Financeiro")
         }
     }
 

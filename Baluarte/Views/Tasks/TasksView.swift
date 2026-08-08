@@ -21,7 +21,7 @@ public struct TasksView: View {
                 VStack(spacing: 0) {
                     Picker("Filtro", selection: $viewModel.selectedSegment) {
                         ForEach(TasksFilterSegment.allCases) { segment in
-                            Text(segment.rawValue).tag(segment)
+                            Text(segment.displayName).tag(segment)
                         }
                     }
                     .pickerStyle(.segmented)
@@ -55,7 +55,7 @@ public struct TasksView: View {
                                 let counts = viewModel.progressCounts
                                 if counts.total > 0 || viewModel.isLoading {
                                     TaskProgressCard(
-                                        title: viewModel.selectedSegment == .minhas ? "Meu Progresso" : "Progresso Geral",
+                                        title: viewModel.selectedSegment == .minhas ? String(localized: "Meu Progresso") : String(localized: "Progresso Geral"),
                                         completed: counts.completed,
                                         total: counts.total
                                     )
@@ -120,7 +120,7 @@ public struct TasksView: View {
                     )
                 }
             }
-            .toast(isPresented: $showToast, message: "Tarefa atualizada com sucesso!")
+            .toast(isPresented: $showToast, message: String(localized: "Tarefa atualizada com sucesso!"))
         }
     }
 
@@ -148,7 +148,7 @@ public struct TasksView: View {
                         }
                     }
                 } header: {
-                    collapsibleHeader(title: "Tarefas Individuais", isExpanded: $isIndividualExpanded)
+                    collapsibleHeader(title: String(localized: "Tarefas Individuais"), isExpanded: $isIndividualExpanded)
                 }
                 .listRowInsets(EdgeInsets())
                 .listRowSeparator(.hidden)
@@ -167,7 +167,7 @@ public struct TasksView: View {
                             }
                         }
                     } header: {
-                        let title = viewModel.isLoading ? "Carregando comissão..." : viewModel.committeeName(for: committeeId)
+                        let title = viewModel.isLoading ? String(localized: "Carregando comissão...") : viewModel.committeeName(for: committeeId)
                         Button(action: {
                             withAnimation {
                                 if collapsedCommittees.contains(committeeId) {
