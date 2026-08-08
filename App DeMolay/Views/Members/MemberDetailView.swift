@@ -4,6 +4,7 @@ public struct MemberDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel: MemberDetailViewModel
     @State private var showingDeleteAlert = false
+    @State private var showingTransferAlert = false
     @State private var isEditing = false
     
     public init(member: Member) {
@@ -69,6 +70,30 @@ public struct MemberDetailView: View {
                 }
                 .disabled(!isEditing)
                 
+                if viewModel.canChangeAccessLevel {
+                    Section {
+                        Picker("Nível de acesso", selection: Binding(
+                            get: { viewModel.accessLevel },
+                            set: { level in Task { _ = await viewModel.setAccessLevel(level) } }
+                        )) {
+                            Text(AccessLevel.member.displayName).tag(AccessLevel.member)
+                            Text(AccessLevel.admin.displayName).tag(AccessLevel.admin)
+                        }
+
+                        if viewModel.canReceiveOwnership {
+                            Button("Transferir posse do Capítulo") {
+                                showingTransferAlert = true
+                            }
+                            .foregroundColor(Theme.textPrimary)
+                        }
+                    } header: {
+                        Text("Acesso")
+                    } footer: {
+                        Text("Administrador cria e edita eventos, metas, comissões e o roster, e aprova entradas. O cargo acima é descritivo e muda a cada gestão — este nível não muda junto.")
+                    }
+                    .requires(.manageAdmins)
+                }
+
                 if viewModel.canDelete {
                     Section {
                         Button(action: {
@@ -147,6 +172,20 @@ public struct MemberDetailView: View {
                         .requires(.manageRoster)
                     }
                 }
+            }
+            .alert("Transferir posse?", isPresented: $showingTransferAlert) {
+                Button("Cancelar", role: .cancel) { }
+                Button("Transferir", role: .destructive) {
+                    Task {
+                        let ok = await viewModel.transferOwnership()
+                        if ok {
+                            HapticManager.shared.notification(type: .success)
+                            dismiss()
+                        }
+                    }
+                }
+            } message: {
+                Text("Esta pessoa passa a ser o Fundador do Capítulo e você vira administrador. Só o novo Fundador poderá devolver a posse.")
             }
             .alert("Excluir membro", isPresented: $showingDeleteAlert) {
                 Button("Cancelar", role: .cancel) { showingDeleteAlert = false }

@@ -59,6 +59,8 @@ supabase db push
 
 `Member` is deliberately **not** the person — it is the roster projection the UI lists, decoded from the `chapter_roster` view.
 
+**Owner is transferred, never promoted.** `set_membership_access_level` moves people between `member` and `admin` and explicitly refuses `owner` in either direction; `transfer_chapter_ownership` is the single path to that role and moves both rows in one statement. Both are owner-only and live in RPCs because `access_level` is never granted to `authenticated`.
+
 **A chapter with no owner is bootstrapped by the platform, not by the chapter.** Every other door needs someone already inside, so the first person through sends a `join_request` with `kind = 'chapter_bootstrap'` and a proof image in the private `bootstrap-proof` bucket (path `{auth.uid()}/{uuid}.jpg`, which is what the Storage policies check). `is_platform_admin` reviews it through `pending_bootstrap_requests` — the one read in the app that deliberately spans chapters — and approval always grants `owner`. `chapter.has_owner` drives the fork in `ChapterSelectionView`, and both the insert policy and the approval refuse a chapter that already has one.
 
 **Roster deletion is limited to entries nobody claimed.** `chapter_roster.has_account` says whether a membership has a `member_id`; only rows without one can be deleted (`cm_delete_admin`), because erasing a real person's bond would take their attendance, tasks and committees with it. Someone with an account leaves on their own through `leave_chapter`.

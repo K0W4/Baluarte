@@ -16,6 +16,7 @@ public final class MemberDetailViewModel {
     public var errorMessage: String? = nil
     
     private let memberService: MemberServiceProtocol
+    private let membershipService: MembershipServiceProtocol
     private var member: Member
     
     public var roles: [String] {
@@ -34,6 +35,52 @@ public final class MemberDetailViewModel {
     public var canDelete: Bool { !member.hasAccount }
 
     public var hasAccount: Bool { member.hasAccount }
+
+    public private(set) var accessLevel: AccessLevel
+
+    /// O Fundador não é promovido, é transferido — assim existe exatamente um caminho
+    /// para esse papel, e ele passa por uma confirmação explícita.
+    public var canChangeAccessLevel: Bool { member.hasAccount && accessLevel != .owner }
+
+    public var canReceiveOwnership: Bool { member.hasAccount && accessLevel != .owner }
+
+    @MainActor
+    public func setAccessLevel(_ level: AccessLevel) async -> Bool {
+        guard level != accessLevel else { return true }
+
+        let previous = accessLevel
+        accessLevel = level
+        isLoading = true
+        errorMessage = nil
+
+        do {
+            try await membershipService.setAccessLevel(membershipId: member.id, level: level)
+            isLoading = false
+            return true
+        } catch {
+            accessLevel = previous
+            errorMessage = AppError.from(error).userMessage
+            isLoading = false
+            return false
+        }
+    }
+
+    @MainActor
+    public func transferOwnership() async -> Bool {
+        isLoading = true
+        errorMessage = nil
+
+        do {
+            try await membershipService.transferOwnership(toMembershipId: member.id)
+            accessLevel = .owner
+            isLoading = false
+            return true
+        } catch {
+            errorMessage = AppError.from(error).userMessage
+            isLoading = false
+            return false
+        }
+    }
 
     public var isValid: Bool {
         !fullName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
@@ -57,10 +104,16 @@ public final class MemberDetailViewModel {
         }
     }
     
-    public init(member: Member, memberService: MemberServiceProtocol = Services.member) {
+    public init(
+        member: Member,
+        memberService: MemberServiceProtocol = Services.member,
+        membershipService: MembershipServiceProtocol = Services.membership
+    ) {
         self.member = member
         self.memberService = memberService
-        
+        self.membershipService = membershipService
+        self.accessLevel = member.level
+
         self.fullName = member.fullName
         self.role = member.role ?? "Membro"
         self.isActive = member.isActive

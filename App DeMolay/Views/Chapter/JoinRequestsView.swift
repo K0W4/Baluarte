@@ -24,7 +24,7 @@ struct JoinRequestsView: View {
                         LazyVStack(spacing: Spacing.sm) {
                             ForEach(viewModel.requests) { pending in
                                 JoinRequestRow(pending: pending) {
-                                    viewModel.resetForm()
+                                    viewModel.resetForm(for: pending)
                                     reviewing = pending
                                 }
                             }
@@ -192,6 +192,21 @@ private struct ReviewJoinRequestSheet: View {
                         Text("Sugerido pelo cargo. O cargo muda a cada gestão — a permissão não muda sozinha junto, então confirme se é isso mesmo que você quer.")
                     } else {
                         Text("Cargo é descritivo. Quem administra o Capítulo no app é definido aqui, separadamente.")
+                    }
+                }
+
+                if !viewModel.unclaimedEntries.isEmpty {
+                    Section {
+                        Picker("Cadastro", selection: $viewModel.linkedMembershipId) {
+                            Text("Criar um novo").tag(UUID?.none)
+                            ForEach(viewModel.unclaimedEntries) { entry in
+                                Text(entry.fullName).tag(UUID?.some(entry.id))
+                            }
+                        }
+                    } header: {
+                        Text("Já existe na lista?")
+                    } footer: {
+                        Text("Se alguém já tinha cadastrado esta pessoa à mão, escolher o cadastro existente evita duplicar e preserva presenças, tarefas e comissões dela.")
                     }
                 }
 

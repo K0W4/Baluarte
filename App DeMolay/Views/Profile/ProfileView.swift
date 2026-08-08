@@ -52,6 +52,23 @@ struct ProfileView: View {
                             Text("Informações")
                         }
                         
+                        if authViewModel.memberships.count > 1 {
+                            Section {
+                                ForEach(authViewModel.memberships) { membership in
+                                    ChapterSwitchRow(
+                                        membership: membership,
+                                        isActive: membership.id == authViewModel.activeMembership?.id
+                                    ) {
+                                        Task { await authViewModel.switchChapter(to: membership) }
+                                    }
+                                }
+                            } header: {
+                                Text("Meus Capítulos")
+                            } footer: {
+                                Text("A dupla filiação permite dois Capítulos. O app mostra um de cada vez; toque para trocar.")
+                            }
+                        }
+
                         if let chapterId = authViewModel.currentChapterId {
                             Section {
                                 ProfileNavigationRow(
@@ -178,6 +195,40 @@ struct ProfileView: View {
                 message: authViewModel.errorMessage ?? ""
             )
         }
+    }
+}
+
+struct ChapterSwitchRow: View {
+    let membership: ChapterMembership
+    let isActive: Bool
+    let onSelect: () -> Void
+
+    var body: some View {
+        Button(action: {
+            guard !isActive else { return }
+            HapticManager.shared.impact(style: .light)
+            onSelect()
+        }) {
+            HStack(spacing: Spacing.md) {
+                Image(systemName: isActive ? "checkmark.circle.fill" : "circle")
+                    .foregroundColor(isActive ? Theme.accent : Theme.textSecondary)
+                    .frame(width: 24)
+
+                VStack(alignment: .leading, spacing: Spacing.xxs) {
+                    Text(membership.fullName)
+                        .foregroundColor(Theme.textPrimary)
+
+                    Text(membership.role ?? membership.accessLevel.displayName)
+                        .font(Typography.footnote)
+                        .foregroundColor(Theme.textSecondary)
+                }
+
+                Spacer()
+            }
+        }
+        .disabled(isActive)
+        .accessibilityAddTraits(isActive ? [.isButton, .isSelected] : .isButton)
+        .accessibilityHint(isActive ? "Capítulo aberto no momento" : "Toca duas vezes para abrir este Capítulo")
     }
 }
 

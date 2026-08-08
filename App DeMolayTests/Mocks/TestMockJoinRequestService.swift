@@ -15,6 +15,7 @@ public final class TestMockJoinRequestService: JoinRequestServiceProtocol {
 
     public private(set) var lastApprovedAccessLevel: AccessLevel?
     public private(set) var lastApprovedRole: String?
+    public private(set) var lastLinkedMembershipId: UUID?
 
     public init() {}
 
@@ -49,10 +50,11 @@ public final class TestMockJoinRequestService: JoinRequestServiceProtocol {
         }
     }
 
-    public func approve(requestId: UUID, accessLevel: AccessLevel, category: MembershipCategory, role: String?) async throws {
+    public func approve(requestId: UUID, accessLevel: AccessLevel, category: MembershipCategory, role: String?, linkMembershipId: UUID?) async throws {
         approveCallCount += 1
         lastApprovedAccessLevel = accessLevel
         lastApprovedRole = role
+        lastLinkedMembershipId = linkMembershipId
         if shouldThrowError {
             throw NSError(domain: "TestMockJoinRequestService", code: 5, userInfo: [NSLocalizedDescriptionKey: "Failed to approve"])
         }

@@ -319,6 +319,32 @@ public final class AuthViewModel {
         }
     }
 
+    /// Dupla filiação: o schema é N:N desde a Fase 0, mas até aqui a interface só
+    /// mostrava um vínculo. `active_chapter_id` é o que decide qual está aberto.
+    @MainActor
+    public func switchChapter(to membership: ChapterMembership) async {
+        guard case let .authenticated(user, profile) = self.state,
+              let profile,
+              membership.id != activeMembership?.id else { return }
+
+        errorMessage = nil
+        do {
+            try await profileService.updateActiveChapter(memberId: user.id, chapterId: membership.chapterId)
+
+            var updatedProfile = profile
+            updatedProfile.activeChapterId = membership.chapterId
+
+            self.activeMembership = membership
+            self.state = .authenticated(user, updatedProfile)
+            self.activeChapter = try await chapterService.fetchChapter(id: membership.chapterId)
+
+            let session = try await authService.getCurrentSession()
+            syncSharedState(session: session)
+        } catch {
+            errorMessage = AppError.from(error).userMessage
+        }
+    }
+
     @MainActor
     public func leaveChapter() async {
         guard case let .authenticated(user, profile) = self.state,

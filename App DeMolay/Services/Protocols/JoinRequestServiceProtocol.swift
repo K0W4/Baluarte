@@ -5,7 +5,9 @@ public protocol JoinRequestServiceProtocol {
     func fetchMyPendingRequest(memberId: UUID) async throws -> JoinRequest?
     func fetchPendingRequests(for chapterId: UUID) async throws -> [PendingJoinRequest]
     func cancelRequest(id: UUID) async throws
-    func approve(requestId: UUID, accessLevel: AccessLevel, category: MembershipCategory, role: String?) async throws
+    /// `linkMembershipId` reaproveita um cadastro de roster feito à mão em vez de criar
+    /// um segundo "João Silva" na lista.
+    func approve(requestId: UUID, accessLevel: AccessLevel, category: MembershipCategory, role: String?, linkMembershipId: UUID?) async throws
     func reject(requestId: UUID, reason: String?) async throws
 
     // MARK: - Bootstrap (Capítulo sem Fundador)

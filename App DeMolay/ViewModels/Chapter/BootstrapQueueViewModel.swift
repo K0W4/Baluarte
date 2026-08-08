@@ -45,7 +45,8 @@ public final class BootstrapQueueViewModel {
                 requestId: request.id,
                 accessLevel: .owner,
                 category: .ativo,
-                role: nil
+                role: nil,
+                linkMembershipId: nil
             )
             requests.removeAll { $0.id == request.id }
             return true

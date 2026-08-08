@@ -28,6 +28,7 @@ public final class SupabaseJoinRequestService: JoinRequestServiceProtocol {
         let p_access_level: String
         let p_category: String
         let p_role: String?
+        let p_link_membership_id: UUID?
     }
 
     private struct RejectParams: Encodable {
@@ -166,13 +167,14 @@ public final class SupabaseJoinRequestService: JoinRequestServiceProtocol {
             .execute()
     }
 
-    public func approve(requestId: UUID, accessLevel: AccessLevel, category: MembershipCategory, role: String?) async throws {
+    public func approve(requestId: UUID, accessLevel: AccessLevel, category: MembershipCategory, role: String?, linkMembershipId: UUID?) async throws {
         try await client
             .rpc("approve_join_request", params: ApproveParams(
                 p_request_id: requestId,
                 p_access_level: accessLevel.rawValue,
                 p_category: category.rawValue,
-                p_role: role
+                p_role: role,
+                p_link_membership_id: linkMembershipId
             ))
             .execute()
         WidgetManager.shared.reloadTimelines()
