@@ -85,27 +85,21 @@ struct BootstrapRequestView: View {
             }
 
             Section {
+                // O rótulo do seletor é um closure @Sendable, então ele recebe um texto
+                // pronto: ler o ViewModel lá dentro seria tocar um @MainActor de fora dele.
+                let pickerTitle = viewModel.proofImage == nil
+                    ? String(localized: "Escolher comprovante")
+                    : String(localized: "Trocar comprovante")
+
                 PhotosPicker(selection: $photoItem, matching: .images) {
-                    HStack(spacing: Spacing.md) {
-                        Image(systemName: viewModel.proofImage == nil ? "camera" : "checkmark.circle.fill")
-                            .foregroundColor(viewModel.proofImage == nil ? Theme.accent : Theme.success)
-                            .frame(width: 24)
-
-                        Text(viewModel.proofImage == nil ? "Escolher comprovante" : "Comprovante anexado")
-                            .foregroundColor(Theme.textPrimary)
-
-                        Spacer()
-
-                        if let image = viewModel.proofImage {
-                            Image(uiImage: image)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 44, height: 44)
-                                .clipShape(RoundedRectangle(cornerRadius: 6))
-                        }
-                    }
+                    Label(pickerTitle, systemImage: "camera")
+                        .foregroundColor(Theme.textPrimary)
                 }
                 .frame(minHeight: Spacing.minTouchTarget)
+
+                if let proof = viewModel.proofImage {
+                    ProofPreviewRow(proof: proof)
+                }
             } header: {
                 Text("Comprovante")
             } footer: {
@@ -140,6 +134,30 @@ struct BootstrapRequestView: View {
             } else {
                 HapticManager.shared.notification(type: .error)
             }
+        }
+    }
+}
+
+private struct ProofPreviewRow: View {
+    let proof: UIImage
+
+    var body: some View {
+        HStack(spacing: Spacing.md) {
+            Image(systemName: "checkmark.circle.fill")
+                .foregroundColor(Theme.success)
+                .frame(width: 24)
+
+            Text("Comprovante anexado")
+                .foregroundColor(Theme.textPrimary)
+
+            Spacer()
+
+            Image(uiImage: proof)
+                .resizable()
+                .scaledToFill()
+                .frame(width: 44, height: 44)
+                .clipShape(RoundedRectangle(cornerRadius: 6))
+                .accessibilityHidden(true)
         }
     }
 }

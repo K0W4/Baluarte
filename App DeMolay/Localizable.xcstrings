@@ -7590,6 +7590,22 @@
           }
         }
       }
+    },
+    "Trocar comprovante": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Replace proof"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cambiar comprobante"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

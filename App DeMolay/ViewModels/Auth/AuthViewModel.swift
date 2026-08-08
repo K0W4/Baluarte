@@ -124,13 +124,15 @@ public final class AuthViewModel {
     /// Supabase refreshes the access token on its own schedule. Without this the widget
     /// keeps reading whatever token was written at sign-in and goes stale within the hour.
     private func observeAuthStateChanges() {
-        authStateTask = Task { [weak self] in
+        // @MainActor explícito: `syncSharedState` já é isolado nele, e deixar a
+        // isolação implícita fazia o compilador apontar um `await` sem efeito.
+        authStateTask = Task { @MainActor [weak self] in
             for await (event, session) in SupabaseManager.shared.client.auth.authStateChanges {
                 guard let self else { return }
                 switch event {
                 case .tokenRefreshed, .signedIn, .initialSession:
                     if let session {
-                        await self.syncSharedState(session: session)
+                        self.syncSharedState(session: session)
                     }
                 case .signedOut:
                     UserDefaultsManager.shared.clearSession()
