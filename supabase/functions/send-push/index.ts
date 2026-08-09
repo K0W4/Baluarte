@@ -84,6 +84,20 @@ Deno.serve(async () => {
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
   );
 
+  // Assinado antes de olhar a fila, de propósito: com a fila vazia esta função
+  // retornaria sem tocar a chave, e uma chave malformada só apareceria na primeira
+  // notificação real -- provavelmente de madrugada, provavelmente sem ninguém
+  // olhando. Assim uma chamada de saúde já prova que ela assina.
+  let jwt: string;
+  try {
+    jwt = await apnsToken(keyId, teamId, privateKey);
+  } catch (e) {
+    return Response.json(
+      { error: "APNs key is not usable", detail: String(e) },
+      { status: 500 },
+    );
+  }
+
   const { data: pending, error } = await supabase
     .from("notification_outbox")
     .select("id, member_id, kind, title_key, body_key, body_args, attempts")
@@ -95,7 +109,6 @@ Deno.serve(async () => {
   if (error) return Response.json({ error: error.message }, { status: 500 });
   if (!pending?.length) return Response.json({ sent: 0, pending: 0 });
 
-  const jwt = await apnsToken(keyId, teamId, privateKey);
   let sent = 0;
   let dropped = 0;
 
