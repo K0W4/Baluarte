@@ -9,6 +9,10 @@ public protocol AuthServiceProtocol {
     func getCurrentSession() async throws -> Session
     func deleteAccount() async throws
     func sendPasswordReset(email: String) async throws
+    /// Troca o link do e-mail por uma sessão. Sem isto o token não vira nada, e a
+    /// pessoa fica diante de uma tela que não consegue salvar.
+    func completePasswordRecovery(from url: URL) async throws
+    func updatePassword(_ newPassword: String) async throws
 }
 
 public class AuthService: AuthServiceProtocol {
@@ -46,6 +50,16 @@ public class AuthService: AuthServiceProtocol {
     }
 
     public func sendPasswordReset(email: String) async throws {
-        try await client.auth.resetPasswordForEmail(email)
+        // Sem redirectTo o Supabase cai no Site URL do projeto, que não tem para onde
+        // apontar: não há domínio. O scheme do próprio app é o destino.
+        try await client.auth.resetPasswordForEmail(email, redirectTo: DeepLink.passwordRecoveryURL)
+    }
+
+    public func completePasswordRecovery(from url: URL) async throws {
+        _ = try await client.auth.session(from: url)
+    }
+
+    public func updatePassword(_ newPassword: String) async throws {
+        _ = try await client.auth.update(user: UserAttributes(password: newPassword))
     }
 }

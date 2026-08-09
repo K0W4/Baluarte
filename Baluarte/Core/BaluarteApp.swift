@@ -21,8 +21,14 @@ struct BaluarteApp: App {
                     }
                 }
                 .onOpenURL { url in
-                    guard case let .invite(code) = DeepLink(url: url) else { return }
-                    authViewModel.pendingInviteCode = code
+                    switch DeepLink(url: url) {
+                    case let .invite(code):
+                        authViewModel.pendingInviteCode = code
+                    case let .passwordRecovery(url):
+                        Task { await authViewModel.beginPasswordRecovery(from: url) }
+                    case nil:
+                        break
+                    }
                 }
         }
     }
