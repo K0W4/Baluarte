@@ -22,6 +22,10 @@ public final class AuthViewModel {
     public var state: AuthState = .loading
     public var errorMessage: String?
 
+    /// Sobreposto a qualquer rota: quem chega por um link de recuperação pode estar
+    /// deslogado, dentro do app, ou parado na fila de aprovação.
+    public var isSettingNewPassword = false
+
     public private(set) var memberships: [ChapterMembership] = []
     public private(set) var activeMembership: ChapterMembership?
     public private(set) var pendingRequest: JoinRequest?
@@ -134,6 +138,8 @@ public final class AuthViewModel {
                     if let session {
                         self.syncSharedState(session: session)
                     }
+                case .passwordRecovery:
+                    self.isSettingNewPassword = true
                 case .signedOut:
                     UserDefaultsManager.shared.clearSession()
                 default:
@@ -292,6 +298,31 @@ public final class AuthViewModel {
     }
 
     @MainActor
+    public func beginPasswordRecovery(from url: URL) async {
+        errorMessage = nil
+        do {
+            try await authService.completePasswordRecovery(from: url)
+            isSettingNewPassword = true
+        } catch {
+            // O link expira e só pode ser usado uma vez. Dizer isso é mais útil do
+            // que a mensagem do servidor, que fala de token.
+            errorMessage = String(localized: "Este link de recuperação expirou ou já foi usado. Peça um novo.")
+        }
+    }
+
+    @MainActor
+    public func setNewPassword(_ newPassword: String) async -> Bool {
+        errorMessage = nil
+        do {
+            try await authService.updatePassword(newPassword)
+            isSettingNewPassword = false
+            return true
+        } catch {
+            errorMessage = AppError.from(error).userMessage
+            return false
+        }
+    }
+
     public func sendPasswordReset(to email: String) async -> Bool {
         errorMessage = nil
         do {

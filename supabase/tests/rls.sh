@@ -17,6 +17,12 @@
 #   RLS_USER_B_EMAIL     alguém SEM vínculo com o Capítulo de A
 #   RLS_USER_B_PASSWORD
 #
+# Opcionais. Sem eles as sondas que precisam de um terceiro ator são puladas com
+# aviso, em vez de mentir que passaram:
+#
+#   RLS_USER_C_EMAIL     membro comum do Capítulo de A, fora de toda comissão
+#   RLS_USER_C_PASSWORD
+#
 # Uso:
 #   supabase/tests/rls.sh            roda a matriz
 #   supabase/tests/rls.sh -v         mostra o corpo de cada resposta
@@ -36,6 +42,12 @@
 #   probe_empty   confere 200 com coleção vazia. Sob RLS um SELECT sem permissão
 #                 devolve [] e não um erro -- conferir só o status daria verde num
 #                 vazamento.
+#   probe_count   confere 200 com um número exato de linhas. Serve para provar que
+#                 algo continua existindo depois de uma tentativa de apagar.
+#   probe_storage_write
+#                 grava no bucket privado com um mime que ele aceita. Sem isso a
+#                 requisição morre em 415 antes de a policy ser consultada, e a
+#                 sonda ficaria verde sem ter provado nada.
 
 set -uo pipefail
 
@@ -58,6 +70,7 @@ ANON="$BALUARTE_ANON_KEY"
 
 PASSED=0
 FAILED=0
+SKIPPED=0
 BODY="$(mktemp)"
 trap 'rm -f "$BODY"' EXIT
 
@@ -117,10 +130,49 @@ probe_raise() {
     flunk "$name" "esperava recusa, veio HTTP $status"
   elif [ "$got_code" != "$want_code" ]; then
     flunk "$name" "esperava SQLSTATE $want_code, veio '$got_code'"
-  elif [ "$got_hint" != "$want_hint" ]; then
+  elif [ "$want_hint" = "${want_hint%%:*}" ] && [ "${got_hint%%:*}" != "$want_hint" ]; then
+    # Sem ':' no esperado, compara só a chave: o caso parametrizado carrega o
+    # argumento no próprio hint (baluarte.last_owner_with_members:2).
+    flunk "$name" "SQLSTATE ok, mas hint era '$want_hint' e veio '$got_hint'"
+  elif [ "$want_hint" != "${want_hint%%:*}" ] && [ "$got_hint" != "$want_hint" ]; then
     flunk "$name" "SQLSTATE ok, mas hint era '$want_hint' e veio '$got_hint'"
   else
     pass "$name"
+  fi
+}
+
+# Uma sonda que não pôde rodar não é uma sonda que passou. Contada à parte e
+# anunciada no fim, para a ausência de cobertura não desaparecer no verde.
+skip() { printf '\033[33m%s\033[0m\n' "pulada  $1"; dim "        $2"; SKIPPED=$((SKIPPED + 1)); }
+
+probe_count() {
+  local name="$1" token="$2" path="$3" want="$4"
+  local code; code=$(curl -s -o "$BODY" -w '%{http_code}' "$URL$path" \
+                       -H "apikey: $ANON" -H "Authorization: Bearer $token")
+  local n; n=$(python3 -c '
+import json,sys
+try:
+    d = json.load(open(sys.argv[1]))
+    print(len(d) if isinstance(d, list) else -1)
+except Exception: print(-1)' "$BODY")
+
+  if [ "$code" = "200" ] && [ "$n" = "$want" ]; then pass "$name"
+  else flunk "$name" "esperava 200 com $want item(ns), veio HTTP $code com $n"; fi
+}
+
+# O bucket aceita apenas image/jpeg, png e heic. Sem o mime certo a requisição
+# morre em 415 antes de a policy ser consultada.
+probe_storage_write() {
+  local name="$1" token="$2" path="$3"
+  local code
+  code=$(printf '\xff\xd8\xff\xd9' | curl -s -o "$BODY" -w '%{http_code}' \
+           -X POST "$URL/storage/v1/object/bootstrap-proof/$path" \
+           -H "apikey: $ANON" -H "Authorization: Bearer $token" \
+           -H "Content-Type: image/jpeg" --data-binary @-)
+  if [ "${code:0:1}" != "2" ] && [ -n "$code" ]; then
+    pass "$name"
+  else
+    flunk "$name" "esperava recusa, veio HTTP $code — E UM OBJETO FOI CRIADO EM $path"
   fi
 }
 
@@ -248,7 +300,7 @@ probe_denied "B não se insere no Capítulo de A" "$TOKEN_B" POST \
 probe_raise "aprovação de solicitação inexistente" "$TOKEN_B" \
   "/rest/v1/rpc/approve_join_request" \
   '{"p_request_id":"00000000-0000-0000-0000-000000000000"}' \
-  P0002 "baluarte.request_not_found"
+  PT404 "baluarte.request_not_found"
 
 echo
 echo "— Registro de Capítulos é somente leitura —"
@@ -266,6 +318,41 @@ probe_empty "B não vê a fila de fundação" "$TOKEN_B" \
   "/rest/v1/rpc/pending_bootstrap_requests"
 
 echo
+echo "— Um Capítulo não fica órfão —"
+# A recusa é o comportamento correto e não escreve nada. Se um dia ela parar de
+# valer, o Capítulo perde o único Fundador e ninguém mais aprova ninguém, para
+# sempre -- é a falha silenciosa mais cara do modelo.
+probe_raise "último Fundador não sai deixando gente para trás" "$TOKEN_A" \
+  "/rest/v1/rpc/leave_chapter" "{\"p_chapter_id\":\"$A_CHAPTER\"}" \
+  23514 "baluarte.last_owner_with_members"
+
+echo
+echo "— Roster: só cadastros que ninguém reivindicou —"
+# Apagar o vínculo de quem tem conta levaria junto presenças, tarefas e comissões
+# dessa pessoa. A policy é `is_admin_of(chapter_id) and member_id is null`, e o
+# vínculo de A tem dono -- ele mesmo. O DELETE responde 204 porque não casa linha
+# alguma, e não porque apagou: por isso a contagem depois é que prova.
+probe_denied "delete de vínculo com conta não casa linha" "$TOKEN_A" DELETE \
+  "/rest/v1/chapter_membership?id=eq.$A_MEMBERSHIP" - 204
+probe_count "e o vínculo continua lá" "$TOKEN_A" \
+  "/rest/v1/chapter_membership?id=eq.$A_MEMBERSHIP&select=id" 1
+
+echo
+echo "— Comprovantes de fundação são privados —"
+# proof_insert_own exige (storage.foldername(name))[1] = auth.uid(). B tentando
+# gravar sob o caminho de A é a tentativa que a policy existe para barrar.
+#
+# O mime tem de ser um dos permitidos pelo bucket: mandar JSON leva a 415 antes de
+# a policy ser consultada, e a sonda passaria sem ter provado nada.
+#
+# Não há sonda de leitura aqui de propósito. Pedir um objeto inexistente devolve
+# 404 tanto se a policy negar quanto se ela permitir -- verde pelo motivo errado.
+# Provar a leitura exige um objeto que exista e um leitor que não seja nem o dono
+# nem administrador de plataforma, e esse terceiro ator não existe nesta matriz.
+probe_storage_write "B não grava sob o caminho de A" "$TOKEN_B" \
+  "$A_UID/sonda-rls.jpg"
+
+echo
 echo "— Imutabilidade do Capítulo de um registro —"
 
 probe_denied "não move um vínculo de Capítulo" "$TOKEN_A" PATCH \
@@ -273,10 +360,52 @@ probe_denied "não move um vínculo de Capítulo" "$TOKEN_A" PATCH \
   '{"chapter_id":"00000000-0000-0000-0000-000000000000"}'
 
 echo
+echo "— Escopo de comissão e dupla filiação —"
+# Estas duas exigem um terceiro ator: alguém DENTRO do Capítulo de A que não esteja
+# na comissão. B não serve -- ele está fora do Capítulo, e a fronteira entre
+# Capítulos já é testada acima. Sem C, a regra fica sem prova, e dizer isso é melhor
+# do que somar dois verdes que não significam nada.
+if [ -z "${RLS_USER_C_EMAIL:-}" ] || [ -z "${RLS_USER_C_PASSWORD:-}" ]; then
+  skip "tarefa de comissão alheia" "defina RLS_USER_C_EMAIL/PASSWORD: membro do Capítulo de A, fora de toda comissão"
+  skip "terceiro vínculo é recusado" "idem"
+else
+  TOKEN_C=$(sign_in "$RLS_USER_C_EMAIL" "$RLS_USER_C_PASSWORD") || { fail "login de C falhou"; exit 2; }
+  C_UID=$(subject_of "$TOKEN_C")
+
+  # Uma tarefa de comissão só é visível a quem está nela e aos administradores.
+  # Procura uma comissão de A que não tenha C, e uma tarefa dela.
+  read -r SCOPED_TASK <<<"$(curl -s \
+    "$URL/rest/v1/task?chapter_id=eq.$A_CHAPTER&committee_id=not.is.null&select=id,committee_id&limit=20" \
+    -H "apikey: $ANON" -H "Authorization: Bearer $TOKEN_A" \
+    | python3 -c '
+import json,sys
+d = json.load(sys.stdin)
+print(d[0]["id"] if d else "")')"
+
+  if [ -z "$SCOPED_TASK" ]; then
+    skip "tarefa de comissão alheia" "o Capítulo de A não tem nenhuma tarefa ligada a comissão"
+  else
+    probe_empty "C não lê tarefa de comissão que não é dele" "$TOKEN_C" \
+      "/rest/v1/task?id=eq.$SCOPED_TASK&select=id"
+  fi
+
+  # A trava de dupla filiação está num trigger, e só dispara num insert que passe
+  # pela policy. C pedindo entrada num terceiro Capítulo é barrado antes disso pela
+  # própria RLS, então o que dá para provar por HTTP é a recusa, não qual das duas
+  # camadas recusou -- e as duas precisam valer.
+  probe_denied "C não se insere em Capítulo por conta própria" "$TOKEN_C" POST \
+    "/rest/v1/chapter_membership" \
+    "{\"chapter_id\":\"$A_CHAPTER\",\"member_id\":\"$C_UID\",\"full_name\":\"Sonda RLS\",\"status\":\"active\"}"
+fi
+
+echo
 printf '%s\n' "─────────────────────────────"
+SUFFIX=""
+[ "$SKIPPED" -gt 0 ] && SUFFIX=" · $SKIPPED pulada(s)"
 if [ "$FAILED" -eq 0 ]; then
-  ok "$PASSED sondas passaram"
+  ok "$PASSED sondas passaram$SUFFIX"
+  [ "$SKIPPED" -gt 0 ] && dim "Puladas não são aprovadas: essas regras seguem sem prova."
   exit 0
 fi
-fail "$PASSED passaram · $FAILED FALHARAM"
+fail "$PASSED passaram · $FAILED FALHARAM$SUFFIX"
 exit 1
