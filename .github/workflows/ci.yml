@@ -103,4 +103,15 @@ jobs:
           RLS_USER_A_PASSWORD: ${{ secrets.RLS_USER_A_PASSWORD }}
           RLS_USER_B_EMAIL: ${{ secrets.RLS_USER_B_EMAIL }}
           RLS_USER_B_PASSWORD: ${{ secrets.RLS_USER_B_PASSWORD }}
-        run: supabase/tests/rls.sh
+        run: |
+          # As contas de teste podem ainda não existir. Falhar por isso deixaria o CI
+          # vermelho por um motivo que não é defeito do código, e um vermelho
+          # permanente é um vermelho que ninguém lê. Avisa e passa -- mas o aviso
+          # fica no resumo da execução, para a ausência de cobertura não sumir.
+          if [ -z "${RLS_USER_A_EMAIL:-}" ] || [ -z "${RLS_USER_B_EMAIL:-}" ]; then
+            echo "::warning title=Sondas de RLS não rodaram::Faltam os secrets das contas de teste (RLS_USER_A_* e RLS_USER_B_*). As políticas do banco não foram verificadas nesta execução."
+            echo "### ⚠️ Sondas de RLS puladas" >> "$GITHUB_STEP_SUMMARY"
+            echo "As contas de teste não estão configuradas, então as políticas do banco não foram verificadas." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          supabase/tests/rls.sh
