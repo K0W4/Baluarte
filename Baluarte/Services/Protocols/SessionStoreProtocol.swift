@@ -5,6 +5,10 @@ import Foundation
 /// protocolo aqui é o que permite instanciar o `AuthViewModel` num teste sem tocar
 /// UserDefaults reais nem recarregar timeline de widget.
 public protocol SessionStoreProtocol {
-    func save(userId: UUID?, chapterId: UUID?, membershipId: UUID?, accessToken: String, refreshToken: String)
+    func save(
+        userId: UUID?, chapterId: UUID?, membershipId: UUID?,
+        chapters: [WidgetChapter],
+        accessToken: String, refreshToken: String
+    )
     func clear()
 }

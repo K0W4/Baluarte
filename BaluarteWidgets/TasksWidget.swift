@@ -13,21 +13,25 @@ struct TasksProvider: AppIntentTimelineProvider {
     }
     
     func timeline(for configuration: ConfigurationAppIntent, in context: Context) async -> Timeline<TasksEntry> {
+        let membershipId = configuration.chapter?.id.uuidString
         var fetchedTasks: [ChapterTask] = []
         var fetchError: String? = nil
+
         do {
-            fetchedTasks = try await WidgetDataManager.shared.fetchPendingTasks()
+            fetchedTasks = try await WidgetDataManager.shared.fetchPendingTasks(membershipId: membershipId)
         } catch {
             fetchError = error.localizedDescription
-            print("Widget Error: \(error)")
-
-            fetchedTasks = WidgetDataManager.shared.cachedTasks() ?? []
+            fetchedTasks = WidgetDataManager.shared.cachedTasks(membershipId: membershipId) ?? []
         }
 
-        let totalCount = fetchedTasks.count
-        let entry = TasksEntry(date: Date(), tasks: Array(fetchedTasks.prefix(3)), totalPendingCount: totalCount, errorMessage: fetchError, configuration: configuration)
-        let nextUpdate = Calendar.current.date(byAdding: .minute, value: 15, to: Date())!
-        return Timeline(entries: [entry], policy: .after(nextUpdate))
+        let entry = TasksEntry(
+            date: Date(),
+            tasks: Array(fetchedTasks.prefix(3)),
+            totalPendingCount: fetchedTasks.count,
+            errorMessage: fetchError,
+            configuration: configuration
+        )
+        return Timeline(entries: [entry], policy: .after(EventProvider.nextRefresh))
     }
 }
 
@@ -48,33 +52,32 @@ struct TasksWidgetEntryView : View {
     var body: some View {
         VStack(alignment: .leading, spacing: family == .systemSmall ? 8 : 16) {
             HStack(alignment: .center) {
-                Text("Tarefas")
+                Text(entry.configuration.chapter?.name ?? String(localized: "Tarefas"))
                     .font(.subheadline)
                     .fontWeight(.bold)
                     .foregroundColor(.accent)
-                
+                    .lineLimit(1)
+
                 Spacer()
-                
-                Text("\(entry.totalPendingCount)")
-                    .font(.subheadline)
-                    .fontWeight(.bold)
-                    .foregroundColor(.primary)
-            }
-            
-            if entry.tasks.isEmpty {
-                HStack(spacing: 8) {
-                    if family == .systemMedium {
-                        Image(systemName: "checklist.checked")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                    }
-                    
-                    Text("Todas as tarefas concluídas")
+
+                if entry.errorMessage != nil && !entry.tasks.isEmpty {
+                    StaleDataBadge()
+                } else {
+                    Text("\(entry.totalPendingCount)")
                         .font(.subheadline)
-                        .foregroundColor(.secondary)
+                        .fontWeight(.bold)
+                        .foregroundColor(.primary)
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-        
+            }
+
+            if entry.tasks.isEmpty {
+                // Dizer "todas as tarefas concluídas" quando a leitura falhou é elogiar
+                // alguém por trabalho que talvez esteja todo pendente.
+                WidgetPlaceholder(
+                    icon: entry.errorMessage == nil ? "checklist.checked" : "exclamationmark.triangle",
+                    message: entry.errorMessage ?? String(localized: "Todas as tarefas concluídas"),
+                    showsIcon: family == .systemMedium
+                )
             } else {
                 VStack(alignment: .leading, spacing: family == .systemSmall ? 8 : 16) {
                     ForEach(entry.tasks) { task in

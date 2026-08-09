@@ -72,10 +72,12 @@
 		9353B4013012817900D754B7 /* Exceptions for "Baluarte" folder in "BaluarteWidgetsExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Core/ServerMessage.swift,
 				Core/SupabaseSecrets.swift,
 				Models/ChapterTask.swift,
 				Models/Event.swift,
 				Models/SupabaseDate.swift,
+				Models/WidgetChapter.swift,
 			);
 			target = 9353B3DD30127E2F00D754B7 /* BaluarteWidgetsExtension */;
 		};

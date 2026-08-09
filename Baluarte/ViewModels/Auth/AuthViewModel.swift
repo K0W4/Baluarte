@@ -31,6 +31,11 @@ public final class AuthViewModel {
     public private(set) var pendingRequest: JoinRequest?
     public private(set) var pendingRequestChapter: Chapter?
     public private(set) var activeChapter: Chapter?
+
+    /// Todo Capítulo em que a pessoa tem vínculo, não só o aberto. O widget precisa dos
+    /// dois para deixar escolher, e a troca de Capítulo no perfil listava dois vínculos
+    /// sem dizer o nome de nenhum.
+    public private(set) var chaptersById: [UUID: Chapter] = [:]
     public private(set) var rejectedRequest: JoinRequest?
     public private(set) var rejectedRequestChapter: Chapter?
 
@@ -38,6 +43,24 @@ public final class AuthViewModel {
     public var pendingInviteCode: String?
 
     public var activeChapterName: String { activeChapter?.name ?? "seu Capítulo" }
+
+    public func chapterName(for membership: ChapterMembership) -> String? {
+        chaptersById[membership.chapterId]?.name
+    }
+
+    /// O que atravessa o app group. Um vínculo cujo Capítulo não pôde ser resolvido
+    /// fica de fora em vez de entrar sem nome: uma opção em branco no seletor é pior do
+    /// que uma opção a menos.
+    public var sharedChapters: [WidgetChapter] {
+        memberships.compactMap { membership in
+            guard let chapter = chaptersById[membership.chapterId] else { return nil }
+            return WidgetChapter(
+                membershipId: membership.id,
+                chapterId: membership.chapterId,
+                name: chapter.name
+            )
+        }
+    }
 
     public var currentChapterId: UUID? { activeMembership?.chapterId }
 
@@ -124,6 +147,7 @@ public final class AuthViewModel {
             userId: currentUserId,
             chapterId: currentChapterId,
             membershipId: currentMembershipId,
+            chapters: sharedChapters,
             accessToken: session.accessToken,
             refreshToken: session.refreshToken
         )
@@ -170,11 +194,15 @@ public final class AuthViewModel {
             self.pendingRequestChapter = nil
             self.rejectedRequest = nil
             self.rejectedRequestChapter = nil
-            self.activeChapter = try await chapterService.fetchChapter(id: activeMembership.chapterId)
+
+            let active = try await chapterService.fetchChapter(id: activeMembership.chapterId)
+            self.activeChapter = active
+            self.chaptersById = await resolveChapters(for: fetched, startingFrom: active)
             return
         }
 
         self.activeChapter = nil
+        self.chaptersById = [:]
 
         // Sem vínculo, a pessoa está escolhendo um Capítulo, esperando resposta, ou
         // acabou de ser recusada. Qual dos três decide a rota inteira — e a recusa é o
@@ -200,6 +228,26 @@ public final class AuthViewModel {
         } else {
             nil
         }
+    }
+
+    /// O Capítulo aberto já veio, e falhar nele derruba a sessão — é o nome que a tela
+    /// inteira usa. Os outros são `try?`: perder o nome do segundo Capítulo custa uma
+    /// opção no seletor, e não vale trocar o login de alguém por isso.
+    @MainActor
+    private func resolveChapters(
+        for memberships: [ChapterMembership],
+        startingFrom active: Chapter?
+    ) async -> [UUID: Chapter] {
+        var resolved: [UUID: Chapter] = [:]
+        if let active { resolved[active.id] = active }
+
+        for membership in memberships where resolved[membership.chapterId] == nil {
+            if let chapter = try? await chapterService.fetchChapter(id: membership.chapterId) {
+                resolved[chapter.id] = chapter
+            }
+        }
+
+        return resolved
     }
 
     @MainActor
@@ -244,6 +292,7 @@ public final class AuthViewModel {
         self.state = .unauthenticated
         self.memberships = []
         self.activeMembership = nil
+        self.chaptersById = [:]
         sessionStore.clear()
     }
 
@@ -411,7 +460,10 @@ public final class AuthViewModel {
 
             self.activeMembership = membership
             self.state = .authenticated(user, updatedProfile)
-            self.activeChapter = try await chapterService.fetchChapter(id: membership.chapterId)
+
+            let chapter = try await chapterService.fetchChapter(id: membership.chapterId)
+            self.activeChapter = chapter
+            if let chapter { self.chaptersById[chapter.id] = chapter }
 
             let session = try await authService.getCurrentSession()
             syncSharedState(session: session)
@@ -484,6 +536,7 @@ public final class AuthViewModel {
         self.state = .unauthenticated
         self.memberships = []
         self.activeMembership = nil
+        self.chaptersById = [:]
         sessionStore.clear()
     }
 
@@ -502,6 +555,7 @@ public final class AuthViewModel {
         self.state = .unauthenticated
         self.memberships = []
         self.activeMembership = nil
+        self.chaptersById = [:]
         sessionStore.clear()
     }
 }

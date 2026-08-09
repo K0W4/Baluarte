@@ -61,6 +61,7 @@ struct ProfileView: View {
                                 ForEach(authViewModel.memberships) { membership in
                                     ChapterSwitchRow(
                                         membership: membership,
+                                        chapterName: authViewModel.chapterName(for: membership),
                                         isActive: membership.id == authViewModel.activeMembership?.id
                                     ) {
                                         Task { await authViewModel.switchChapter(to: membership) }
@@ -242,6 +243,9 @@ struct ProfileView: View {
 
 struct ChapterSwitchRow: View {
     let membership: ChapterMembership
+    /// A lista mostrava o nome da pessoa nas duas linhas, que é o mesmo nos dois
+    /// vínculos — um seletor de Capítulo que não dizia o nome de Capítulo nenhum.
+    let chapterName: String?
     let isActive: Bool
     let onSelect: () -> Void
 
@@ -257,10 +261,10 @@ struct ChapterSwitchRow: View {
                     .frame(width: 24)
 
                 VStack(alignment: .leading, spacing: Spacing.xxs) {
-                    Text(membership.fullName)
+                    Text(chapterName ?? membership.fullName)
                         .foregroundColor(Theme.textPrimary)
 
-                    Text(membership.role ?? membership.accessLevel.displayName)
+                    Text(membership.role.map(ChapterRole.displayName) ?? membership.accessLevel.displayName)
                         .font(Typography.footnote)
                         .foregroundColor(Theme.textSecondary)
                 }
