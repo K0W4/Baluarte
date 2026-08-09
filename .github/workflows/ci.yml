@@ -87,13 +87,13 @@ jobs:
           # Idioma fixo, e de propósito não é o do código-fonte: um teste que compare
           # contra uma frase em português passa em pt-BR mesmo estando errado. Em
           # inglês ele quebra, que é o que queremos que aconteça aqui e não em produção.
-          # UITests ficam de fora do PR: quase todo o tempo do job era
-          # testLaunchPerformance medindo lançamento várias vezes, o que não diz nada
-          # sobre o commit. Eles rodam pelo workflow_dispatch, quando alguém quiser.
+          # Os UITests voltaram ao PR. Estavam de fora porque testLaunchPerformance
+          # media lançamento várias vezes e dominava o job -- ele não existe mais, e o
+          # que ficou abre o app com serviços determinísticos, sem rede e sem sessão
+          # real, então não há o que ficar intermitente.
           xcodebuild -scheme Baluarte \
             -destination 'platform=iOS Simulator,name=iPhone 17' \
             -testLanguage en -testRegion US \
-            -skip-testing:BaluarteUITests \
             -resultBundlePath TestResults.xcresult \
             test
 

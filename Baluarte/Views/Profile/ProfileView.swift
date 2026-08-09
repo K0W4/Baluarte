@@ -53,6 +53,7 @@ struct ProfileView: View {
                                 Label("Plataforma", systemImage: "globe.americas")
                             }
                             .frame(minHeight: Spacing.minTouchTarget)
+                            .accessibilityIdentifier("profile.platform")
                         } footer: {
                             Text("Filas de fundação e de Capítulos solicitados, e quem administra a plataforma.")
                         }
@@ -66,6 +67,7 @@ struct ProfileView: View {
                                 .foregroundColor(Theme.textPrimary)
                         }
                         .frame(minHeight: Spacing.minTouchTarget)
+                        .accessibilityIdentifier("profile.signOut")
 
                         Button(role: .destructive) {
                             showDeleteAccountAlert = true
@@ -73,6 +75,7 @@ struct ProfileView: View {
                             Text("Excluir conta")
                         }
                         .frame(minHeight: Spacing.minTouchTarget)
+                        .accessibilityIdentifier("profile.deleteAccount")
                     } header: {
                         Text("Ações da Conta")
                     }

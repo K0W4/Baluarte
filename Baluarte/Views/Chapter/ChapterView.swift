@@ -91,6 +91,7 @@ struct ChapterView: View {
             }
         } header: {
             Text("Meus Capítulos")
+                .accessibilityIdentifier("chapter.switcher")
         } footer: {
             Text("A dupla filiação permite dois Capítulos. O app mostra um de cada vez; toque para trocar.")
         }
@@ -103,6 +104,7 @@ struct ChapterView: View {
                 title: String(localized: "Solicitações de entrada"),
                 hint: String(localized: "Abre a fila de quem pediu para entrar no Capítulo")
             ) { showJoinRequests = true }
+            .accessibilityIdentifier("chapter.joinRequests")
             .requires(.reviewJoinRequests)
 
             ProfileNavigationRow(
@@ -110,6 +112,7 @@ struct ChapterView: View {
                 title: String(localized: "Convites"),
                 hint: String(localized: "Gera um código para alguém entrar direto no Capítulo")
             ) { showInvites = true }
+            .accessibilityIdentifier("chapter.invites")
             .requires(.manageInvites)
 
             ProfileNavigationRow(
@@ -117,6 +120,7 @@ struct ChapterView: View {
                 title: String(localized: "Histórico de acesso"),
                 hint: String(localized: "Mostra quem promoveu, rebaixou ou transferiu a posse, e quando")
             ) { showAccessLog = true }
+            .accessibilityIdentifier("chapter.accessLog")
             .requires(.viewAccessLog)
         } header: {
             Text("Administração")
@@ -144,6 +148,7 @@ struct ChapterView: View {
                 Text("Sair do Capítulo")
             }
             .frame(minHeight: Spacing.minTouchTarget)
+            .accessibilityIdentifier("chapter.leave")
         } footer: {
             Text("Sair não apaga o que você registrou aqui: presenças, tarefas e comissões continuam com o Capítulo.")
         }
@@ -171,6 +176,7 @@ struct ChapterIdentityHeader: View {
                 .padding(.bottom, Spacing.xxs)
 
             Text(chapter.name)
+                .accessibilityIdentifier("chapter.name")
                 .font(Typography.title2)
                 .foregroundColor(Theme.textPrimary)
                 .multilineTextAlignment(.center)

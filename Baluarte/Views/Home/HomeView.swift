@@ -119,6 +119,7 @@ public struct HomeView: View {
                             .foregroundColor(Theme.accent)
                             .accessibilityLabel("Meu Capítulo")
                     }
+                    .accessibilityIdentifier("home.chapter")
                 }
 
                 // Sem o espaçador os dois caem na mesma cápsula e leem como um
@@ -132,6 +133,7 @@ public struct HomeView: View {
                             .foregroundColor(Theme.accent)
                             .accessibilityLabel("Meu perfil")
                     }
+                    .accessibilityIdentifier("home.profile")
                 }
             }
             .tint(Theme.accent)
