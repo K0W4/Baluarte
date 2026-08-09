@@ -8,6 +8,7 @@ public final class TestMockSessionStore: SessionStoreProtocol, @unchecked Sendab
         public let userId: UUID?
         public let chapterId: UUID?
         public let membershipId: UUID?
+        public let chapters: [WidgetChapter]
         public let accessToken: String
         public let refreshToken: String
     }
@@ -19,9 +20,11 @@ public final class TestMockSessionStore: SessionStoreProtocol, @unchecked Sendab
 
     public func save(
         userId: UUID?, chapterId: UUID?, membershipId: UUID?,
+        chapters: [WidgetChapter],
         accessToken: String, refreshToken: String
     ) {
         saves.append(Saved(userId: userId, chapterId: chapterId, membershipId: membershipId,
+                           chapters: chapters,
                            accessToken: accessToken, refreshToken: refreshToken))
     }
 

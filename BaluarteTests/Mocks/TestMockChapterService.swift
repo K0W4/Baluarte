@@ -5,6 +5,12 @@ public final class TestMockChapterService: ChapterServiceProtocol {
     public var shouldThrowError = false
     public var chaptersToReturn: [Chapter] = []
     public var chapterToReturn: Chapter?
+
+    /// Devolver sempre o mesmo Capítulo esconderia justamente o caso da dupla
+    /// filiação, em que dois vínculos apontam para Capítulos diferentes.
+    public var chaptersById: [UUID: Chapter] = [:]
+
+    public private(set) var fetchedChapterIds: [UUID] = []
     public var pendingRequestsToReturn: [PendingChapterRequest] = []
 
     public private(set) var reviewedRequests: [(id: UUID, approved: Bool, reason: String?)] = []
@@ -24,8 +30,9 @@ public final class TestMockChapterService: ChapterServiceProtocol {
     }
 
     public func fetchChapter(id: UUID) async throws -> Chapter? {
+        fetchedChapterIds.append(id)
         try failIfNeeded(2)
-        return chapterToReturn
+        return chaptersById[id] ?? chapterToReturn
     }
 
     public func requestChapter(_ request: ChapterRequest) async throws {
