@@ -9,7 +9,7 @@ on:
   # ref é outra, e as duas conferem exatamente o mesmo commit. O que protege o main
   # é o PR passar antes de mesclar.
   pull_request:
-    branches: [main]
+    branches: [main, dev]
   workflow_dispatch:
 
 concurrency:
@@ -26,7 +26,7 @@ jobs:
     timeout-minutes: 45
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Xcode disponível
         run: |
@@ -67,9 +67,13 @@ jobs:
           # Idioma fixo, e de propósito não é o do código-fonte: um teste que compare
           # contra uma frase em português passa em pt-BR mesmo estando errado. Em
           # inglês ele quebra, que é o que queremos que aconteça aqui e não em produção.
+          # UITests ficam de fora do PR: quase todo o tempo do job era
+          # testLaunchPerformance medindo lançamento várias vezes, o que não diz nada
+          # sobre o commit. Eles rodam pelo workflow_dispatch, quando alguém quiser.
           xcodebuild -scheme Baluarte \
             -destination 'platform=iOS Simulator,name=iPhone 17' \
             -testLanguage en -testRegion US \
+            -skip-testing:BaluarteUITests \
             -resultBundlePath TestResults.xcresult \
             test
 
@@ -96,7 +100,7 @@ jobs:
     if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # As sondas só leem ou tentam escrever esperando recusa, então rodar contra o
       # projeto real não deixa rastro. É de propósito: um banco de teste com outras
@@ -109,6 +113,10 @@ jobs:
           RLS_USER_A_PASSWORD: ${{ secrets.RLS_USER_A_PASSWORD }}
           RLS_USER_B_EMAIL: ${{ secrets.RLS_USER_B_EMAIL }}
           RLS_USER_B_PASSWORD: ${{ secrets.RLS_USER_B_PASSWORD }}
+          # Opcionais: sem eles as duas sondas que precisam de um terceiro ator são
+          # puladas com aviso, em vez de somarem verdes que não provam nada.
+          RLS_USER_C_EMAIL: ${{ secrets.RLS_USER_C_EMAIL }}
+          RLS_USER_C_PASSWORD: ${{ secrets.RLS_USER_C_PASSWORD }}
         run: |
           # As contas de teste podem ainda não existir. Falhar por isso deixaria o CI
           # vermelho por um motivo que não é defeito do código, e um vermelho

@@ -17,6 +17,12 @@
 #   RLS_USER_B_EMAIL     alguém SEM vínculo com o Capítulo de A
 #   RLS_USER_B_PASSWORD
 #
+# Opcionais. Sem eles as sondas que precisam de um terceiro ator são puladas com
+# aviso, em vez de mentir que passaram:
+#
+#   RLS_USER_C_EMAIL     membro comum do Capítulo de A, fora de toda comissão
+#   RLS_USER_C_PASSWORD
+#
 # Uso:
 #   supabase/tests/rls.sh            roda a matriz
 #   supabase/tests/rls.sh -v         mostra o corpo de cada resposta
@@ -64,6 +70,7 @@ ANON="$BALUARTE_ANON_KEY"
 
 PASSED=0
 FAILED=0
+SKIPPED=0
 BODY="$(mktemp)"
 trap 'rm -f "$BODY"' EXIT
 
@@ -133,6 +140,10 @@ probe_raise() {
     pass "$name"
   fi
 }
+
+# Uma sonda que não pôde rodar não é uma sonda que passou. Contada à parte e
+# anunciada no fim, para a ausência de cobertura não desaparecer no verde.
+skip() { printf '\033[33m%s\033[0m\n' "pulada  $1"; dim "        $2"; SKIPPED=$((SKIPPED + 1)); }
 
 probe_count() {
   local name="$1" token="$2" path="$3" want="$4"
@@ -349,10 +360,52 @@ probe_denied "não move um vínculo de Capítulo" "$TOKEN_A" PATCH \
   '{"chapter_id":"00000000-0000-0000-0000-000000000000"}'
 
 echo
+echo "— Escopo de comissão e dupla filiação —"
+# Estas duas exigem um terceiro ator: alguém DENTRO do Capítulo de A que não esteja
+# na comissão. B não serve -- ele está fora do Capítulo, e a fronteira entre
+# Capítulos já é testada acima. Sem C, a regra fica sem prova, e dizer isso é melhor
+# do que somar dois verdes que não significam nada.
+if [ -z "${RLS_USER_C_EMAIL:-}" ] || [ -z "${RLS_USER_C_PASSWORD:-}" ]; then
+  skip "tarefa de comissão alheia" "defina RLS_USER_C_EMAIL/PASSWORD: membro do Capítulo de A, fora de toda comissão"
+  skip "terceiro vínculo é recusado" "idem"
+else
+  TOKEN_C=$(sign_in "$RLS_USER_C_EMAIL" "$RLS_USER_C_PASSWORD") || { fail "login de C falhou"; exit 2; }
+  C_UID=$(subject_of "$TOKEN_C")
+
+  # Uma tarefa de comissão só é visível a quem está nela e aos administradores.
+  # Procura uma comissão de A que não tenha C, e uma tarefa dela.
+  read -r SCOPED_TASK <<<"$(curl -s \
+    "$URL/rest/v1/task?chapter_id=eq.$A_CHAPTER&committee_id=not.is.null&select=id,committee_id&limit=20" \
+    -H "apikey: $ANON" -H "Authorization: Bearer $TOKEN_A" \
+    | python3 -c '
+import json,sys
+d = json.load(sys.stdin)
+print(d[0]["id"] if d else "")')"
+
+  if [ -z "$SCOPED_TASK" ]; then
+    skip "tarefa de comissão alheia" "o Capítulo de A não tem nenhuma tarefa ligada a comissão"
+  else
+    probe_empty "C não lê tarefa de comissão que não é dele" "$TOKEN_C" \
+      "/rest/v1/task?id=eq.$SCOPED_TASK&select=id"
+  fi
+
+  # A trava de dupla filiação está num trigger, e só dispara num insert que passe
+  # pela policy. C pedindo entrada num terceiro Capítulo é barrado antes disso pela
+  # própria RLS, então o que dá para provar por HTTP é a recusa, não qual das duas
+  # camadas recusou -- e as duas precisam valer.
+  probe_denied "C não se insere em Capítulo por conta própria" "$TOKEN_C" POST \
+    "/rest/v1/chapter_membership" \
+    "{\"chapter_id\":\"$A_CHAPTER\",\"member_id\":\"$C_UID\",\"full_name\":\"Sonda RLS\",\"status\":\"active\"}"
+fi
+
+echo
 printf '%s\n' "─────────────────────────────"
+SUFFIX=""
+[ "$SKIPPED" -gt 0 ] && SUFFIX=" · $SKIPPED pulada(s)"
 if [ "$FAILED" -eq 0 ]; then
-  ok "$PASSED sondas passaram"
+  ok "$PASSED sondas passaram$SUFFIX"
+  [ "$SKIPPED" -gt 0 ] && dim "Puladas não são aprovadas: essas regras seguem sem prova."
   exit 0
 fi
-fail "$PASSED passaram · $FAILED FALHARAM"
+fail "$PASSED passaram · $FAILED FALHARAM$SUFFIX"
 exit 1
