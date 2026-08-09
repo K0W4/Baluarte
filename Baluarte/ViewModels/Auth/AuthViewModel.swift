@@ -81,6 +81,7 @@ public final class AuthViewModel {
     private let membershipService: MembershipServiceProtocol
     private let joinRequestService: JoinRequestServiceProtocol
     private let chapterService: ChapterServiceProtocol
+    private let sessionStore: SessionStoreProtocol
 
     private var authStateTask: Task<Void, Never>?
 
@@ -89,13 +90,15 @@ public final class AuthViewModel {
         profileService: ProfileServiceProtocol = Services.profile,
         membershipService: MembershipServiceProtocol = Services.membership,
         joinRequestService: JoinRequestServiceProtocol = Services.joinRequest,
-        chapterService: ChapterServiceProtocol = Services.chapter
+        chapterService: ChapterServiceProtocol = Services.chapter,
+        sessionStore: SessionStoreProtocol = Services.sessionStore
     ) {
         self.authService = authService
         self.profileService = profileService
         self.membershipService = membershipService
         self.joinRequestService = joinRequestService
         self.chapterService = chapterService
+        self.sessionStore = sessionStore
         Task {
             await checkSession()
         }
@@ -113,16 +116,17 @@ public final class AuthViewModel {
     @MainActor
     private func syncSharedState(session: Session?) {
         guard let session else {
-            UserDefaultsManager.shared.clearSession()
+            sessionStore.clear()
             return
         }
 
-        UserDefaultsManager.shared.currentUserId = currentUserId
-        UserDefaultsManager.shared.currentChapterId = currentChapterId
-        UserDefaultsManager.shared.currentMembershipId = currentMembershipId
-        UserDefaultsManager.shared.accessToken = session.accessToken
-        UserDefaultsManager.shared.refreshToken = session.refreshToken
-        WidgetManager.shared.reloadTimelines()
+        sessionStore.save(
+            userId: currentUserId,
+            chapterId: currentChapterId,
+            membershipId: currentMembershipId,
+            accessToken: session.accessToken,
+            refreshToken: session.refreshToken
+        )
     }
 
     /// Supabase refreshes the access token on its own schedule. Without this the widget
@@ -130,8 +134,11 @@ public final class AuthViewModel {
     private func observeAuthStateChanges() {
         // @MainActor explícito: `syncSharedState` já é isolado nele, e deixar a
         // isolação implícita fazia o compilador apontar um `await` sem efeito.
+        // O stream é capturado antes da Task: a propriedade cria um novo a cada
+        // acesso, e lê-la de dentro exigiria `self` antes do `guard let self`.
+        let changes = authService.authStateChanges
         authStateTask = Task { @MainActor [weak self] in
-            for await (event, session) in SupabaseManager.shared.client.auth.authStateChanges {
+            for await (event, session) in changes {
                 guard let self else { return }
                 switch event {
                 case .tokenRefreshed, .signedIn, .initialSession:
@@ -141,7 +148,7 @@ public final class AuthViewModel {
                 case .passwordRecovery:
                     self.isSettingNewPassword = true
                 case .signedOut:
-                    UserDefaultsManager.shared.clearSession()
+                    self.sessionStore.clear()
                 default:
                     break
                 }
@@ -237,7 +244,7 @@ public final class AuthViewModel {
         self.state = .unauthenticated
         self.memberships = []
         self.activeMembership = nil
-        UserDefaultsManager.shared.clearSession()
+        sessionStore.clear()
     }
 
     @MainActor
@@ -249,7 +256,7 @@ public final class AuthViewModel {
             self.state = .unauthenticated
             self.memberships = []
             self.activeMembership = nil
-            UserDefaultsManager.shared.clearSession()
+            sessionStore.clear()
         }
     }
 
@@ -477,7 +484,7 @@ public final class AuthViewModel {
         self.state = .unauthenticated
         self.memberships = []
         self.activeMembership = nil
-        UserDefaultsManager.shared.clearSession()
+        sessionStore.clear()
     }
 
     @MainActor
@@ -495,6 +502,6 @@ public final class AuthViewModel {
         self.state = .unauthenticated
         self.memberships = []
         self.activeMembership = nil
-        UserDefaultsManager.shared.clearSession()
+        sessionStore.clear()
     }
 }

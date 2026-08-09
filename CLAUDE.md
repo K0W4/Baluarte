@@ -85,7 +85,7 @@ Permission changes are proved by `supabase/tests/rls.sh`, not by the UI — the 
 
 **Column grants matter as much as RLS.** RLS is blind to columns: `access_level`, `approved_by` and `is_platform_admin` are never granted to `authenticated`, which is the only thing stopping self-promotion. Any service writing to `member` or `chapter_membership` must send a partial payload naming only granted columns — sending the whole `Codable` model gets a 403.
 
-**Dependency injection**: services flow into ViewModels via protocol-typed initializer params (default = real impl); `AuthViewModel` itself is injected into Views via `@Environment`, not passed down manually.
+**Dependency injection**: services flow into ViewModels via protocol-typed initializer params (default = real impl); `AuthViewModel` itself is injected into Views via `@Environment`, not passed down manually. That includes the two things that are not obviously services: `authStateChanges` lives on `AuthServiceProtocol` rather than being read from the Supabase client, and the app group plus Keychain live behind `SessionStoreProtocol` — without both, instantiating `AuthViewModel` in a test touches the network and writes real UserDefaults.
 
 **Navigation**: `NavigationStack` with value-based routes only — `NavigationView` is banned.
 

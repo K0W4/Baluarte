@@ -13,6 +13,13 @@ public protocol AuthServiceProtocol {
     /// pessoa fica diante de uma tela que não consegue salvar.
     func completePasswordRecovery(from url: URL) async throws
     func updatePassword(_ newPassword: String) async throws
+
+    /// O Supabase renova o access token no ritmo dele. Sem escutar isto, o widget
+    /// segue lendo o token gravado no login e envelhece dentro de uma hora.
+    ///
+    /// Está no protocolo, e não lido direto do cliente, porque era o que tornava o
+    /// `AuthViewModel` impossível de instanciar num teste sem rede.
+    var authStateChanges: AsyncStream<(event: AuthChangeEvent, session: Session?)> { get }
 }
 
 public class AuthService: AuthServiceProtocol {
@@ -61,5 +68,17 @@ public class AuthService: AuthServiceProtocol {
 
     public func updatePassword(_ newPassword: String) async throws {
         _ = try await client.auth.update(user: UserAttributes(password: newPassword))
+    }
+
+    public var authStateChanges: AsyncStream<(event: AuthChangeEvent, session: Session?)> {
+        AsyncStream { continuation in
+            let task = Task {
+                for await (event, session) in client.auth.authStateChanges {
+                    continuation.yield((event: event, session: session))
+                }
+                continuation.finish()
+            }
+            continuation.onTermination = { _ in task.cancel() }
+        }
     }
 }
