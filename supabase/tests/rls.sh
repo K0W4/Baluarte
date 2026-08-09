@@ -199,6 +199,7 @@ echo
 TOKEN_A=$(sign_in "$RLS_USER_A_EMAIL" "$RLS_USER_A_PASSWORD") || { fail "login de A falhou"; exit 2; }
 TOKEN_B=$(sign_in "$RLS_USER_B_EMAIL" "$RLS_USER_B_PASSWORD") || { fail "login de B falhou"; exit 2; }
 A_UID=$(subject_of "$TOKEN_A")
+B_UID=$(subject_of "$TOKEN_B")
 
 read -r A_MEMBERSHIP A_CHAPTER A_LEVEL <<<"$(curl -s \
   "$URL/rest/v1/chapter_membership?select=id,chapter_id,access_level&status=eq.active&member_id=eq.$A_UID&limit=1" \
@@ -231,11 +232,6 @@ probe_denied "não vira admin de plataforma" "$TOKEN_A" PATCH \
 echo
 echo "— RPCs de nível de acesso —"
 
-probe_raise "não altera o próprio nível" "$TOKEN_A" \
-  "/rest/v1/rpc/set_membership_access_level" \
-  "{\"p_membership_id\":\"$A_MEMBERSHIP\",\"p_access_level\":\"admin\"}" \
-  23514 "baluarte.cannot_change_own_access"
-
 probe_denied "B não promove no Capítulo de A" "$TOKEN_B" POST \
   "/rest/v1/rpc/set_membership_access_level" \
   "{\"p_membership_id\":\"$A_MEMBERSHIP\",\"p_access_level\":\"admin\"}"
@@ -246,6 +242,36 @@ probe_denied "B não transfere posse do Capítulo de A" "$TOKEN_B" POST \
 probe_raise "A não transfere posse para si mesmo" "$TOKEN_A" \
   "/rest/v1/rpc/transfer_chapter_ownership" "{\"p_to_membership_id\":\"$A_MEMBERSHIP\"}" \
   23514 "baluarte.already_owner"
+
+echo
+echo "— Acesso de plataforma: cadeia de confiança —"
+# A coluna is_platform_admin nunca é concedida a authenticated -- isso já é sondado
+# acima. Aqui é a RPC: só quem já tem o status concede a outro. Se B conseguisse,
+# ele aprovaria a fundação de qualquer Capítulo do país e tomaria posse dele.
+probe_denied "B não se torna admin de plataforma pela RPC" "$TOKEN_B" POST \
+  "/rest/v1/rpc/set_platform_admin" \
+  "{\"p_member_id\":\"$B_UID\",\"p_is_admin\":true}"
+
+probe_denied "B não concede status de plataforma a A" "$TOKEN_B" POST \
+  "/rest/v1/rpc/set_platform_admin" \
+  "{\"p_member_id\":\"$A_UID\",\"p_is_admin\":true}"
+
+probe_empty "B não lista os admins de plataforma" "$TOKEN_B" \
+  "/rest/v1/rpc/platform_admins"
+
+echo
+echo "— Auto-rebaixamento: descer sim, subir não —"
+# A assimetria é a regra inteira. A é Fundador, então as duas direções são recusadas
+# para ele -- mas por motivos diferentes, e é isso que as duas sondas separam.
+probe_raise "A não sobe o próprio acesso" "$TOKEN_A" \
+  "/rest/v1/rpc/set_membership_access_level" \
+  "{\"p_membership_id\":\"$A_MEMBERSHIP\",\"p_access_level\":\"owner\"}" \
+  23514 "baluarte.owner_needs_transfer"
+
+probe_raise "Fundador não se rebaixa, transfere" "$TOKEN_A" \
+  "/rest/v1/rpc/set_membership_access_level" \
+  "{\"p_membership_id\":\"$A_MEMBERSHIP\",\"p_access_level\":\"admin\"}" \
+  23514 "baluarte.owner_needs_transfer"
 
 echo
 echo "— Fronteira entre Capítulos —"

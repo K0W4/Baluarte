@@ -43,4 +43,29 @@ public final class TestMockMembershipService: MembershipServiceProtocol {
             throw NSError(domain: "TestMockMembershipService", code: 2, userInfo: [NSLocalizedDescriptionKey: "Failed to leave chapter"])
         }
     }
+
+    public var platformAdminsResult: [PlatformAdmin] = []
+    public var grantedCIDs: [String] = []
+    public var revokedMemberIds: [UUID] = []
+
+    public func platformAdmins() async throws -> [PlatformAdmin] {
+        if shouldThrowError {
+            throw NSError(domain: "TestMockMembershipService", code: 5, userInfo: [NSLocalizedDescriptionKey: "Failed to list platform admins"])
+        }
+        return platformAdminsResult
+    }
+
+    public func grantPlatformAdmin(cid: String) async throws {
+        if shouldThrowError {
+            throw NSError(domain: "TestMockMembershipService", code: 6, userInfo: [NSLocalizedDescriptionKey: "Failed to grant platform admin"])
+        }
+        grantedCIDs.append(cid)
+    }
+
+    public func revokePlatformAdmin(memberId: UUID) async throws {
+        if shouldThrowError {
+            throw NSError(domain: "TestMockMembershipService", code: 7, userInfo: [NSLocalizedDescriptionKey: "Failed to revoke platform admin"])
+        }
+        revokedMemberIds.append(memberId)
+    }
 }

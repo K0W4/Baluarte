@@ -100,3 +100,13 @@ Permission changes are proved by `supabase/tests/rls.sh`, not by the UI — the 
 - Unit tests cover ViewModels and Models only (business logic, data transforms, computed properties); Mocks under `BaluarteTests/Mocks/` must stay deterministic.
 - Git commit messages must be written in English following Conventional Commits (`feat:`, `fix:`, `refactor:`, `chore:`), even though chat/docs are in Portuguese (pt-BR).
 - Native-first: exhaust native iOS/SwiftUI APIs (EventKit, Foundation Models, AppIntents, WidgetKit) before adding any third-party SPM dependency.
+
+## Reporting back
+
+End every delivery with a short report, in this order and nothing else:
+
+1. **O que foi feito** — a few lines, not a narrative.
+2. **O que você precisa fazer** — numbered, only if something actually needs them. Say "nada" when nothing does.
+3. **Próximo passo** — one line.
+
+Detail belongs in the commit message and in the code comments, where it is read when it matters. Findings worth keeping go to the plan artifact, not into chat. Long explanations are only warranted when a decision changed, something failed, or a risk needs a decision — and even then, lead with the conclusion.
