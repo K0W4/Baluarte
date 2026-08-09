@@ -9,6 +9,7 @@ public enum Permission: Hashable, Sendable, CaseIterable {
     case manageInvites
     case manageAdmins
     case transferOwnership
+    case viewAccessLog
     case reviewChapterBootstrap
 }
 
@@ -33,7 +34,9 @@ public struct PermissionSet: Hashable, Sendable {
         case .manageEvents, .manageGoals, .manageCommittees,
              .manageRoster, .reviewJoinRequests, .manageInvites:
             return accessLevel >= .admin
-        case .manageAdmins, .transferOwnership:
+        // A auditoria fica com o Fundador, e não com todo administrador: ela conta
+        // quem rebaixou quem, e isso é assunto de quem responde pelo Capítulo.
+        case .manageAdmins, .transferOwnership, .viewAccessLog:
             return accessLevel == .owner
         case .reviewChapterBootstrap:
             return isPlatformAdmin

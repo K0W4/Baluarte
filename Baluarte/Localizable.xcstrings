@@ -11337,6 +11337,358 @@
           }
         }
       }
+    },
+    "Histórico de acesso": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Access history"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Historial de acceso"
+          }
+        }
+      }
+    },
+    "Histórico da plataforma": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Platform history"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Historial de la plataforma"
+          }
+        }
+      }
+    },
+    "Mostra quem promoveu, rebaixou ou transferiu a posse, e quando": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shows who promoted, demoted or transferred ownership, and when"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muestra quién ascendió, descendió o transfirió la propiedad, y cuándo"
+          }
+        }
+      }
+    },
+    "Mostra quem concedeu e quem revogou acesso de plataforma": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shows who granted and who revoked platform access"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muestra quién concedió y quién revocó el acceso de plataforma"
+          }
+        }
+      }
+    },
+    "Nada registrado ainda. Promoções, rebaixamentos, transferências de posse e convites retirados aparecem aqui.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing recorded yet. Promotions, demotions, ownership transfers and withdrawn invites show up here."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nada registrado todavía. Los ascensos, descensos, transferencias de propiedad e invitaciones retiradas aparecen aquí."
+          }
+        }
+      }
+    },
+    "Carregar mais": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Load more"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cargar más"
+          }
+        }
+      }
+    },
+    "O registro não pode ser editado nem apagado pelo app.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The record cannot be edited or deleted from the app."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El registro no puede editarse ni borrarse desde la app."
+          }
+        }
+      }
+    },
+    "%1$@ entrou como %2$@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ joined as %2$@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ entró como %2$@"
+          }
+        }
+      }
+    },
+    "%1$@ passou a %2$@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ became %2$@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ pasó a ser %2$@"
+          }
+        }
+      }
+    },
+    "%1$@ voltou a %2$@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ went back to %2$@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ volvió a ser %2$@"
+          }
+        }
+      }
+    },
+    "%@ recebeu a posse do Capítulo": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ received ownership of the Chapter"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ recibió la propiedad del Capítulo"
+          }
+        }
+      }
+    },
+    "%@ excluiu a conta e perdeu o acesso": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ deleted their account and lost access"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ eliminó su cuenta y perdió el acceso"
+          }
+        }
+      }
+    },
+    "%@ passou a administrar a plataforma": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ became a platform administrator"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ pasó a administrar la plataforma"
+          }
+        }
+      }
+    },
+    "%@ deixou de administrar a plataforma": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ is no longer a platform administrator"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ dejó de administrar la plataforma"
+          }
+        }
+      }
+    },
+    "Um convite foi revogado": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "An invite was revoked"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se revocó una invitación"
+          }
+        }
+      }
+    },
+    "Um convite foi excluído": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "An invite was deleted"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se eliminó una invitación"
+          }
+        }
+      }
+    },
+    "Mudança de acesso registrada": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Access change recorded"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cambio de acceso registrado"
+          }
+        }
+      }
+    },
+    "por %1$@ · %2$@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "by %1$@ · %2$@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "por %1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "por uma conta removida · %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "by a removed account · %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "por una cuenta eliminada · %@"
+          }
+        }
+      }
+    },
+    "pelo sistema · %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "by the system · %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "por el sistema · %@"
+          }
+        }
+      }
+    },
+    "Conta removida": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Removed account"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuenta eliminada"
+          }
+        }
+      }
+    },
+    "Sistema": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "System"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sistema"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
