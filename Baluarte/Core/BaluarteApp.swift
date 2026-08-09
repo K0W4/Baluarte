@@ -3,6 +3,8 @@ import SwiftUI
 
 @main
 struct BaluarteApp: App {
+    @UIApplicationDelegateAdaptor(PushRegistrar.self) private var pushRegistrar
+
     @State private var authViewModel = AuthViewModel()
     @AppStorage("isFirstLaunch") private var isFirstLaunch = true
 
@@ -15,6 +17,7 @@ struct BaluarteApp: App {
             RootView()
                 .environment(authViewModel)
                 .task {
+                    await PushRegistrar.shared.registerIfAuthorized()
                     if isFirstLaunch {
                         await authViewModel.signOut()
                         isFirstLaunch = false

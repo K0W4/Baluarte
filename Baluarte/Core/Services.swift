@@ -11,5 +11,6 @@ public struct Services {
     public nonisolated(unsafe) static let task: TaskServiceProtocol = SupabaseTaskService()
     public nonisolated(unsafe) static let committee: CommitteeServiceProtocol = SupabaseCommitteeService()
     public nonisolated(unsafe) static let chapter: ChapterServiceProtocol = ChapterService()
+    public nonisolated(unsafe) static let push: PushServiceProtocol = SupabasePushService()
     public static let intelligence: IntelligenceServiceProtocol = AppleIntelligenceService()
 }

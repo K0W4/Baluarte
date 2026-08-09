@@ -386,6 +386,29 @@ probe_denied "não move um vínculo de Capítulo" "$TOKEN_A" PATCH \
   '{"chapter_id":"00000000-0000-0000-0000-000000000000"}'
 
 echo
+echo "— Token de aparelho é do dono, e só dele —"
+# O token não autentica ninguém, mas identifica um aparelho. Ninguém além do dono
+# precisa lê-lo, e ninguém precisa listá-los.
+probe_denied "B não registra token em nome de A" "$TOKEN_B" POST \
+  "/rest/v1/device_token" \
+  "{\"token\":\"sonda-rls-$RANDOM\",\"member_id\":\"$A_UID\"}"
+
+probe_empty "B não lê tokens de A" "$TOKEN_B" \
+  "/rest/v1/device_token?member_id=eq.$A_UID&select=token"
+
+echo
+echo "— A fila de notificações não é do app —"
+# Sem policy alguma: quem consome é a Edge Function, com service_role. Um SELECT
+# daqui tem de voltar vazio, e um INSERT tem de ser recusado -- se alguém pudesse
+# enfileirar, mandaria push em nome do Baluarte para quem quisesse.
+probe_denied "ninguém enfileira notificação" "$TOKEN_A" POST \
+  "/rest/v1/notification_outbox" \
+  "{\"member_id\":\"$A_UID\",\"kind\":\"sonda\",\"title_key\":\"x\",\"body_key\":\"y\"}"
+
+probe_denied "ninguém lê a fila de notificações" "$TOKEN_A" GET \
+  "/rest/v1/notification_outbox?select=id" -
+
+echo
 echo "— Escopo de comissão e dupla filiação —"
 # Estas duas exigem um terceiro ator: alguém DENTRO do Capítulo de A que não esteja
 # na comissão. B não serve -- ele está fora do Capítulo, e a fronteira entre
