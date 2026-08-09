@@ -5,10 +5,12 @@ name: CI
 # alguém lembrava de rodar curl à mão -- que é a camada onde a falha é silenciosa.
 
 on:
-  push:
-    branches: ["**"]
+  # Só em pull request. Um gatilho de push dispara uma execução paralela, porque a
+  # ref é outra, e as duas conferem exatamente o mesmo commit. O que protege o main
+  # é o PR passar antes de mesclar.
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -62,8 +64,12 @@ jobs:
       - name: Testes
         run: |
           set -o pipefail
+          # Idioma fixo, e de propósito não é o do código-fonte: um teste que compare
+          # contra uma frase em português passa em pt-BR mesmo estando errado. Em
+          # inglês ele quebra, que é o que queremos que aconteça aqui e não em produção.
           xcodebuild -scheme Baluarte \
             -destination 'platform=iOS Simulator,name=iPhone 17' \
+            -testLanguage en -testRegion US \
             -resultBundlePath TestResults.xcresult \
             test
 
@@ -86,8 +92,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     # Um fork não recebe os secrets, e sem eles o script não tem o que sondar. Falhar
-    # aí seria ruído: a checagem que importa roda quando o commit chega ao repositório.
-    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+    # aí seria ruído.
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
 
     steps:
       - uses: actions/checkout@v4
