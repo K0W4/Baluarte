@@ -109,8 +109,12 @@ probe_raise() {
   local status; status=$(request "$token" POST "$path" "$body")
   local got_code got_hint; got_code=$(field code); got_hint=$(field hint)
 
-  if [ "${status:0:1}" != "4" ]; then
-    flunk "$name" "esperava recusa 4xx, veio HTTP $status"
+  # Basta não ser 2xx. O status é escolha do PostgREST, não nossa: 42501 vira 403,
+  # 23514 vira 400, e P0002 vira 500 -- um "não encontrado" saindo como erro de
+  # servidor, que é feio mas não é o contrato de que dependemos. O contrato é o
+  # SQLSTATE, que é o que AppError.from lê, e o hint, que carrega a mensagem.
+  if [ "${status:0:1}" = "2" ] || [ -z "$status" ]; then
+    flunk "$name" "esperava recusa, veio HTTP $status"
   elif [ "$got_code" != "$want_code" ]; then
     flunk "$name" "esperava SQLSTATE $want_code, veio '$got_code'"
   elif [ "$got_hint" != "$want_hint" ]; then
@@ -212,8 +216,19 @@ echo "— Convites —"
 
 probe_empty "B não enumera convites" "$TOKEN_B" "/rest/v1/chapter_invite?select=id"
 
-probe_denied "ninguém lê a coluna code" "$TOKEN_B" GET \
-  "/rest/v1/chapter_invite?select=code" -
+# `select` é concedido no nível da tabela, então `code` é uma coluna legível -- o que
+# impede enumerar é não haver policy de select para quem não é admin do Capítulo.
+# Pedir justamente essa coluna prova que nem assim sai linha.
+probe_empty "nem pedindo a coluna code sai linha" "$TOKEN_B" \
+  "/rest/v1/chapter_invite?select=code"
+
+# A proteção contra escolher o próprio código é o grant de insert omitir `code`, e é
+# por isso que ele nasce de um DEFAULT no servidor. A data no passado é cinto e
+# suspensório: se esta sonda um dia parar de ser recusada, o convite criado por
+# engano já nasce vencido.
+probe_denied "admin não escolhe o próprio código" "$TOKEN_A" POST \
+  "/rest/v1/chapter_invite" \
+  "{\"chapter_id\":\"$A_CHAPTER\",\"created_by\":\"$A_UID\",\"code\":\"SONDARLS\",\"expires_at\":\"2000-01-01T00:00:00Z\"}"
 
 probe_raise "resgate com código vazio é recusado" "$TOKEN_B" \
   "/rest/v1/rpc/redeem_chapter_invite" '{"p_code":""}' \
