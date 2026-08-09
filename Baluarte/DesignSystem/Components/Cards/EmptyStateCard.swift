@@ -7,6 +7,7 @@ public enum CardType {
     case member
     case task
     case chapter
+    case chapterRequests
 
     var icon: String {
         switch self {
@@ -16,6 +17,7 @@ public enum CardType {
         case .member: return "person.fill.xmark"
         case .task: return "checklist.checked"
         case .chapter: return "building.2.crop.circle"
+        case .chapterRequests: return "tray"
         }
     }
 
@@ -27,6 +29,7 @@ public enum CardType {
         case .member: return String(localized: "Nenhum membro encontrado")
         case .task: return String(localized: "Tudo em dia!")
         case .chapter: return String(localized: "Nenhum Capítulo cadastrado")
+        case .chapterRequests: return String(localized: "Nenhum Capítulo solicitado")
         }
     }
 
@@ -38,6 +41,7 @@ public enum CardType {
         case .member: return String(localized: "Adicione um membro e ele aparecerá aqui.")
         case .task: return String(localized: "Crie uma tarefa e ela aparecerá aqui.")
         case .chapter: return String(localized: "Crie o primeiro Capítulo para começar.")
+        case .chapterRequests: return String(localized: "Quando alguém não encontrar o Capítulo dele no catálogo, o pedido aparece aqui.")
         }
     }
 
@@ -49,6 +53,7 @@ public enum CardType {
         case .member: return String(localized: "Adicionar membro")
         case .task: return String(localized: "Criar tarefa")
         case .chapter: return String(localized: "Criar novo capítulo")
+        case .chapterRequests: return String(localized: "Atualizar")
         }
     }
 }

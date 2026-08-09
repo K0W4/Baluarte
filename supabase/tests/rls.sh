@@ -386,6 +386,24 @@ probe_denied "não move um vínculo de Capítulo" "$TOKEN_A" PATCH \
   '{"chapter_id":"00000000-0000-0000-0000-000000000000"}'
 
 echo
+echo "— Fila de Capítulos solicitados —"
+# Aprovar insere em `chapter`, que é registro somente leitura. Se B conseguisse
+# revisar, ele criaria Capítulos à vontade -- e depois fundaria cada um deles.
+probe_denied "B não revisa solicitação de Capítulo" "$TOKEN_B" POST \
+  "/rest/v1/rpc/review_chapter_request" \
+  '{"p_request_id":"00000000-0000-0000-0000-000000000000","p_approved":true}'
+
+probe_empty "B não vê a fila de Capítulos" "$TOKEN_B" \
+  "/rest/v1/rpc/pending_chapter_requests"
+
+# A autorização vem antes de qualquer detalhe do alvo: mesmo com um id inexistente,
+# quem não revisa recebe 42501 e não "não encontrado". O contrário contaria a um
+# estranho quais ids existem.
+probe_denied "id inexistente não revela nada a quem não revisa" "$TOKEN_B" POST \
+  "/rest/v1/rpc/review_chapter_request" \
+  '{"p_request_id":"00000000-0000-0000-0000-000000000000","p_approved":false}'
+
+echo
 echo "— Token de aparelho é do dono, e só dele —"
 # O token não autentica ninguém, mas identifica um aparelho. Ninguém além do dono
 # precisa lê-lo, e ninguém precisa listá-los.

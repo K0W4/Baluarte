@@ -11,6 +11,7 @@ struct ProfileView: View {
     @State private var showInvites = false
     @State private var showBootstrapQueue = false
     @State private var showPlatformAdmins = false
+    @State private var showChapterRequests = false
     
     var body: some View {
         NavigationStack {
@@ -113,6 +114,12 @@ struct ProfileView: View {
                                     title: "Administradores de plataforma",
                                     hint: "Concede e revoga quem pode aprovar fundações"
                                 ) { showPlatformAdmins = true }
+
+                                ProfileNavigationRow(
+                                    icon: "tray",
+                                    title: "Capítulos solicitados",
+                                    hint: "Revisa pedidos de Capítulo que não está no catálogo"
+                                ) { showChapterRequests = true }
                             } header: {
                                 Text("Plataforma")
                             }
@@ -122,6 +129,9 @@ struct ProfileView: View {
                             }
                             .sheet(isPresented: $showPlatformAdmins) {
                                 PlatformAdminsView()
+                            }
+                            .sheet(isPresented: $showChapterRequests) {
+                                ChapterRequestsView()
                             }
                         }
 
