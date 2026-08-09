@@ -109,4 +109,6 @@ End every delivery with a short report, in this order and nothing else:
 2. **O que você precisa fazer** — numbered, only if something actually needs them. Say "nada" when nothing does.
 3. **Próximo passo** — one line.
 
-Detail belongs in the commit message and in the code comments, where it is read when it matters. Findings worth keeping go to the plan artifact, not into chat. Long explanations are only warranted when a decision changed, something failed, or a risk needs a decision — and even then, lead with the conclusion.
+Detail belongs in the commit message and in the code comments, where it is read when it matters. Long explanations are only warranted when a decision changed, something failed, or a risk needs a decision — and even then, lead with the conclusion.
+
+**Keep the plan artifact current.** A living status page lives at `https://claude.ai/code/artifact/31619801-651b-46af-b851-99a1cd6b49f4`: fetch it with WebFetch, edit, and republish passing that `url` so the link never changes. Update it whenever a package ships, a blocker appears, or something is learned that a future session would otherwise rediscover. It is split on purpose — the top is what the reader has to decide or do, the bottom is technical context for another agent picking the project up cold. Findings belong there rather than in chat, which nobody rereads.
