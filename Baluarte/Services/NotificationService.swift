@@ -10,6 +10,11 @@ public struct NotificationService: @unchecked Sendable {
         UNUserNotificationCenter.current().delegate = NotificationDelegate.shared
     }
 
+    public func hasAuthorization() async -> Bool {
+        let settings = await UNUserNotificationCenter.current().notificationSettings()
+        return settings.authorizationStatus == .authorized || settings.authorizationStatus == .provisional
+    }
+
     public func requestAuthorization() async -> Bool {
         do {
             let options: UNAuthorizationOptions = [.alert, .sound, .badge]

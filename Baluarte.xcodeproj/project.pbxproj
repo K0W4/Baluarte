@@ -148,11 +148,11 @@
 		932EA1753006CB3D00CD22BF = {
 			isa = PBXGroup;
 			children = (
-				9340A984301947550041096D /* BaluarteWidgetsExtension.entitlements */,
 				932EA1803006CB3D00CD22BF /* Baluarte */,
 				9353B39D3011A47C00D754B7 /* BaluarteTests */,
-				9353B3E430127E3000D754B7 /* BaluarteWidgets */,
 				938AD98E302118B200314177 /* BaluarteUITests */,
+				9353B3E430127E3000D754B7 /* BaluarteWidgets */,
+				9340A984301947550041096D /* BaluarteWidgetsExtension.entitlements */,
 				9353B3DF30127E2F00D754B7 /* Frameworks */,
 				932EA17F3006CB3D00CD22BF /* Products */,
 			);
@@ -321,8 +321,8 @@
 			targets = (
 				932EA17D3006CB3D00CD22BF /* Baluarte */,
 				9353B39B3011A47C00D754B7 /* BaluarteTests */,
-				9353B3DD30127E2F00D754B7 /* BaluarteWidgetsExtension */,
 				938AD98C302118B200314177 /* BaluarteUITests */,
+				9353B3DD30127E2F00D754B7 /* BaluarteWidgetsExtension */,
 			);
 		};
 /* End PBXProject section */
