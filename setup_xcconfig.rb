@@ -1,6 +1,6 @@
 require 'xcodeproj'
 
-project_path = "App DeMolay.xcodeproj"
+project_path = "Baluarte.xcodeproj"
 project = Xcodeproj::Project.open(project_path)
 
 # Create file reference for Config.xcconfig

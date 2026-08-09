@@ -1,4 +1,4 @@
-# App DeMolay
+# Baluarte
 
 > Smart, gamified, and AI-powered management application for DeMolay Chapters.
 
@@ -10,7 +10,7 @@
 
 ## 📖 Overview
 
-**App DeMolay** was designed to revolutionize Chapter management by providing modern, predictive tools for attendance tracking (Roster), event scheduling, financial management, and member engagement through a gamified goal-tracking system. 
+**Baluarte** was designed to revolutionize Chapter management by providing modern, predictive tools for attendance tracking (Roster), event scheduling, financial management, and member engagement through a gamified goal-tracking system. 
 
 Built with scalability, privacy, and user-centered design in mind, it leverages cutting-edge Apple ecosystem technologies—including on-device Foundation Models for intelligent insights—while maintaining an architecture that allows for smooth expansion.
 
@@ -52,7 +52,7 @@ git clone https://github.com/K0W4/app-demolay.git
 2. Open the project in Xcode:
 ```bash
 cd app-demolay
-open "App DeMolay.xcodeproj"
+open "Baluarte.xcodeproj"
 ```
 
 3. Let Swift Package Manager automatically resolve and download the Supabase SDK.

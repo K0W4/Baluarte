@@ -1,13 +1,13 @@
-# App DeMolay - Agent Rules
+# Baluarte - Agent Rules
 
-Estas regras guiam a geração de código para o App DeMolay, um aplicativo iOS nativo em SwiftUI para gestão de Capítulos da Ordem DeMolay. Todo código gerado deve seguir os mais altos padrões da Apple (Human Interface Guidelines, Paul Hudson, WWDC sessions), garantindo manutenibilidade, escalabilidade, segurança e testabilidade.
+Estas regras guiam a geração de código para o Baluarte, um aplicativo iOS nativo em SwiftUI para gestão de Capítulos da Ordem DeMolay. Todo código gerado deve seguir os mais altos padrões da Apple (Human Interface Guidelines, Paul Hudson, WWDC sessions), garantindo manutenibilidade, escalabilidade, segurança e testabilidade.
 
 ## 1. Estrutura de Pastas do Projeto
 
 O projeto segue uma organização por responsabilidade. Novos arquivos devem ser criados nos diretórios corretos:
 
 ```
-App DeMolay/
+Baluarte/
 ├── Core/               → Entry point (@main), Managers singleton (SupabaseManager, EventKitManager)
 ├── Models/             → Structs de dados (Codable, Identifiable, Hashable)
 ├── Views/              → Telas completas (cada aba do TabView e sub-telas)
