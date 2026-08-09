@@ -58,6 +58,26 @@ jobs:
           sed -i '' "s|SUPABASE_URL = .*|SUPABASE_URL = ${SUPABASE_URL}|" Config.xcconfig
           sed -i '' "s|SUPABASE_ANON_KEY = .*|SUPABASE_ANON_KEY = ${SUPABASE_ANON_KEY}|" Config.xcconfig
 
+      # O gargalo não eram os UITests: é compilar o app, o supabase-swift e as sete
+      # dependências dele do zero a cada execução. O SourcePackages é resolvido a
+      # partir do Package.resolved, então a chave é o hash dele.
+      - name: Cache das dependências
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/**/SourcePackages
+          key: spm-${{ runner.os }}-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: spm-${{ runner.os }}-
+
+      # DerivedData carrega os módulos já compilados. A chave inclui o hash das
+      # fontes para não reusar objeto velho; o restore-key deixa o build incremental
+      # aproveitar o que não mudou.
+      - name: Cache do build
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/Baluarte-*/Build
+          key: build-${{ runner.os }}-${{ hashFiles('Baluarte/**/*.swift', 'BaluarteWidgets/**/*.swift', '**/Package.resolved') }}
+          restore-keys: build-${{ runner.os }}-
+
       - name: Resolver dependências
         run: xcodebuild -resolvePackageDependencies -project Baluarte.xcodeproj
 
