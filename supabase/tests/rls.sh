@@ -36,6 +36,12 @@
 #   probe_empty   confere 200 com coleção vazia. Sob RLS um SELECT sem permissão
 #                 devolve [] e não um erro -- conferir só o status daria verde num
 #                 vazamento.
+#   probe_count   confere 200 com um número exato de linhas. Serve para provar que
+#                 algo continua existindo depois de uma tentativa de apagar.
+#   probe_storage_write
+#                 grava no bucket privado com um mime que ele aceita. Sem isso a
+#                 requisição morre em 415 antes de a policy ser consultada, e a
+#                 sonda ficaria verde sem ter provado nada.
 
 set -uo pipefail
 
@@ -117,7 +123,11 @@ probe_raise() {
     flunk "$name" "esperava recusa, veio HTTP $status"
   elif [ "$got_code" != "$want_code" ]; then
     flunk "$name" "esperava SQLSTATE $want_code, veio '$got_code'"
-  elif [ "$got_hint" != "$want_hint" ]; then
+  elif [ "$want_hint" = "${want_hint%%:*}" ] && [ "${got_hint%%:*}" != "$want_hint" ]; then
+    # Sem ':' no esperado, compara só a chave: o caso parametrizado carrega o
+    # argumento no próprio hint (baluarte.last_owner_with_members:2).
+    flunk "$name" "SQLSTATE ok, mas hint era '$want_hint' e veio '$got_hint'"
+  elif [ "$want_hint" != "${want_hint%%:*}" ] && [ "$got_hint" != "$want_hint" ]; then
     flunk "$name" "SQLSTATE ok, mas hint era '$want_hint' e veio '$got_hint'"
   else
     pass "$name"
@@ -139,12 +149,20 @@ except Exception: print(-1)' "$BODY")
   else flunk "$name" "esperava 200 com $want item(ns), veio HTTP $code com $n"; fi
 }
 
-# Para superfícies fora do PostgREST, onde a tabela de status é outra: basta recusar.
-probe_blocked() {
-  local name="$1" token="$2" method="$3" path="$4" body="$5"
-  local code; code=$(request "$token" "$method" "$path" "$body")
-  if [ "${code:0:1}" != "2" ] && [ -n "$code" ]; then pass "$name"
-  else flunk "$name" "esperava recusa, veio HTTP $code"; fi
+# O bucket aceita apenas image/jpeg, png e heic. Sem o mime certo a requisição
+# morre em 415 antes de a policy ser consultada.
+probe_storage_write() {
+  local name="$1" token="$2" path="$3"
+  local code
+  code=$(printf '\xff\xd8\xff\xd9' | curl -s -o "$BODY" -w '%{http_code}' \
+           -X POST "$URL/storage/v1/object/bootstrap-proof/$path" \
+           -H "apikey: $ANON" -H "Authorization: Bearer $token" \
+           -H "Content-Type: image/jpeg" --data-binary @-)
+  if [ "${code:0:1}" != "2" ] && [ -n "$code" ]; then
+    pass "$name"
+  else
+    flunk "$name" "esperava recusa, veio HTTP $code — E UM OBJETO FOI CRIADO EM $path"
+  fi
 }
 
 probe_empty() {
@@ -310,14 +328,18 @@ probe_count "e o vínculo continua lá" "$TOKEN_A" \
 
 echo
 echo "— Comprovantes de fundação são privados —"
-# Bucket privado: as policies de storage.objects casam o primeiro segmento do
-# caminho contra auth.uid(). B pedindo algo sob o uid de A é exatamente a tentativa
-# que elas existem para barrar. O status fica em aberto porque a API de Storage não
-# usa a mesma tabela de códigos do PostgREST -- o que importa é não ser 2xx.
-probe_blocked "B não lê comprovante de A" "$TOKEN_B" GET \
-  "/storage/v1/object/bootstrap-proof/$A_UID/qualquer.jpg" -
-probe_blocked "B não escreve sob o caminho de A" "$TOKEN_B" POST \
-  "/storage/v1/object/bootstrap-proof/$A_UID/sonda.jpg" '{}'
+# proof_insert_own exige (storage.foldername(name))[1] = auth.uid(). B tentando
+# gravar sob o caminho de A é a tentativa que a policy existe para barrar.
+#
+# O mime tem de ser um dos permitidos pelo bucket: mandar JSON leva a 415 antes de
+# a policy ser consultada, e a sonda passaria sem ter provado nada.
+#
+# Não há sonda de leitura aqui de propósito. Pedir um objeto inexistente devolve
+# 404 tanto se a policy negar quanto se ela permitir -- verde pelo motivo errado.
+# Provar a leitura exige um objeto que exista e um leitor que não seja nem o dono
+# nem administrador de plataforma, e esse terceiro ator não existe nesta matriz.
+probe_storage_write "B não grava sob o caminho de A" "$TOKEN_B" \
+  "$A_UID/sonda-rls.jpg"
 
 echo
 echo "— Imutabilidade do Capítulo de um registro —"
