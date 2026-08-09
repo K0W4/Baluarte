@@ -12,6 +12,8 @@ struct ProfileView: View {
     @State private var showBootstrapQueue = false
     @State private var showPlatformAdmins = false
     @State private var showChapterRequests = false
+    @State private var showChapterAccessLog = false
+    @State private var showPlatformAccessLog = false
     
     var body: some View {
         NavigationStack {
@@ -86,12 +88,22 @@ struct ProfileView: View {
                                     hint: String(localized: "Gera um código para alguém entrar direto no Capítulo")
                                 ) { showInvites = true }
                                 .requires(.manageInvites)
+
+                                ProfileNavigationRow(
+                                    icon: "clock.arrow.circlepath",
+                                    title: String(localized: "Histórico de acesso"),
+                                    hint: String(localized: "Mostra quem promoveu, rebaixou ou transferiu a posse, e quando")
+                                ) { showChapterAccessLog = true }
+                                .requires(.viewAccessLog)
                             } header: {
                                 Text("Administração")
                             }
                             .requires(.reviewJoinRequests)
                             .sheet(isPresented: $showJoinRequests) {
                                 JoinRequestsView(chapterId: chapterId)
+                            }
+                            .sheet(isPresented: $showChapterAccessLog) {
+                                AccessLogView(scope: .chapter(chapterId))
                             }
                             .sheet(isPresented: $showInvites) {
                                 InviteManagementView(
@@ -120,6 +132,12 @@ struct ProfileView: View {
                                     title: "Capítulos solicitados",
                                     hint: "Revisa pedidos de Capítulo que não está no catálogo"
                                 ) { showChapterRequests = true }
+
+                                ProfileNavigationRow(
+                                    icon: "clock.arrow.circlepath",
+                                    title: String(localized: "Histórico da plataforma"),
+                                    hint: String(localized: "Mostra quem concedeu e quem revogou acesso de plataforma")
+                                ) { showPlatformAccessLog = true }
                             } header: {
                                 Text("Plataforma")
                             }
@@ -132,6 +150,9 @@ struct ProfileView: View {
                             }
                             .sheet(isPresented: $showChapterRequests) {
                                 ChapterRequestsView()
+                            }
+                            .sheet(isPresented: $showPlatformAccessLog) {
+                                AccessLogView(scope: .platform)
                             }
                         }
 

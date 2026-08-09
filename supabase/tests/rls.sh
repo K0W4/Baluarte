@@ -44,6 +44,10 @@
 #                 vazamento.
 #   probe_count   confere 200 com um número exato de linhas. Serve para provar que
 #                 algo continua existindo depois de uma tentativa de apagar.
+#   probe_top_action
+#                 confere 200 e que a primeira linha devolvida é da ação esperada.
+#                 Existe para a auditoria: uma tabela permanentemente vazia deixaria
+#                 todas as sondas negativas dela verdes.
 #   probe_storage_write
 #                 grava no bucket privado com um mime que ele aceita. Sem isso a
 #                 requisição morre em 415 antes de a policy ser consultada, e a
@@ -174,6 +178,23 @@ probe_storage_write() {
   else
     flunk "$name" "esperava recusa, veio HTTP $code — E UM OBJETO FOI CRIADO EM $path"
   fi
+}
+
+# Confere 200 e que a PRIMEIRA linha devolvida é da ação esperada. Serve para a
+# auditoria: as sondas negativas dela ficariam todas verdes com a tabela sempre
+# vazia, que é o falso-verde de sempre. Esta só passa se o gatilho tiver gravado.
+probe_top_action() {
+  local name="$1" token="$2" path="$3" body="$4" want="$5"
+  local status; status=$(request "$token" POST "$path" "$body")
+  local got; got=$(python3 -c '
+import json,sys
+try:
+    d = json.load(open(sys.argv[1]))
+    print(d[0].get("action","") if isinstance(d, list) and d else "")
+except Exception: print("")' "$BODY")
+
+  if [ "$status" = "200" ] && [ "$got" = "$want" ]; then pass "$name"
+  else flunk "$name" "esperava 200 com a primeira linha em '$want', veio HTTP $status com '$got'"; fi
 }
 
 probe_empty() {
@@ -438,6 +459,72 @@ probe_denied "ninguém enfileira notificação" "$TOKEN_A" POST \
 
 probe_denied "ninguém lê a fila de notificações" "$TOKEN_A" GET \
   "/rest/v1/notification_outbox?select=id" -
+
+echo
+echo "— Auditoria de mudanças de acesso —"
+# A tabela não tem policy alguma, como `invite_attempt` e `notification_outbox`: se
+# desse para escrever, o log poderia ser forjado; se desse para apagar, ele não
+# serviria de prova nenhuma.
+
+probe_denied "ninguém lê a tabela de auditoria" "$TOKEN_A" GET \
+  "/rest/v1/access_change_log?select=id" -
+
+probe_denied "ninguém escreve na tabela de auditoria" "$TOKEN_A" POST \
+  "/rest/v1/access_change_log" \
+  "{\"action\":\"access_level_changed\",\"scope\":\"chapter\",\"chapter_id\":\"$A_CHAPTER\"}"
+
+probe_denied "ninguém apaga linha da auditoria" "$TOKEN_A" DELETE \
+  "/rest/v1/access_change_log?id=gt.0" -
+
+probe_denied "B não lê o histórico do Capítulo de A" "$TOKEN_B" POST \
+  "/rest/v1/rpc/chapter_access_log" "{\"p_chapter_id\":\"$A_CHAPTER\"}"
+
+# Autorização antes de qualquer detalhe do alvo, inclusive da existência dele: um
+# Capítulo inventado responde igual a um real, senão a auditoria vira um oráculo de
+# quais ids existem.
+probe_denied "Capítulo inexistente responde igual" "$TOKEN_B" POST \
+  "/rest/v1/rpc/chapter_access_log" \
+  '{"p_chapter_id":"00000000-0000-0000-0000-000000000000"}'
+
+probe_denied "B não lê o histórico da plataforma" "$TOKEN_B" POST \
+  "/rest/v1/rpc/platform_access_log" '{}'
+
+# E a sonda que impede as de cima de passarem por vacuidade. Todo o resto desta
+# seção ficaria verde com a tabela permanentemente vazia -- o gatilho é justamente o
+# que não dá para provar por negativa.
+#
+# É a única sonda do arquivo que deixa linha para trás, e de propósito: "o log não
+# pode ser apagado" é a propriedade sendo provada, então uma sonda que limpasse o
+# próprio rastro provaria o contrário. Duas linhas de auditoria, sobre um convite
+# que nasce vencido, é revogado e é apagado em seguida.
+PROBE_INVITE=$(curl -s -X POST "$URL/rest/v1/chapter_invite" \
+  -H "apikey: $ANON" -H "Authorization: Bearer $TOKEN_A" \
+  -H "Content-Type: application/json" -H "Prefer: return=representation" \
+  -d "{\"chapter_id\":\"$A_CHAPTER\",\"created_by\":\"$A_UID\",\"max_uses\":1,\"expires_at\":\"2000-01-01T00:00:00Z\"}" \
+  | python3 -c '
+import json,sys
+try:
+    d = json.load(sys.stdin)
+    print(d[0]["id"] if isinstance(d, list) and d else "")
+except Exception: print("")')
+
+if [ -z "$PROBE_INVITE" ]; then
+  skip "o gatilho grava a revogação" "não foi possível criar o convite de sonda no Capítulo de A"
+  skip "o gatilho grava a exclusão" "idem"
+else
+  request "$TOKEN_A" PATCH "/rest/v1/chapter_invite?id=eq.$PROBE_INVITE" \
+    "{\"revoked_at\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" >/dev/null
+
+  probe_top_action "o gatilho grava a revogação" "$TOKEN_A" \
+    "/rest/v1/rpc/chapter_access_log" "{\"p_chapter_id\":\"$A_CHAPTER\",\"p_limit\":1}" \
+    "invite_revoked"
+
+  request "$TOKEN_A" DELETE "/rest/v1/chapter_invite?id=eq.$PROBE_INVITE" - >/dev/null
+
+  probe_top_action "o gatilho grava a exclusão" "$TOKEN_A" \
+    "/rest/v1/rpc/chapter_access_log" "{\"p_chapter_id\":\"$A_CHAPTER\",\"p_limit\":1}" \
+    "invite_deleted"
+fi
 
 echo
 echo "— Escopo de comissão e dupla filiação —"

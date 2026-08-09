@@ -10,7 +10,7 @@ struct PermissionSetTests {
         .manageRoster, .reviewJoinRequests, .manageInvites
     ]
 
-    private static let ownerPermissions: [Permission] = [.manageAdmins, .transferOwnership]
+    private static let ownerPermissions: [Permission] = [.manageAdmins, .transferOwnership, .viewAccessLog]
 
     @Test("Member can do nothing beyond reading and their own tasks")
     func testMemberDeniedEverything() {
