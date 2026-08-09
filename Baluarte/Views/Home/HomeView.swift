@@ -110,13 +110,28 @@ public struct HomeView: View {
             .navigationTitle(viewModel.greetingTitle)
             .toolbarTitleDisplayMode(.inlineLarge)
             .toolbar {
+                // Duas portas, e não uma dentro da outra: o Capítulo é o que a maior
+                // parte do uso administrativo procura, e ficava a três toques de
+                // distância dentro de "Meu perfil".
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink(destination: ChapterView()) {
+                        Image(systemName: "building.columns.fill")
+                            .foregroundColor(Theme.accent)
+                            .accessibilityLabel("Meu Capítulo")
+                    }
+                }
+
+                // Sem o espaçador os dois caem na mesma cápsula e leem como um
+                // controle só. São dois destinos diferentes, e é isso que este
+                // pacote existe para separar.
+                ToolbarSpacer(.fixed, placement: .navigationBarTrailing)
+
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink(destination: ProfileView()) {
                         Image(systemName: "person.fill")
                             .foregroundColor(Theme.accent)
                             .accessibilityLabel("Meu perfil")
                     }
-
                 }
             }
             .tint(Theme.accent)
