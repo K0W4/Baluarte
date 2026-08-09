@@ -289,7 +289,7 @@ probe_denied "B não se insere no Capítulo de A" "$TOKEN_B" POST \
 probe_raise "aprovação de solicitação inexistente" "$TOKEN_B" \
   "/rest/v1/rpc/approve_join_request" \
   '{"p_request_id":"00000000-0000-0000-0000-000000000000"}' \
-  P0002 "baluarte.request_not_found"
+  PT404 "baluarte.request_not_found"
 
 echo
 echo "— Registro de Capítulos é somente leitura —"

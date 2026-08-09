@@ -107,9 +107,22 @@ struct AppErrorTests {
     }
 
     @Test func notFoundWithoutHintStaysGeneric() {
-        let error = PostgrestError(code: "P0002", message: "Solicitação não encontrada.")
+        for code in ["PT404", "P0002", "PGRST116"] {
+            let error = PostgrestError(code: code, message: "Solicitação não encontrada.")
+            #expect(AppError.from(error) == .notFound, "código \(code)")
+        }
+    }
 
-        #expect(AppError.from(error) == .notFound)
+    // PT404 é como um raise pede um status ao PostgREST. O hint tem de continuar
+    // vindo antes do código, senão a troca de errcode engoliria a mensagem.
+    @Test func knownHintStillWinsOverPT404() {
+        let error = PostgrestError(
+            hint: "baluarte.membership_not_found",
+            code: "PT404",
+            message: "Vínculo não encontrado."
+        )
+
+        #expect(AppError.from(error).userMessage == String(localized: "Vínculo não encontrado."))
     }
 
     // MARK: - O texto do banco não vaza para a tela
