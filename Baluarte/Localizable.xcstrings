@@ -11689,6 +11689,166 @@
           }
         }
       }
+    },
+    "Administrador de plataforma aprova a fundação de qualquer Capítulo. Só quem já tem o acesso concede a outro.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A platform administrator approves the founding of any Chapter. Only someone who already has the access can grant it to another."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un administrador de plataforma aprueba la fundación de cualquier Capítulo. Solo quien ya tiene el acceso puede concederlo a otro."
+          }
+        }
+      }
+    },
+    "Concede e revoga quem pode aprovar fundações": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grants and revokes who can approve foundings"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Concede y revoca quién puede aprobar fundaciones"
+          }
+        }
+      }
+    },
+    "Conta Apple": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple account"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuenta Apple"
+          }
+        }
+      }
+    },
+    "Filas": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Queues"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colas"
+          }
+        }
+      }
+    },
+    "Filas de fundação e de Capítulos solicitados, e quem administra a plataforma.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Founding and requested-Chapter queues, and who administers the platform."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colas de fundación y de Capítulos solicitados, y quién administra la plataforma."
+          }
+        }
+      }
+    },
+    "Membro DeMolay": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DeMolay member"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Miembro DeMolay"
+          }
+        }
+      }
+    },
+    "Meu Capítulo": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "My Chapter"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mi Capítulo"
+          }
+        }
+      }
+    },
+    "Minha posição": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "My standing"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mi posición"
+          }
+        }
+      }
+    },
+    "O cargo é descritivo e muda a cada gestão. O nível de acesso é o que decide o que você pode administrar, e não muda junto.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The office is descriptive and changes every term. The access level is what decides what you can administer, and it does not change with it."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El cargo es descriptivo y cambia cada gestión. El nivel de acceso es lo que decide qué puedes administrar, y no cambia con él."
+          }
+        }
+      }
+    },
+    "Sair não apaga o que você registrou aqui: presenças, tarefas e comissões continuam com o Capítulo.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leaving does not erase what you recorded here: attendance, tasks and committees stay with the Chapter."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salir no borra lo que registraste aquí: asistencias, tareas y comisiones se quedan con el Capítulo."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

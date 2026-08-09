@@ -1,243 +1,152 @@
 import SwiftUI
 import Auth
 
+/// Sobre a pessoa, e só. Administração do Capítulo saiu para `ChapterView` e o que
+/// atravessa Capítulos, para `PlatformView`: esta tela tinha virado o centro
+/// administrativo do app por acúmulo, com nove destinos de três domínios diferentes na
+/// mesma lista.
 struct ProfileView: View {
     @Environment(AuthViewModel.self) private var authViewModel
-    @State private var viewModel = ProfileViewModel()
-    @State private var showLeaveChapterAlert = false
     @State private var showDeleteAccountAlert = false
     @State private var showEditProfile = false
-    @State private var showJoinRequests = false
-    @State private var showInvites = false
-    @State private var showBootstrapQueue = false
-    @State private var showPlatformAdmins = false
-    @State private var showChapterRequests = false
-    @State private var showChapterAccessLog = false
-    @State private var showPlatformAccessLog = false
-    
+
     var body: some View {
-        NavigationStack {
-            ZStack {
-                Theme.backgroundPrimary.ignoresSafeArea()
-                
-                if case let .authenticated(user, profile) = authViewModel.state {
-                    List {
+        ZStack {
+            Theme.backgroundPrimary.ignoresSafeArea()
+
+            if case let .authenticated(user, profile) = authViewModel.state {
+                List {
+                    Section {
+                        PersonHeader(
+                            name: profile?.fullName ?? user.email ?? String(localized: "Membro DeMolay"),
+                            cid: profile?.cid
+                        )
+                    }
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+
+                    Section {
+                        if let birthdate = profile?.birthdate {
+                            ProfileInfoRow(
+                                icon: "calendar",
+                                title: String(localized: "Data de Nascimento"),
+                                value: birthdate.formatted(.dateTime.day().month(.twoDigits).year())
+                            )
+                        }
+                        ProfileInfoRow(
+                            icon: "envelope",
+                            title: String(localized: "E-mail"),
+                            value: user.email ?? String(localized: "Conta Apple")
+                        )
+                    } header: {
+                        Text("Informações")
+                    }
+
+                    // Ser administrador de plataforma é da pessoa, não do Capítulo:
+                    // vale para qualquer um deles. Por isso é a única porta que
+                    // continua saindo daqui.
+                    if authViewModel.isPlatformAdmin {
                         Section {
-                            VStack(spacing: Spacing.md) {
-                                Image(systemName: "person.circle.fill")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 100, height: 100)
-                                    .foregroundColor(Theme.accent)
-                                
-                                Text(profile?.fullName ?? user.email ?? "Membro DeMolay")
-                                    .font(Typography.title1)
-                                    .foregroundColor(Theme.textPrimary)
-
-                                if let cid = profile?.cid {
-                                    Text("ID: \(cid)")
-                                        .font(Typography.callout)
-                                        .foregroundColor(Theme.textSecondary)
-                                }
+                            NavigationLink {
+                                PlatformView()
+                            } label: {
+                                Label("Plataforma", systemImage: "globe.americas")
                             }
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, Spacing.md)
-                        }
-                        .listRowBackground(Color.clear)
-                        .listRowSeparator(.hidden)
-                        
-                        Section {
-                            ProfileInfoRow(icon: "shield.fill", title: String(localized: "Nível de Acesso"), value: authViewModel.accessLevel.displayName)
-                            if let birthdate = profile?.birthdate {
-                                ProfileInfoRow(icon: "calendar", title: "Data de Nascimento", value: birthdate.formatted(.dateTime.day().month(.twoDigits).year()))
-                            }
-                            ProfileInfoRow(icon: "star.fill", title: "Cargo", value: authViewModel.activeMembership?.role.map(ChapterRole.displayName) ?? ChapterRole.noRole)
-                        } header: {
-                            Text("Informações")
-                        }
-                        
-                        if authViewModel.memberships.count > 1 {
-                            Section {
-                                ForEach(authViewModel.memberships) { membership in
-                                    ChapterSwitchRow(
-                                        membership: membership,
-                                        chapterName: authViewModel.chapterName(for: membership),
-                                        isActive: membership.id == authViewModel.activeMembership?.id
-                                    ) {
-                                        Task { await authViewModel.switchChapter(to: membership) }
-                                    }
-                                }
-                            } header: {
-                                Text("Meus Capítulos")
-                            } footer: {
-                                Text("A dupla filiação permite dois Capítulos. O app mostra um de cada vez; toque para trocar.")
-                            }
-                        }
-
-                        if let chapterId = authViewModel.currentChapterId {
-                            Section {
-                                ProfileNavigationRow(
-                                    icon: "person.badge.clock",
-                                    title: String(localized: "Solicitações de entrada"),
-                                    hint: String(localized: "Abre a fila de quem pediu para entrar no Capítulo")
-                                ) { showJoinRequests = true }
-                                .requires(.reviewJoinRequests)
-
-                                ProfileNavigationRow(
-                                    icon: "ticket",
-                                    title: "Convites",
-                                    hint: String(localized: "Gera um código para alguém entrar direto no Capítulo")
-                                ) { showInvites = true }
-                                .requires(.manageInvites)
-
-                                ProfileNavigationRow(
-                                    icon: "clock.arrow.circlepath",
-                                    title: String(localized: "Histórico de acesso"),
-                                    hint: String(localized: "Mostra quem promoveu, rebaixou ou transferiu a posse, e quando")
-                                ) { showChapterAccessLog = true }
-                                .requires(.viewAccessLog)
-                            } header: {
-                                Text("Administração")
-                            }
-                            .requires(.reviewJoinRequests)
-                            .sheet(isPresented: $showJoinRequests) {
-                                JoinRequestsView(chapterId: chapterId)
-                            }
-                            .sheet(isPresented: $showChapterAccessLog) {
-                                AccessLogView(scope: .chapter(chapterId))
-                            }
-                            .sheet(isPresented: $showInvites) {
-                                InviteManagementView(
-                                    chapterId: chapterId,
-                                    chapterName: authViewModel.activeChapterName
-                                )
-                            }
-                        }
-
-                        if authViewModel.isPlatformAdmin {
-                            Section {
-                                ProfileNavigationRow(
-                                    icon: "checkmark.seal",
-                                    title: "Fundações pendentes",
-                                    hint: "Revisa quem pediu para ser o primeiro administrador de um Capítulo"
-                                ) { showBootstrapQueue = true }
-
-                                ProfileNavigationRow(
-                                    icon: "person.badge.key",
-                                    title: "Administradores de plataforma",
-                                    hint: "Concede e revoga quem pode aprovar fundações"
-                                ) { showPlatformAdmins = true }
-
-                                ProfileNavigationRow(
-                                    icon: "tray",
-                                    title: "Capítulos solicitados",
-                                    hint: "Revisa pedidos de Capítulo que não está no catálogo"
-                                ) { showChapterRequests = true }
-
-                                ProfileNavigationRow(
-                                    icon: "clock.arrow.circlepath",
-                                    title: String(localized: "Histórico da plataforma"),
-                                    hint: String(localized: "Mostra quem concedeu e quem revogou acesso de plataforma")
-                                ) { showPlatformAccessLog = true }
-                            } header: {
-                                Text("Plataforma")
-                            }
-                            .requires(.reviewChapterBootstrap)
-                            .sheet(isPresented: $showBootstrapQueue) {
-                                BootstrapQueueView()
-                            }
-                            .sheet(isPresented: $showPlatformAdmins) {
-                                PlatformAdminsView()
-                            }
-                            .sheet(isPresented: $showChapterRequests) {
-                                ChapterRequestsView()
-                            }
-                            .sheet(isPresented: $showPlatformAccessLog) {
-                                AccessLogView(scope: .platform)
-                            }
-                        }
-
-                        Section {
-                            Button(action: {
-                                showLeaveChapterAlert = true
-                            }) {
-                                Text("Sair do Capítulo")
-                                    .foregroundColor(Theme.textPrimary)
-                            }
-                            
-                            Button(action: {
-                                Task {
-                                    await authViewModel.signOut()
-                                }
-                            }) {
-                                Text("Sair da conta")
-                                    .foregroundColor(Theme.textPrimary)
-                            }
-                            
-                            Button(action: {
-                                showDeleteAccountAlert = true
-                            }) {
-                                Text("Excluir conta")
-                                    .foregroundColor(Theme.destructive)
-                            }
-                        } header: {
-                            Text("Ações da Conta")
+                            .frame(minHeight: Spacing.minTouchTarget)
+                        } footer: {
+                            Text("Filas de fundação e de Capítulos solicitados, e quem administra a plataforma.")
                         }
                     }
-                    .listStyle(.insetGrouped)
-                    .scrollContentBackground(.hidden)
-                }
-            }
-            .navigationTitle("Meu perfil")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        showEditProfile = true
-                    }) {
-                        Image(systemName: "pencil")
-                            .font(.body.weight(.semibold))
-                            .foregroundColor(Theme.accent)
-                    }
-                    .accessibilityLabel("Editar perfil")
-                }
-            }
-            .sheet(isPresented: $showEditProfile) {
-                if case let .authenticated(_, profile) = authViewModel.state, let profile = profile {
-                    EditProfileView(profile: profile)
-                }
-            }
-            .alert("Sair do capítulo", isPresented: $showLeaveChapterAlert) {
-                Button("Cancelar", role: .cancel) { }
-                Button("Sair", role: .destructive) {
-                    Task {
-                        await authViewModel.leaveChapter()
+
+                    Section {
+                        Button {
+                            Task { await authViewModel.signOut() }
+                        } label: {
+                            Text("Sair da conta")
+                                .foregroundColor(Theme.textPrimary)
+                        }
+                        .frame(minHeight: Spacing.minTouchTarget)
+
+                        Button(role: .destructive) {
+                            showDeleteAccountAlert = true
+                        } label: {
+                            Text("Excluir conta")
+                        }
+                        .frame(minHeight: Spacing.minTouchTarget)
+                    } header: {
+                        Text("Ações da Conta")
                     }
                 }
-            } message: {
-                Text("Tem certeza que deseja sair do seu Capítulo atual? Você deixará de ver os eventos, metas e tarefas dele, mas poderá entrar em outro Capítulo quando quiser.")
+                .listStyle(.insetGrouped)
+                .scrollContentBackground(.hidden)
             }
-            .alert("Excluir conta", isPresented: $showDeleteAccountAlert) {
-                Button("Cancelar", role: .cancel) { }
-                Button("Excluir", role: .destructive) {
-                    Task {
-                        await authViewModel.deleteAccount()
-                    }
-                }
-            } message: {
-                Text("Esta ação é irreversível. Todos os seus dados serão apagados e você perderá o acesso ao app.")
-            }
-            // Sem isto, uma recusa do servidor (sair sendo o único Fundador, por
-            // exemplo) morre no ViewModel e o botão parece simplesmente não funcionar.
-            .toast(
-                isPresented: Binding(
-                    get: { authViewModel.errorMessage != nil },
-                    set: { if !$0 { authViewModel.errorMessage = nil } }
-                ),
-                message: authViewModel.errorMessage ?? "",
-                style: .error
-            )
         }
+        .navigationTitle("Meu perfil")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    showEditProfile = true
+                } label: {
+                    Image(systemName: "pencil")
+                        .font(.body.weight(.semibold))
+                        .foregroundColor(Theme.accent)
+                }
+                .accessibilityLabel("Editar perfil")
+            }
+        }
+        .sheet(isPresented: $showEditProfile) {
+            if case let .authenticated(_, profile) = authViewModel.state, let profile {
+                EditProfileView(profile: profile)
+            }
+        }
+        .alert("Excluir conta", isPresented: $showDeleteAccountAlert) {
+            Button("Cancelar", role: .cancel) { }
+            Button("Excluir", role: .destructive) {
+                Task { await authViewModel.deleteAccount() }
+            }
+        } message: {
+            Text("Esta ação é irreversível. Todos os seus dados serão apagados e você perderá o acesso ao app.")
+        }
+        // Sem isto, uma recusa do servidor morre no ViewModel e o botão parece
+        // simplesmente não funcionar.
+        .toast(
+            isPresented: Binding(
+                get: { authViewModel.errorMessage != nil },
+                set: { if !$0 { authViewModel.errorMessage = nil } }
+            ),
+            message: authViewModel.errorMessage ?? "",
+            style: .error
+        )
+    }
+}
+
+struct PersonHeader: View {
+    let name: String
+    let cid: String?
+
+    var body: some View {
+        VStack(spacing: Spacing.md) {
+            Image(systemName: "person.circle.fill")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 100, height: 100)
+                .foregroundColor(Theme.accent)
+
+            Text(name)
+                .font(Typography.title1)
+                .foregroundColor(Theme.textPrimary)
+                .multilineTextAlignment(.center)
+
+            if let cid {
+                Text("ID: \(cid)")
+                    .font(Typography.callout)
+                    .foregroundColor(Theme.textSecondary)
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, Spacing.md)
+        .accessibilityElement(children: .combine)
     }
 }
 
@@ -272,6 +181,7 @@ struct ChapterSwitchRow: View {
                 Spacer()
             }
         }
+        .frame(minHeight: Spacing.minTouchTarget)
         .disabled(isActive)
         .accessibilityAddTraits(isActive ? [.isButton, .isSelected] : .isButton)
         .accessibilityHint(isActive ? "Capítulo aberto no momento" : "Toca duas vezes para abrir este Capítulo")
@@ -301,6 +211,7 @@ struct ProfileNavigationRow: View {
                     .foregroundColor(Theme.textSecondary)
             }
         }
+        .frame(minHeight: Spacing.minTouchTarget)
         .accessibilityHint(hint)
     }
 }
@@ -309,22 +220,25 @@ struct ProfileInfoRow: View {
     let icon: String
     let title: String
     let value: String
-    
+
     var body: some View {
         HStack(spacing: Spacing.md) {
             Image(systemName: icon)
                 .foregroundColor(Theme.textPrimary)
                 .frame(width: 24)
-            
+
             Text(title)
                 .font(Typography.body)
                 .foregroundColor(Theme.textPrimary)
-            
+
             Spacer()
-            
+
             Text(value)
                 .font(Typography.callout)
                 .foregroundColor(Theme.textSecondary)
+                .multilineTextAlignment(.trailing)
         }
+        .frame(minHeight: Spacing.minTouchTarget)
+        .accessibilityElement(children: .combine)
     }
 }
