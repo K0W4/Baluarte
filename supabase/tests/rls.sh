@@ -124,6 +124,29 @@ probe_raise() {
   fi
 }
 
+probe_count() {
+  local name="$1" token="$2" path="$3" want="$4"
+  local code; code=$(curl -s -o "$BODY" -w '%{http_code}' "$URL$path" \
+                       -H "apikey: $ANON" -H "Authorization: Bearer $token")
+  local n; n=$(python3 -c '
+import json,sys
+try:
+    d = json.load(open(sys.argv[1]))
+    print(len(d) if isinstance(d, list) else -1)
+except Exception: print(-1)' "$BODY")
+
+  if [ "$code" = "200" ] && [ "$n" = "$want" ]; then pass "$name"
+  else flunk "$name" "esperava 200 com $want item(ns), veio HTTP $code com $n"; fi
+}
+
+# Para superfícies fora do PostgREST, onde a tabela de status é outra: basta recusar.
+probe_blocked() {
+  local name="$1" token="$2" method="$3" path="$4" body="$5"
+  local code; code=$(request "$token" "$method" "$path" "$body")
+  if [ "${code:0:1}" != "2" ] && [ -n "$code" ]; then pass "$name"
+  else flunk "$name" "esperava recusa, veio HTTP $code"; fi
+}
+
 probe_empty() {
   local name="$1" token="$2" path="$3"
   local code; code=$(curl -s -o "$BODY" -w '%{http_code}' "$URL$path" \
@@ -264,6 +287,37 @@ echo "— Fila da plataforma —"
 
 probe_empty "B não vê a fila de fundação" "$TOKEN_B" \
   "/rest/v1/rpc/pending_bootstrap_requests"
+
+echo
+echo "— Um Capítulo não fica órfão —"
+# A recusa é o comportamento correto e não escreve nada. Se um dia ela parar de
+# valer, o Capítulo perde o único Fundador e ninguém mais aprova ninguém, para
+# sempre -- é a falha silenciosa mais cara do modelo.
+probe_raise "último Fundador não sai deixando gente para trás" "$TOKEN_A" \
+  "/rest/v1/rpc/leave_chapter" "{\"p_chapter_id\":\"$A_CHAPTER\"}" \
+  23514 "baluarte.last_owner_with_members"
+
+echo
+echo "— Roster: só cadastros que ninguém reivindicou —"
+# Apagar o vínculo de quem tem conta levaria junto presenças, tarefas e comissões
+# dessa pessoa. A policy é `is_admin_of(chapter_id) and member_id is null`, e o
+# vínculo de A tem dono -- ele mesmo. O DELETE responde 204 porque não casa linha
+# alguma, e não porque apagou: por isso a contagem depois é que prova.
+probe_denied "delete de vínculo com conta não casa linha" "$TOKEN_A" DELETE \
+  "/rest/v1/chapter_membership?id=eq.$A_MEMBERSHIP" - 204
+probe_count "e o vínculo continua lá" "$TOKEN_A" \
+  "/rest/v1/chapter_membership?id=eq.$A_MEMBERSHIP&select=id" 1
+
+echo
+echo "— Comprovantes de fundação são privados —"
+# Bucket privado: as policies de storage.objects casam o primeiro segmento do
+# caminho contra auth.uid(). B pedindo algo sob o uid de A é exatamente a tentativa
+# que elas existem para barrar. O status fica em aberto porque a API de Storage não
+# usa a mesma tabela de códigos do PostgREST -- o que importa é não ser 2xx.
+probe_blocked "B não lê comprovante de A" "$TOKEN_B" GET \
+  "/storage/v1/object/bootstrap-proof/$A_UID/qualquer.jpg" -
+probe_blocked "B não escreve sob o caminho de A" "$TOKEN_B" POST \
+  "/storage/v1/object/bootstrap-proof/$A_UID/sonda.jpg" '{}'
 
 echo
 echo "— Imutabilidade do Capítulo de um registro —"
