@@ -199,6 +199,7 @@ struct AppErrorTests {
             "membership_not_found", "membership_unclaimed",             "owner_target_invalid", "already_owner",
             "cannot_raise_own_access", "last_platform_admin", "member_not_found",
             "cid_required", "cid_not_found", "cid_ambiguous",
+            "chapter_already_exists",
         ]
 
         for key in keys {

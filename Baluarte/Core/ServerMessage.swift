@@ -79,6 +79,8 @@ enum ServerMessage {
             return String(localized: "Informe o CID de quem vai receber o acesso.")
         case "cid_not_found":
             return String(localized: "Ninguém com este CID tem conta no app.")
+        case "chapter_already_exists":
+            return String(localized: "Já existe um Capítulo com este número neste estado.")
         case "cid_ambiguous":
             return String(localized: "Há mais de uma conta com este CID. Resolva a duplicidade antes de conceder.")
         default:
