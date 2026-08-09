@@ -10,6 +10,7 @@ struct ProfileView: View {
     @State private var showJoinRequests = false
     @State private var showInvites = false
     @State private var showBootstrapQueue = false
+    @State private var showPlatformAdmins = false
     
     var body: some View {
         NavigationStack {
@@ -106,12 +107,21 @@ struct ProfileView: View {
                                     title: "Fundações pendentes",
                                     hint: "Revisa quem pediu para ser o primeiro administrador de um Capítulo"
                                 ) { showBootstrapQueue = true }
+
+                                ProfileNavigationRow(
+                                    icon: "person.badge.key",
+                                    title: "Administradores de plataforma",
+                                    hint: "Concede e revoga quem pode aprovar fundações"
+                                ) { showPlatformAdmins = true }
                             } header: {
                                 Text("Plataforma")
                             }
                             .requires(.reviewChapterBootstrap)
                             .sheet(isPresented: $showBootstrapQueue) {
                                 BootstrapQueueView()
+                            }
+                            .sheet(isPresented: $showPlatformAdmins) {
+                                PlatformAdminsView()
                             }
                         }
 
