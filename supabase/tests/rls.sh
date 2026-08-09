@@ -316,6 +316,19 @@ probe_raise "código inexistente não se distingue de expirado" "$TOKEN_B" \
   "/rest/v1/rpc/redeem_chapter_invite" '{"p_code":"ZZZZZZZZ"}' \
   23514 "baluarte.invite_invalid"
 
+# A tabela de tentativas não é do app: quem consome é a própria RPC. Se desse para
+# ler, um atacante veria quais códigos já foram tentados; se desse para escrever,
+# ele encheria o contador de outra pessoa e a trancaria fora do Capítulo.
+probe_denied "ninguém lê a tabela de tentativas" "$TOKEN_B" GET \
+  "/rest/v1/invite_attempt?select=code" -
+probe_denied "ninguém escreve na tabela de tentativas" "$TOKEN_B" POST \
+  "/rest/v1/invite_attempt" \
+  "{\"member_id\":\"$B_UID\",\"code\":\"SONDARLS\",\"succeeded\":false}"
+
+# O expurgo roda por manutenção, não pelo app.
+probe_denied "ninguém dispara o expurgo de tentativas" "$TOKEN_A" POST \
+  "/rest/v1/rpc/purge_invite_attempts" '{}' 
+
 echo
 echo "— Entrada é revisada, nunca self-service —"
 
