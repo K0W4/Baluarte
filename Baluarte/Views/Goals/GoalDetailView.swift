@@ -5,6 +5,7 @@ public struct GoalDetailView: View {
     @State private var viewModel: GoalDetailViewModel
     @State private var showingDeleteAlert = false
     @State private var isEditing = false
+    @State private var showCompleteConfirmation = false
     
     public init(goal: Goal) {
         self._viewModel = State(initialValue: GoalDetailViewModel(goal: goal))
@@ -40,14 +41,24 @@ public struct GoalDetailView: View {
                     Text("Informações Básicas")
                 }
                 .disabled(viewModel.isCompleted || !isEditing)
-                if !viewModel.isCompleted {
-                    Section {
+                Section {
+                    if viewModel.isCompleted {
+                        // Reabrir não existia em tela nenhuma: um toque acidental encerrava
+                        // a meta e a única saída era apagá-la e recriar, perdendo o
+                        // histórico. É estado, então não leva o preenchimento da marca.
+                        Button(action: {
+                            HapticManager.shared.impact(style: .light)
+                            Task { _ = await viewModel.completeGoal(false) }
+                        }) {
+                            Text("Reabrir meta")
+                        }
+                        .buttonStyle(SecondaryButtonStyle())
+                        .listRowBackground(Color.clear)
+                        .listRowInsets(EdgeInsets())
+                    } else {
                         Button(action: {
                             HapticManager.shared.impact(style: .medium)
-                            Task {
-                                let success = await viewModel.completeGoal()
-                                if success { dismiss() }
-                            }
+                            showCompleteConfirmation = true
                         }) {
                             Text("Concluir meta")
                         }
@@ -55,8 +66,8 @@ public struct GoalDetailView: View {
                         .listRowBackground(Color.clear)
                         .listRowInsets(EdgeInsets())
                     }
-                    .requires(.manageGoals)
                 }
+                .requires(.manageGoals)
 
                 Section {
                     Button(action: {
@@ -136,6 +147,21 @@ public struct GoalDetailView: View {
                 }
             } message: {
                 Text("Tem certeza que deseja excluir esta meta? Esta ação não pode ser desfeita.")
+            }
+            .confirmationDialog(
+                Text("Concluir esta meta?"),
+                isPresented: $showCompleteConfirmation,
+                titleVisibility: .visible
+            ) {
+                Button("Concluir meta") {
+                    Task {
+                        let ok = await viewModel.completeGoal()
+                        if ok { dismiss() }
+                    }
+                }
+                Button("Cancelar", role: .cancel) { }
+            } message: {
+                Text("Ela sai do painel do semestre e passa a contar como conquista. Dá para reabrir depois.")
             }
             .overlay {
                 if viewModel.isLoading {

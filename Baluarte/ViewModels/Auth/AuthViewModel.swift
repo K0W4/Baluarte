@@ -48,7 +48,22 @@ public final class AuthViewModel {
     /// A code captured from a shared link before the person is ready to redeem it.
     public var pendingInviteCode: String?
 
-    public var activeChapterName: String { activeChapter?.name ?? "seu Capítulo" }
+    public var activeChapterName: String { activeChapter?.name ?? String(localized: "seu Capítulo") }
+
+    /// Os Capítulos de que a pessoa é Fundadora. Excluir a conta com um destes em aberto
+    /// deixaria o Capítulo órfão — `leave_chapter` recusa o último Fundador exatamente por
+    /// isso, e a exclusão de conta precisa dizer a mesma coisa antes, não depois.
+    public var ownedChapterNames: [String] {
+        memberships
+            .filter { $0.accessLevel == .owner }
+            .compactMap { chaptersById[$0.chapterId]?.name }
+            .sorted()
+    }
+
+    /// Os nomes de todos os Capítulos de que a pessoa sai ao excluir a conta.
+    public var allChapterNames: [String] {
+        memberships.compactMap { chaptersById[$0.chapterId]?.name }.sorted()
+    }
 
     public func chapterName(for membership: ChapterMembership) -> String? {
         chaptersById[membership.chapterId]?.name

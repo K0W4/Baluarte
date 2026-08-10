@@ -102,25 +102,27 @@ public final class GoalDetailViewModel {
             return true
         } catch {
             if error is CancellationError { return false }
-            print("❌ Supabase Error: \(error)")
             errorMessage = AppError.from(error).userMessage
             isLoading = false
             return false
         }
     }
     
-    public func completeGoal() async -> Bool {
+    /// Concluir e reabrir são a mesma escrita, e existir nas duas direções é o ponto: sem
+    /// reabrir, um toque acidental encerrava uma meta do semestre e a única saída era
+    /// apagá-la e recriar do zero, perdendo o histórico.
+    public func completeGoal(_ completed: Bool = true) async -> Bool {
         isLoading = true
         errorMessage = nil
-        
+
         var updatedGoal = goal
-        updatedGoal.isCompleted = true
-        updatedGoal.completedAt = Date()
-        
+        updatedGoal.isCompleted = completed
+        updatedGoal.completedAt = completed ? Date() : nil
+
         do {
             try await goalService.updateGoal(updatedGoal)
             self.goal = updatedGoal
-            self.isCompleted = true
+            self.isCompleted = completed
             isLoading = false
             return true
         } catch {

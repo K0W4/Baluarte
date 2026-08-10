@@ -69,6 +69,14 @@ struct ProfileView: View {
                         .frame(minHeight: Spacing.minTouchTarget)
                         .accessibilityIdentifier("profile.signOut")
 
+                    } header: {
+                        Text("Ações da Conta")
+                    }
+
+                    // A exclusão sai da vizinhança do "Sair da conta": as duas dividiam
+                    // 44pt uma da outra, e a irreparável era a última da lista — a posição
+                    // que o polegar alcança melhor e que a memória serial mais retém.
+                    Section {
                         Button(role: .destructive) {
                             showDeleteAccountAlert = true
                         } label: {
@@ -76,8 +84,8 @@ struct ProfileView: View {
                         }
                         .frame(minHeight: Spacing.minTouchTarget)
                         .accessibilityIdentifier("profile.deleteAccount")
-                    } header: {
-                        Text("Ações da Conta")
+                    } footer: {
+                        Text("Apaga sua conta, seus dados e seus vínculos com os Capítulos. Não há como desfazer.")
                     }
                 }
                 .listStyle(.insetGrouped)
@@ -103,13 +111,17 @@ struct ProfileView: View {
                 EditProfileView(profile: profile)
             }
         }
-        .alert("Excluir conta", isPresented: $showDeleteAccountAlert) {
-            Button("Cancelar", role: .cancel) { }
-            Button("Excluir", role: .destructive) {
-                Task { await authViewModel.deleteAccount() }
+        .alert(deleteAlertTitle, isPresented: $showDeleteAccountAlert) {
+            if authViewModel.ownedChapterNames.isEmpty {
+                Button("Cancelar", role: .cancel) { }
+                Button("Excluir conta", role: .destructive) {
+                    Task { await authViewModel.deleteAccount() }
+                }
+            } else {
+                Button("Entendi", role: .cancel) { }
             }
         } message: {
-            Text("Esta ação é irreversível. Todos os seus dados serão apagados e você perderá o acesso ao app.")
+            Text(deleteAlertMessage)
         }
         // Sem isto, uma recusa do servidor morre no ViewModel e o botão parece
         // simplesmente não funcionar.
@@ -120,6 +132,34 @@ struct ProfileView: View {
             ),
             message: authViewModel.errorMessage ?? "",
             style: .error
+        )
+    }
+
+    private var deleteAlertTitle: String {
+        authViewModel.ownedChapterNames.isEmpty
+            ? String(localized: "Excluir conta")
+            : String(localized: "Transfira a posse antes")
+    }
+
+    /// O alerta dizia só "todos os seus dados serão apagados". Quem é Fundador não sabia se
+    /// o Capítulo ficaria sem dono, se a exclusão seria recusada, ou se precisava transferir
+    /// a posse antes — e, se a função recusasse, nem a explicação chegava. Agora a tela
+    /// responde antes de deixar tentar.
+    private var deleteAlertMessage: String {
+        let donos = authViewModel.ownedChapterNames
+        if !donos.isEmpty {
+            return String(
+                format: String(localized: "Você é o Fundador de %@. Transfira a posse a outra pessoa antes de excluir a conta, para o Capítulo não ficar sem responsável."),
+                donos.joined(separator: ", ")
+            )
+        }
+        let capitulos = authViewModel.allChapterNames
+        if capitulos.isEmpty {
+            return String(localized: "Esta ação é irreversível. Sua conta e seus dados serão apagados.")
+        }
+        return String(
+            format: String(localized: "Esta ação é irreversível. Sua conta será apagada e você sai de %@, perdendo presenças, tarefas e comissões."),
+            capitulos.joined(separator: ", ")
         )
     }
 }
