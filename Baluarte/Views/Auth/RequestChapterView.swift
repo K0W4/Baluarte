@@ -146,9 +146,7 @@ private struct RequestChapterConfirmation: View {
             VStack(spacing: Spacing.lg) {
                 Spacer()
 
-                Image(systemName: "paperplane.circle.fill")
-                    .font(.system(size: 56))
-                    .foregroundStyle(Theme.accent)
+                HeroIcon("paperplane.circle.fill")
 
                 VStack(spacing: Spacing.xs) {
                     Text("Recebemos sua solicitação")

@@ -57,7 +57,10 @@ struct InsightSectionCard: View {
             RoundedRectangle(cornerRadius: Spacing.cornerRadius)
                 .stroke(Theme.border, lineWidth: 1)
         )
-        .accessibilityElement(children: .combine)
+        // O card contém dois botões — recolher e a ação sugerida pela análise. Com
+        // `.combine` os dois sumiam da árvore e sobrava um bloco de texto longo: a ação
+        // que é o ponto inteiro do card ficava inalcançável.
+        .accessibilityElement(children: .contain)
     }
 
     private var headerRow: some View {

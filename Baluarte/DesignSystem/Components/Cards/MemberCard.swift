@@ -45,7 +45,11 @@ public struct MemberCard: View {
                 .foregroundColor(Theme.accent)
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(member.fullName), \(member.role.map(ChapterRole.displayName) ?? ChapterRole.noRole), \(member.isActive ? String(localized: "Ativo") : String(localized: "Inativo"))")
+        .accessibilityLabel("\(member.fullName), \(member.role.map(ChapterRole.displayName) ?? ChapterRole.noRole)")
+        // Nível de acesso e status de conta são justamente o que decide a quem delegar e a
+        // quem mandar convite. Como o rótulo explícito substitui o conteúdo combinado, as
+        // etiquetas desenhadas no card nunca chegavam a ser faladas.
+        .accessibilityValue(accessibilityStateValue)
         .accessibilityHint("Toque para ver detalhes do membro")
         .accessibilityAddTraits(.isButton)
         .padding(Spacing.md)
@@ -66,6 +70,18 @@ public struct MemberCard: View {
             .fixedSize(horizontal: true, vertical: false)
     }
     
+    /// O que as etiquetas do card dizem visualmente, na ordem em que importam para quem
+    /// administra: quem tem poder, quem ainda não entrou, e o resto.
+    private var accessibilityStateValue: String {
+        var estados: [String] = []
+        if member.level >= .admin { estados.append(member.level.displayName) }
+        if !member.hasAccount { estados.append(String(localized: "Sem conta")) }
+        estados.append(member.isActive ? String(localized: "Ativo") : String(localized: "Inativo"))
+        if member.isSenior { estados.append(String(localized: "Sênior")) }
+        if member.isMason { estados.append(String(localized: "Maçom")) }
+        return estados.joined(separator: ", ")
+    }
+
     private func abbreviatedName(for name: String) -> String {
         let components = name.components(separatedBy: .whitespacesAndNewlines).filter { !$0.isEmpty }
         if components.count >= 2 {

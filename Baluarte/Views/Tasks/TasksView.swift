@@ -238,6 +238,12 @@ public struct TasksView: View {
             .padding(.top, Spacing.sm)
             .padding(.bottom, Spacing.md)
         }
+        // A direção do chevron era o único indicador de estado: o VoiceOver anunciava
+        // "botão" nos dois, e quem não vê o chevron tocava, a lista mudava de tamanho e
+        // nada era dito.
+        .accessibilityAddTraits(.isHeader)
+        .accessibilityValue(isExpanded.wrappedValue ? "expandido" : "recolhido")
+        .accessibilityHint(isExpanded.wrappedValue ? "Toca duas vezes para recolher" : "Toca duas vezes para expandir")
     }
 
     @ViewBuilder
@@ -316,10 +322,21 @@ private struct TaskProgressCard: View {
         }
         .padding(Spacing.md)
         .background(.regularMaterial)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .clipShape(RoundedRectangle(cornerRadius: Spacing.cornerRadius))
         .overlay(
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: Spacing.cornerRadius)
                 .stroke(Theme.border, lineWidth: 1)
+        )
+        // Eram três `Text` soltos e duas cápsulas mudas: o VoiceOver lia fragmentos
+        // desconexos e a barra, que é o principal sinal de progresso da tela, não era
+        // percebida de forma nenhuma.
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(title)
+        .accessibilityValue(
+            String(
+                format: String(localized: "%1$lld de %2$lld concluídas, %3$lld por cento"),
+                completed, total, Int((progress * 100).rounded())
+            )
         )
     }
 }

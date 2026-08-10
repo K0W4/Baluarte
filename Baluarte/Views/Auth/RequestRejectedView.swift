@@ -16,10 +16,7 @@ struct RequestRejectedView: View {
                 VStack(spacing: Spacing.lg) {
                     Spacer()
 
-                    Image(systemName: "envelope.badge.shield.half.filled")
-                        .font(.system(size: 56))
-                        .foregroundStyle(Theme.textSecondary)
-                        .accessibilityHidden(true)
+                    HeroIcon("person.crop.circle.badge.questionmark", tint: Theme.textSecondary)
 
                     VStack(spacing: Spacing.sm) {
                         Text("Solicitação não aprovada")

@@ -32,7 +32,7 @@ struct AnalysisView: View {
                             Text(error)
                                 .foregroundColor(Theme.destructive)
                                 .padding()
-                                .frame(height: 300)
+                                .frame(minHeight: 300)
                         } else {
                             let displayGrouped: [(key: AnalysisCategory, value: [ConsolidatedInsight])] = viewModel.isLoading ? [
                                 (key: .membership, value: [ConsolidatedInsight(category: .membership, severity: .info, items: [DisplayedAnalysis.skeletonList[0]], primaryActionLabel: nil)]),
@@ -52,7 +52,7 @@ struct AnalysisView: View {
                                         .multilineTextAlignment(.center)
                                 }
                                 .padding(Spacing.xl)
-                                .frame(height: 300)
+                                .frame(minHeight: 300)
                             } else {
                                 VStack(spacing: Spacing.md) {
                                     ForEach(displayGrouped, id: \.key) { group in

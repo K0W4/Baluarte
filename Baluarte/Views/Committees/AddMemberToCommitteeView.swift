@@ -32,9 +32,16 @@ public struct AddMemberToCommitteeView: View {
                                 Spacer()
                                 Image(systemName: "plus.circle")
                                     .foregroundColor(Theme.accent)
+                                    .accessibilityHidden(true)
                             }
+                            .frame(minHeight: Spacing.minTouchTarget)
+                            .contentShape(Rectangle())
                         }
                         .buttonStyle(.plain)
+                        // Sem isto o VoiceOver lia "Fulano, plus circle" e não dizia que o
+                        // toque adiciona e fecha a folha.
+                        .accessibilityLabel(member.fullName)
+                        .accessibilityHint("Adiciona à comissão e fecha")
                     }
                 }
             }
@@ -50,6 +57,7 @@ public struct AddMemberToCommitteeView: View {
                             .font(.body.weight(.semibold))
                     }
                     .foregroundColor(Theme.accent)
+                    .accessibilityLabel("Fechar")
                 }
             }
         }
