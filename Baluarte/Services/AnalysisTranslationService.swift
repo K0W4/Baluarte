@@ -12,9 +12,12 @@ final class AnalysisTranslationService: AnalysisTranslationServiceProtocol {
         switch analysis.category {
         case .membership:
             if let countStr = analysis.contextData["agingOutCount"], let count = Int(countStr) {
-                generatedTitle = "Oportunidade de Renovação"
-                generatedMessage = "\(count) irmão(s) completam 21 anos neste semestre. Hora de planejar a próxima iniciação."
-                suggestedAction = "Ver Membros"
+                generatedTitle = String(localized: "Oportunidade de Renovação")
+                generatedMessage = String(
+                    format: String(localized: "%lld irmãos completam 21 anos neste semestre. Hora de planejar a próxima iniciação."),
+                    count
+                )
+                suggestedAction = String(localized: "Ver Membros")
             } else {
                 generatedTitle = analysis.fallbackTitle
                 generatedMessage = analysis.fallbackMessage
@@ -23,7 +26,7 @@ final class AnalysisTranslationService: AnalysisTranslationServiceProtocol {
             if let missing = analysis.contextData["missingCommittee"] {
                 generatedTitle = missing
                 generatedMessage = ""
-                suggestedAction = "Criar Comissão"
+                suggestedAction = String(localized: "Criar Comissão")
             } else {
                 generatedTitle = analysis.fallbackTitle
                 generatedMessage = analysis.fallbackMessage
@@ -40,15 +43,18 @@ final class AnalysisTranslationService: AnalysisTranslationServiceProtocol {
                     generatedMessage = ""
                 }
                 
-                suggestedAction = "Criar Evento"
+                suggestedAction = String(localized: "Criar Evento")
             } else {
                 generatedTitle = analysis.fallbackTitle
                 generatedMessage = analysis.fallbackMessage
             }
         case .engagement:
             if let countStr = analysis.contextData["count"], let count = Int(countStr) {
-                generatedTitle = "Acolhimento Fraternal"
-                generatedMessage = "\(count) irmão(s) faltaram às últimas 3 reuniões. A Hospitalaria deve entrar em contato."
+                generatedTitle = String(localized: "Acolhimento Fraternal")
+                generatedMessage = String(
+                    format: String(localized: "%lld irmãos faltaram às últimas 3 reuniões. A Hospitalaria deve entrar em contato."),
+                    count
+                )
                 suggestedAction = nil
             } else {
                 generatedTitle = analysis.fallbackTitle
@@ -57,11 +63,11 @@ final class AnalysisTranslationService: AnalysisTranslationServiceProtocol {
         case .financial:
             if let deadline = analysis.contextData["deadline"] {
                 if deadline.contains("Capitação") {
-                    generatedTitle = "Saúde Financeira em Dia"
-                    generatedMessage = "Prazo da Capitação Anual se aproxima. Verifique se o caixa está preparado."
+                    generatedTitle = String(localized: "Saúde Financeira em Dia")
+                    generatedMessage = String(localized: "Prazo da Capitação Anual se aproxima. Verifique se o caixa está preparado.")
                 } else {
-                    generatedTitle = "Fechamento de Ouro"
-                    generatedMessage = "Fim de semestre: organize as contas e feche o caixa para a próxima gestão."
+                    generatedTitle = String(localized: "Fechamento de Ouro")
+                    generatedMessage = String(localized: "Fim de semestre: organize as contas e feche o caixa para a próxima gestão.")
                 }
                 suggestedAction = nil
             } else {

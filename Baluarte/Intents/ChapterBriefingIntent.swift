@@ -29,10 +29,7 @@ public struct ChapterBriefingIntent: AppIntent {
         if let events = events {
             let upcomingEvents = events.filter { $0.scheduledDate > Date() }.sorted { $0.scheduledDate < $1.scheduledDate }
             if let nextEvent = upcomingEvents.first {
-                let formatter = DateFormatter()
-                formatter.locale = Locale(identifier: "pt_BR")
-                formatter.dateFormat = "EEEE"
-                let weekday = formatter.string(from: nextEvent.scheduledDate)
+                let weekday = nextEvent.scheduledDate.formatted(.dateTime.weekday(.wide))
                 dialog += "O próximo evento é \(nextEvent.title) neste(a) \(weekday)."
             } else {
                 dialog += "Não há próximos eventos agendados."

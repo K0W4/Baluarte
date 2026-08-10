@@ -61,14 +61,7 @@ public struct TaskCard: View {
         )
     }
     
-    private static let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "pt_BR")
-        formatter.dateFormat = "dd/MM/yy"
-        return formatter
-    }()
-    
     private func formatDate(_ date: Date) -> String {
-        Self.dateFormatter.string(from: date)
+        date.formatted(.dateTime.day().month(.twoDigits).year(.twoDigits))
     }
 }

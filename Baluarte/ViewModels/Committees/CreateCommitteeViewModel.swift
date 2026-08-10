@@ -10,14 +10,11 @@ public final class CreateCommitteeViewModel {
     public var isFetchingMembers: Bool = false
     public var errorMessage: String? = nil
     
-    public enum MemberFilter: String, CaseIterable {
-        case todos = "Todos"
-        case ativos = "Ativos"
-        case seniors = "Sêniors"
-        case macons = "Maçons"
-    }
-    
-    public var selectedFilter: MemberFilter = .todos
+    /// Reusa `MembersFilter` em vez de repetir os quatro casos: o enum que existia aqui
+    /// carregava os rótulos no próprio `rawValue`, e a View os desenhava com
+    /// `Text(filter.rawValue)` — inicializador que **não** localiza, então o segmentado
+    /// ficava em português nos três idiomas.
+    public var selectedFilter: MembersFilter = .todos
     
     public var filteredMembers: [Member] {
         switch selectedFilter {

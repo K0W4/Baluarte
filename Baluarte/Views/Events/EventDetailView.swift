@@ -23,9 +23,7 @@ public struct EventDetailView: View {
                     }
                     
                     DatePicker("Data", selection: $viewModel.scheduledDate, displayedComponents: .date)
-                        .environment(\.locale, Locale(identifier: "pt_BR"))
                     DatePicker("Horário", selection: $viewModel.scheduledDate, displayedComponents: .hourAndMinute)
-                        .environment(\.locale, Locale(identifier: "pt_BR"))
                 } header: {
                     Text("Informações Básicas")
                 }

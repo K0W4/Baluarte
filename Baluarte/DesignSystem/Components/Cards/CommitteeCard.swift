@@ -129,15 +129,11 @@ public struct CommitteeCard: View {
         )
     }
     
-    private static let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "pt_BR")
-        formatter.dateFormat = "dd/MM"
-        return formatter
-    }()
-    
+    /// Sem `DateFormatter` e sem locale travado: `dd/MM` fixava a ordem dia-mês, então
+    /// quem usa o app em inglês lia "08/12" e entendia 8 de dezembro numa tarefa que vence
+    /// em 12 de agosto. Ambiguidade silenciosa num prazo só aparece quando já passou.
     private func dueDateString(from date: Date) -> String {
-        Self.dateFormatter.string(from: date)
+        date.formatted(.dateTime.day().month())
     }
 }
 

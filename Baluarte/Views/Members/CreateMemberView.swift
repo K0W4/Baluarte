@@ -41,7 +41,6 @@ public struct CreateMemberView: View {
                         }
                     
                     DatePicker("Data de Nascimento", selection: $viewModel.birthdate, displayedComponents: .date)
-                        .environment(\.locale, Locale(identifier: "pt_BR"))
                 } header: {
                     Text("Dados Pessoais")
                 }

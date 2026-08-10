@@ -175,7 +175,7 @@ private struct ReviewJoinRequestSheet: View {
 
                     Picker("Cargo", selection: $viewModel.role) {
                         ForEach(JoinRequestsViewModel.memberRoles, id: \.self) { role in
-                            Text(role).tag(role)
+                            Text(ChapterRole.displayName(for: role)).tag(role)
                         }
                     }
                     .onChange(of: viewModel.role) { _, _ in
