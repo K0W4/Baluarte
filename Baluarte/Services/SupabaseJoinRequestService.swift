@@ -158,7 +158,15 @@ public final class SupabaseJoinRequestService: JoinRequestServiceProtocol {
     public func fetchPendingRequests(for chapterId: UUID) async throws -> [PendingJoinRequest] {
         let rows: [PendingRow] = try await client
             .from("join_request")
-            .select("*, member(full_name)")
+            // `join_request` referencia `member` duas vezes -- `member_id`, quem pediu, e
+            // `reviewed_by`, quem respondeu. Um embed por nome de tabela é ambíguo entre as
+            // duas, e o PostgREST responde **300 Multiple Choices**, que o `AppError` não
+            // mapeia e vira "o servidor está temporariamente indisponível". Efeito: a fila
+            // de entrada nunca carregava, e a tela ainda afirmava não haver ninguém.
+            //
+            // Desambiguar pela coluna, e não pelo nome da constraint, é o que sobrevive a
+            // um rename; o `member:` na frente preserva a chave que o `PendingRow` decodifica.
+            .select("*, member:member_id(full_name)")
             .eq("chapter_id", value: chapterId)
             .eq("status", value: JoinRequestStatus.pending.rawValue)
             .order("created_at", ascending: true)
