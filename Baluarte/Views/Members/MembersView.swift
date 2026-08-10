@@ -66,8 +66,6 @@ public struct MembersView: View {
                 }
                 .scrollIndicators(.hidden)
                 .contentMargins(.bottom, 100, for: .scrollContent)
-                .scrollEdgeEffectStyle(.hard, for: .top)
-                .scrollEdgeEffectStyle(.hard, for: .bottom)
                 .background(Theme.backgroundPrimary)
                 .tint(Theme.accent)
         .refreshable {
@@ -83,7 +81,7 @@ public struct MembersView: View {
                         showingCreateMember = true
                     } label: {
                         Image(systemName: "plus")
-                            .foregroundColor(Theme.accentText)
+                            .foregroundColor(Theme.accent)
                     }
                     .accessibilityLabel("Adicionar novo membro")
                     .requires(.manageRoster)

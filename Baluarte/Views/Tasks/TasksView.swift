@@ -82,7 +82,7 @@ public struct TasksView: View {
                         HapticManager.shared.impact(style: .medium)
                         showingCreateTask = true
                     }) {
-                        Image(systemName: "plus").foregroundColor(Theme.accentText)
+                        Image(systemName: "plus").foregroundColor(Theme.accent)
                     }
                     .accessibilityLabel("Criar nova tarefa")
                 }
@@ -181,7 +181,7 @@ public struct TasksView: View {
                                     .font(Typography.headline)
                                 Spacer()
                                 Image(systemName: !isCollapsed ? "chevron.down" : "chevron.right")
-                                    .foregroundColor(Theme.accentText)
+                                    .foregroundColor(Theme.accent)
                             }
                             .foregroundColor(Theme.textPrimary)
                             .padding(.horizontal, Spacing.screenEdgePadding)
@@ -214,8 +214,6 @@ public struct TasksView: View {
         .scrollContentBackground(.hidden)
         .scrollIndicators(.hidden)
         .contentMargins(.bottom, 100, for: .scrollContent)
-        .scrollEdgeEffectStyle(.hard, for: .top)
-        .scrollEdgeEffectStyle(.hard, for: .bottom)
         .refreshable {
             await viewModel.loadData()
         }
@@ -231,7 +229,7 @@ public struct TasksView: View {
                     .font(Typography.headline)
                 Spacer()
                 Image(systemName: isExpanded.wrappedValue ? "chevron.down" : "chevron.right")
-                    .foregroundColor(Theme.accentText)
+                    .foregroundColor(Theme.accent)
             }
             .foregroundColor(Theme.textPrimary)
             .padding(.horizontal, Spacing.screenEdgePadding)

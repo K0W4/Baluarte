@@ -86,7 +86,7 @@ public struct CommitteeDetailView: View {
                             } label: {
                                 Image(systemName: "plus")
                                     .font(Typography.title2)
-                                    .foregroundColor(Theme.accentText)
+                                    .foregroundColor(Theme.accent)
                                     .frame(minWidth: Spacing.minTouchTarget, minHeight: Spacing.minTouchTarget)
                                     .contentShape(Rectangle())
                             }
@@ -142,7 +142,7 @@ public struct CommitteeDetailView: View {
                         Image(systemName: "xmark")
                             .font(.body.weight(.semibold))
                     }
-                    .foregroundColor(Theme.accentText)
+                    .foregroundColor(Theme.accent)
                     .accessibilityLabel("Fechar")
                 }
                 

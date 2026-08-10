@@ -57,7 +57,7 @@ struct InviteManagementView: View {
                     Button(action: { dismiss() }) {
                         Image(systemName: "xmark").font(.body.weight(.semibold))
                     }
-                    .foregroundColor(Theme.accentText)
+                    .foregroundColor(Theme.accent)
                     .accessibilityLabel("Fechar")
                 }
 
@@ -68,7 +68,7 @@ struct InviteManagementView: View {
                     } label: {
                         Image(systemName: "plus").font(.body.weight(.semibold))
                     }
-                    .foregroundColor(Theme.accentText)
+                    .foregroundColor(Theme.accent)
                     .accessibilityLabel("Gerar novo convite")
                 }
             }

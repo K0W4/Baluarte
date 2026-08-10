@@ -41,7 +41,7 @@ public struct CommitteeCard: View {
                 
                 Image(systemName: "chevron.right")
                     .font(Typography.body)
-                    .foregroundColor(Theme.accentText)
+                    .foregroundColor(Theme.accent)
             }
             
             Divider()

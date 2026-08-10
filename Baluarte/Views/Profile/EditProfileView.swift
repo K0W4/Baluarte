@@ -71,7 +71,7 @@ struct EditProfileView: View {
                     }) {
                         Image(systemName: "xmark")
                             .font(.body.bold())
-                            .foregroundColor(Theme.accentText)
+                            .foregroundColor(Theme.accent)
                     }
                     .accessibilityLabel("Fechar")
                 }

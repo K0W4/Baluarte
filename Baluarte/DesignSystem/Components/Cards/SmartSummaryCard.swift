@@ -58,7 +58,7 @@ public struct SmartSummaryCard: View {
                 }) {
                     Image(systemName: "arrow.triangle.2.circlepath")
                         .font(Typography.headline)
-                        .foregroundColor(Theme.accentText)
+                        .foregroundColor(Theme.accent)
                         .frame(minWidth: Spacing.minTouchTarget, minHeight: Spacing.minTouchTarget)
                         .contentShape(Rectangle())
                 }

@@ -106,12 +106,6 @@ public struct HomeView: View {
             }
             .scrollIndicators(.hidden)
             .contentMargins(.bottom, 100, for: .scrollContent)
-            // O desfoque suave do iOS 26 não segura conteúdo saturado: rolando, os anéis
-            // das metas apareciam nítidos atrás do título, e na Análise o sistema escolhia
-            // título branco por causa do vermelho que passava embaixo — branco sobre o
-            // cinza claro da faixa dá 1,92:1.
-            .scrollEdgeEffectStyle(.hard, for: .top)
-            .scrollEdgeEffectStyle(.hard, for: .bottom)
             .background(Theme.backgroundPrimary)
             .navigationTitle(viewModel.greetingTitle)
             .toolbarTitleDisplayMode(.inlineLarge)

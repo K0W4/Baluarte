@@ -90,7 +90,7 @@ struct InsightSectionCard: View {
 
                 Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
                     .font(Typography.caption1)
-                    .foregroundColor(Theme.accentText)
+                    .foregroundColor(Theme.accent)
             }
         }
         .buttonStyle(.plain)

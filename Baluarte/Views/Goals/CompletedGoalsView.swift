@@ -85,7 +85,7 @@ public struct CompletedGoalsView: View {
                         dismiss()
                     }) {
                         Image(systemName: "xmark")
-                            .foregroundColor(Theme.accentText)
+                            .foregroundColor(Theme.accent)
                     }
                     .accessibilityLabel("Fechar")
                 }
