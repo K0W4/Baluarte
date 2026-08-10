@@ -16,7 +16,7 @@ struct JoinRequestsView: View {
 
                 if viewModel.isLoading {
                     ProgressView().tint(Theme.accent)
-                } else if viewModel.requests.isEmpty {
+                } else if viewModel.requests.isEmpty && viewModel.errorMessage == nil {
                     EmptyQueueState()
                         .padding(Spacing.screenEdgePadding)
                 } else {
