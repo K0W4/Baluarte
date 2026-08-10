@@ -10,6 +10,15 @@ name: CI
 #
 # Os de interface rodam apenas em PR para `main`. Em `dev` o ciclo é curto e os
 # unitários pegam quase tudo; antes da versão que vai para a loja, vale esperar.
+#
+# ATENÇÃO AO RENOMEAR UM JOB. O `name:` de cada um é o nome pelo qual os rulesets de
+# `main` e de `dev` exigem o check. Trocar o texto aqui sem trocar lá deixa o PR
+# eternamente em "Expected — Waiting for status to be reported", porque o GitHub
+# espera um check que não existe mais. Já aconteceu uma vez, ao dividir este arquivo
+# em três jobs.
+#
+#   dev  exige: Testes de unidade · Sondas de RLS
+#   main exige: Testes de unidade · Testes de interface · Sondas de RLS
 
 on:
   # Só em pull request. Um gatilho de push dispara uma execução paralela, porque a
