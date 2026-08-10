@@ -12860,6 +12860,295 @@
           }
         }
       }
+    },
+    "Tornar administrador?": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Make them an administrator?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Hacerlo administrador?"
+          }
+        }
+      }
+    },
+    "Remover a administração?": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove administrator access?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Quitar la administración?"
+          }
+        }
+      }
+    },
+    "Remover administração": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove administration"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quitar administración"
+          }
+        }
+      }
+    },
+    "%@ poderá editar o quadro, criar eventos, metas e comissões, e aprovar quem pede para entrar.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ will be able to edit the roster, create events, goals and committees, and approve people asking to join."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ podrá editar el cuadro, crear eventos, metas y comités, y aprobar a quienes piden entrar."
+          }
+        }
+      }
+    },
+    "%@ deixa de administrar o Capítulo e passa a ver o app como qualquer membro.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ stops administering the Chapter and sees the app as any member does."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ deja de administrar el Capítulo y ve la app como cualquier miembro."
+          }
+        }
+      }
+    },
+    "%@ passa a ser o Fundador do Capítulo e você vira administrador. Só o novo Fundador poderá devolver a posse.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ becomes Founder of the Chapter and you become an administrator. Only the new Founder can hand ownership back."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ pasa a ser el Fundador del Capítulo y tú te conviertes en administrador. Solo el nuevo Fundador podrá devolver la propiedad."
+          }
+        }
+      }
+    },
+    "Excluir o cadastro de %@? Esta ação não pode ser desfeita.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete %@'s record? This cannot be undone."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Eliminar el registro de %@? Esta acción no se puede deshacer."
+          }
+        }
+      }
+    },
+    "Transfira a posse antes": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transfer ownership first"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transfiere la propiedad primero"
+          }
+        }
+      }
+    },
+    "Você é o Fundador de %@. Transfira a posse a outra pessoa antes de excluir a conta, para o Capítulo não ficar sem responsável.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are the Founder of %@. Hand ownership to someone else before deleting your account, so the Chapter is not left without anyone in charge."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eres el Fundador de %@. Transfiere la propiedad a otra persona antes de eliminar tu cuenta, para que el Capítulo no quede sin responsable."
+          }
+        }
+      }
+    },
+    "Esta ação é irreversível. Sua conta e seus dados serão apagados.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This cannot be undone. Your account and your data will be erased."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esta acción no se puede deshacer. Tu cuenta y tus datos serán borrados."
+          }
+        }
+      }
+    },
+    "Esta ação é irreversível. Sua conta será apagada e você sai de %@, perdendo presenças, tarefas e comissões.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This cannot be undone. Your account will be erased and you will leave %@, losing attendance, tasks and committees."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esta acción no se puede deshacer. Tu cuenta será borrada y saldrás de %@, perdiendo asistencias, tareas y comités."
+          }
+        }
+      }
+    },
+    "Apaga sua conta, seus dados e seus vínculos com os Capítulos. Não há como desfazer.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erases your account, your data and your ties to the Chapters. There is no undo."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Borra tu cuenta, tus datos y tus vínculos con los Capítulos. No hay forma de deshacer."
+          }
+        }
+      }
+    },
+    "Reabrir meta": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reopen goal"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reabrir meta"
+          }
+        }
+      }
+    },
+    "Concluir esta meta?": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Complete this goal?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Completar esta meta?"
+          }
+        }
+      }
+    },
+    "Ela sai do painel do semestre e passa a contar como conquista. Dá para reabrir depois.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "It leaves the term's board and counts as an achievement. You can reopen it later."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sale del panel del semestre y pasa a contar como logro. Puedes reabrirla después."
+          }
+        }
+      }
+    },
+    "seu Capítulo": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "your Chapter"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "tu Capítulo"
+          }
+        }
+      }
+    },
+    "Conceder administração": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grant administration"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conceder administración"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
