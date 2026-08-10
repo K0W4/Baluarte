@@ -32,7 +32,6 @@ public struct CreateGoalView: View {
                         .keyboardType(.decimalPad)
                         
                     DatePicker("Data Limite", selection: $viewModel.targetDate, displayedComponents: .date)
-                        .environment(\.locale, Locale(identifier: "pt_BR"))
                 } header: {
                     Text("Informações Básicas")
                 }

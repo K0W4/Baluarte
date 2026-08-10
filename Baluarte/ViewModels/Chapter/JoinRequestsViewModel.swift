@@ -21,19 +21,17 @@ public final class JoinRequestsViewModel {
     private let memberService: MemberServiceProtocol
     private let chapterId: UUID
 
-    public static let memberRoles = [
-        "Membro", "Mestre Conselheiro", "1º Conselheiro", "2º Conselheiro",
-        "Escrivão", "Tesoureiro", "Hospitalário"
-    ]
+    /// Os cargos vêm de `ChapterRole`, e não de uma cópia. As duas listas que existiam
+    /// aqui duplicavam `activeRoles` e `officerRoles` — e como o `Picker` exibia o valor
+    /// cru, o cargo aparecia em português para quem usa o app em inglês ou espanhol.
+    /// `ChapterRole.displayName(for:)` é o que traduz; o valor gravado segue em português,
+    /// que é a nomenclatura oficial da Ordem.
+    public static let memberRoles = ChapterRole.activeRoles
 
-    /// Roles that normally run the chapter. Used only to *suggest* an access level —
-    /// a cargo lasts a semester and must never grant permission by itself.
-    private static let rolesSuggestingAdmin: Set<String> = [
-        "Mestre Conselheiro", "1º Conselheiro", "2º Conselheiro", "Escrivão", "Consultor"
-    ]
-
+    /// Cargos que normalmente administram o Capítulo. Serve só para *sugerir* um nível de
+    /// acesso — cargo dura uma gestão e nunca concede permissão por si.
     public var suggestsAdmin: Bool {
-        Self.rolesSuggestingAdmin.contains(role)
+        ChapterRole.officerRoles.contains(role)
     }
 
     public init(

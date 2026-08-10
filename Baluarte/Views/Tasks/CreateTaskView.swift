@@ -29,7 +29,6 @@ public struct CreateTaskView: View {
                         .submitLabel(.done)
                         .onSubmit { focusedField = nil }
                     DatePicker("Prazo", selection: $viewModel.dueDate, displayedComponents: .date)
-                        .environment(\.locale, Locale(identifier: "pt_BR"))
                 } header: {
                     Text("Informações Básicas")
                 }

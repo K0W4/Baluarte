@@ -21,16 +21,12 @@ public struct EventCard: View {
         return "star.fill"
     }
     
-    private static let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "pt_BR")
-        formatter.dateFormat = "EEEE, dd 'de' MMMM 'às' HH:mm'.'"
-        return formatter
-    }()
-    
     private var dateString: String {
-        let formatted = Self.dateFormatter.string(from: event.scheduledDate)
-        return formatted.prefix(1).capitalized + formatted.dropFirst()
+        // O formato sai do sistema, não de um padrão escrito à mão: o `.capitalized` que
+        // havia aqui também quebra em idiomas que não capitalizam dia da semana.
+        event.scheduledDate.formatted(
+            .dateTime.weekday(.wide).day().month(.wide).hour().minute()
+        )
     }
     
     public var body: some View {

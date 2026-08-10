@@ -36,7 +36,6 @@ public struct CreateEventView: View {
                         Spacer()
                         DatePicker("", selection: $viewModel.scheduledDate, displayedComponents: .date)
                             .labelsHidden()
-                            .environment(\.locale, Locale(identifier: "pt_BR"))
                     }
                     
                     HStack {
@@ -44,7 +43,6 @@ public struct CreateEventView: View {
                         Spacer()
                         DatePicker("", selection: $viewModel.scheduledDate, displayedComponents: .hourAndMinute)
                             .labelsHidden()
-                            .environment(\.locale, Locale(identifier: "pt_BR"))
                     }
                 } header: {
                     Text("Informações Básicas")
