@@ -80,7 +80,7 @@ public struct CreateEventView: View {
                     }) {
                         Image(systemName: "xmark")
                             .font(.body.bold())
-                            .foregroundColor(Theme.accent)
+                            .foregroundColor(Theme.accentText)
                     }
                     .accessibilityLabel("Fechar")
                 }

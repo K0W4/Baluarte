@@ -110,7 +110,7 @@ struct EmailAuthView: View {
                     dismiss()
                 }) {
                     Image(systemName: "chevron.left")
-                        .foregroundColor(Theme.accent)
+                        .foregroundColor(Theme.accentText)
                 }
                 .accessibilityLabel("Voltar")
             }

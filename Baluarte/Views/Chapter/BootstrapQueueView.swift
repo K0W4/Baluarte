@@ -50,7 +50,7 @@ struct BootstrapQueueView: View {
                     Button(action: { dismiss() }) {
                         Image(systemName: "xmark").font(.body.weight(.semibold))
                     }
-                    .foregroundColor(Theme.accent)
+                    .foregroundColor(Theme.accentText)
                     .accessibilityLabel("Fechar")
                 }
             }
@@ -96,7 +96,7 @@ private struct BootstrapRow: View {
 
                 Image(systemName: "chevron.right")
                     .font(Typography.body)
-                    .foregroundColor(Theme.accent)
+                    .foregroundColor(Theme.accentText)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(Spacing.md)
@@ -240,7 +240,7 @@ private struct ReviewBootstrapSheet: View {
                     Button(action: { dismiss() }) {
                         Image(systemName: "xmark").font(.body.weight(.semibold))
                     }
-                    .foregroundColor(Theme.accent)
+                    .foregroundColor(Theme.accentText)
                     .accessibilityLabel("Fechar")
                 }
             }

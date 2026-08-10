@@ -44,7 +44,7 @@ public struct ChapterCard: View {
 
             Image(systemName: "chevron.right")
                 .font(Typography.body)
-                .foregroundColor(Theme.accent)
+                .foregroundColor(Theme.accentText)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .combine)

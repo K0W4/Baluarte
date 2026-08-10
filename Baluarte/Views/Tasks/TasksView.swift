@@ -47,7 +47,6 @@ public struct TasksView: View {
                             .padding(.top, Spacing.screenEdgePadding)
                         }
                         .scrollIndicators(.hidden)
-                        .tint(Theme.accent)
         .refreshable { await viewModel.loadData() }
                     } else {
                         contentList
@@ -83,7 +82,7 @@ public struct TasksView: View {
                         HapticManager.shared.impact(style: .medium)
                         showingCreateTask = true
                     }) {
-                        Image(systemName: "plus").foregroundColor(Theme.accent)
+                        Image(systemName: "plus").foregroundColor(Theme.accentText)
                     }
                     .accessibilityLabel("Criar nova tarefa")
                 }
@@ -182,7 +181,7 @@ public struct TasksView: View {
                                     .font(Typography.headline)
                                 Spacer()
                                 Image(systemName: !isCollapsed ? "chevron.down" : "chevron.right")
-                                    .foregroundColor(Theme.accent)
+                                    .foregroundColor(Theme.accentText)
                             }
                             .foregroundColor(Theme.textPrimary)
                             .padding(.horizontal, Spacing.screenEdgePadding)
@@ -215,7 +214,8 @@ public struct TasksView: View {
         .scrollContentBackground(.hidden)
         .scrollIndicators(.hidden)
         .contentMargins(.bottom, 100, for: .scrollContent)
-        .tint(Theme.accent)
+        .scrollEdgeEffectStyle(.hard, for: .top)
+        .scrollEdgeEffectStyle(.hard, for: .bottom)
         .refreshable {
             await viewModel.loadData()
         }
@@ -231,7 +231,7 @@ public struct TasksView: View {
                     .font(Typography.headline)
                 Spacer()
                 Image(systemName: isExpanded.wrappedValue ? "chevron.down" : "chevron.right")
-                    .foregroundColor(Theme.accent)
+                    .foregroundColor(Theme.accentText)
             }
             .foregroundColor(Theme.textPrimary)
             .padding(.horizontal, Spacing.screenEdgePadding)
@@ -269,7 +269,7 @@ public struct TasksView: View {
                 } label: {
                     Label("Excluir", systemImage: "trash")
                 }
-                .tint(.red)
+                .tint(Theme.destructive)
             }
             .listRowSeparator(.hidden)
             .listRowBackground(Color.clear)
@@ -315,7 +315,7 @@ private struct TaskProgressCard: View {
 
                     Capsule()
                         .frame(width: geometry.size.width * CGFloat(progress), height: 8)
-                        .foregroundColor(Theme.accent)
+                        .foregroundColor(Theme.success)
                 }
             }
             .frame(height: 8)

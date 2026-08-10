@@ -31,7 +31,7 @@ public struct AddMemberToCommitteeView: View {
                                     .foregroundColor(Theme.textPrimary)
                                 Spacer()
                                 Image(systemName: "plus.circle")
-                                    .foregroundColor(Theme.accent)
+                                    .foregroundColor(Theme.accentText)
                                     .accessibilityHidden(true)
                             }
                             .frame(minHeight: Spacing.minTouchTarget)
@@ -56,7 +56,7 @@ public struct AddMemberToCommitteeView: View {
                         Image(systemName: "xmark")
                             .font(.body.weight(.semibold))
                     }
-                    .foregroundColor(Theme.accent)
+                    .foregroundColor(Theme.accentText)
                     .accessibilityLabel("Fechar")
                 }
             }

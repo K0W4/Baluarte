@@ -43,6 +43,18 @@ struct ChapterView: View {
         }
         .navigationTitle("Capítulo")
         .navigationBarTitleDisplayMode(.inline)
+        // Aqui escapar e destruir saem na mesma cor, e é limite da plataforma, não descuido:
+        // o papel `.cancel` não escolhe cor, herda o tint — o vermelho da marca — e ao lado
+        // do `.destructive`, que é o systemRed, os dois ficam a 1,54:1 um do outro.
+        //
+        // Duas saídas foram testadas na tela e as duas foram descartadas. Tingir o botão:
+        // dentro de um `alert` o SwiftUI ignora o modificador, medido antes e depois com o
+        // mesmo resultado. Trocar por `confirmationDialog`: no iOS 26 ele vira popover e
+        // **omite o botão Cancelar**, deixando "Sair" como o único botão visível de uma
+        // ação destrutiva — troca um problema de cor por um de descoberta, que é pior.
+        //
+        // Fica o `alert`, onde a distinção é a posição e o rótulo. Mudar isto de verdade
+        // significa mexer no tint do app, que é decisão de marca e não de tela.
         .alert("Sair do Capítulo", isPresented: $showLeaveAlert) {
             Button("Cancelar", role: .cancel) { }
             Button("Sair", role: .destructive) {

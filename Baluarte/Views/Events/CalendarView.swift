@@ -63,6 +63,8 @@ public struct CalendarView: View {
             }
             .scrollIndicators(.hidden)
             .contentMargins(.bottom, 100, for: .scrollContent)
+            .scrollEdgeEffectStyle(.hard, for: .top)
+            .scrollEdgeEffectStyle(.hard, for: .bottom)
             .background(Theme.backgroundPrimary)
             .navigationTitle("Calendário")
             .toolbarTitleDisplayMode(.inlineLarge)

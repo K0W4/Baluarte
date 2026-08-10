@@ -73,6 +73,8 @@ struct AnalysisView: View {
                     .containerRelativeFrame(.horizontal)
                 }
             }
+            .scrollEdgeEffectStyle(.hard, for: .top)
+            .scrollEdgeEffectStyle(.hard, for: .bottom)
             .navigationTitle("Análise")
             .navigationBarTitleDisplayMode(.large)
             .refreshable {

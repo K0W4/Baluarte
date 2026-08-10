@@ -42,7 +42,7 @@ public struct MemberCard: View {
             
             Image(systemName: "chevron.right")
                 .font(Typography.body)
-                .foregroundColor(Theme.accent)
+                .foregroundColor(Theme.accentText)
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(member.fullName), \(member.role.map(ChapterRole.displayName) ?? ChapterRole.noRole)")

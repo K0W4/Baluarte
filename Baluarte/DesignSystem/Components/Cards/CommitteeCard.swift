@@ -41,7 +41,7 @@ public struct CommitteeCard: View {
                 
                 Image(systemName: "chevron.right")
                     .font(Typography.body)
-                    .foregroundColor(Theme.accent)
+                    .foregroundColor(Theme.accentText)
             }
             
             Divider()
@@ -99,7 +99,7 @@ public struct CommitteeCard: View {
                                 if let due = task.dueDate {
                                     Text(dueDateString(from: due))
                                         .font(Typography.caption1)
-                                        .foregroundColor(due < Date() ? Theme.destructive : Theme.textSecondary)
+                                        .foregroundColor(due < Date() ? Theme.warning : Theme.textSecondary)
                                 }
                             }
                         }

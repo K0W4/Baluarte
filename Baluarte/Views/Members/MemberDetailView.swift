@@ -152,7 +152,7 @@ public struct MemberDetailView: View {
                         Image(systemName: "xmark")
                             .font(.body.weight(.semibold))
                     }
-                    .foregroundColor(Theme.accent)
+                    .foregroundColor(Theme.accentText)
                     .accessibilityLabel("Fechar")
                 }
                 

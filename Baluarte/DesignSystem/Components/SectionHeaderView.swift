@@ -41,7 +41,7 @@ public struct SectionHeaderView: View {
                 }) {
                     Image(systemName: actionIcon)
                         .font(Typography.title2)
-                        .foregroundColor(Theme.accent)
+                        .foregroundColor(Theme.accentText)
                         .frame(minWidth: Spacing.minTouchTarget, minHeight: Spacing.minTouchTarget)
                         .contentShape(Rectangle())
                 }

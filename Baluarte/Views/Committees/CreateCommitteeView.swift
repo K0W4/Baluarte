@@ -113,7 +113,7 @@ public struct CreateCommitteeView: View {
                     }) {
                         Image(systemName: "xmark")
                             .font(.body.bold())
-                            .foregroundColor(Theme.accent)
+                            .foregroundColor(Theme.accentText)
                     }
                 }
                 

@@ -44,7 +44,7 @@ public struct EventCard: View {
                 
                 Image(systemName: "chevron.right")
                     .font(Typography.body)
-                    .foregroundColor(Theme.accent)
+                    .foregroundColor(Theme.accentText)
             }
             
             Divider()
