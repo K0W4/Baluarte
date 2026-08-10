@@ -120,6 +120,7 @@ private struct ReviewBootstrapSheet: View {
     @State private var proofURL: URL?
     @State private var rejectReason = ""
     @State private var showRejectFields = false
+    @State private var showApproveConfirmation = false
     @State private var isWorking = false
 
     var body: some View {
@@ -182,13 +183,28 @@ private struct ReviewBootstrapSheet: View {
 
                 Section {
                     Button {
-                        act { await viewModel.approve(request) }
+                        // Um toque entregava a autoridade máxima de um Capítulo, sem volta:
+                        // só o novo Fundador pode transferir a posse de novo. Revogar um
+                        // convite, infinitamente menor, já pedia confirmação.
+                        showApproveConfirmation = true
                     } label: {
                         Text("Aprovar como Fundador")
                     }
                     .buttonStyle(PrimaryButtonStyle())
                     .listRowBackground(Color.clear)
                     .listRowInsets(EdgeInsets())
+                    .confirmationDialog(
+                        Text("Tornar \(request.applicantName) Fundador do Capítulo?"),
+                        isPresented: $showApproveConfirmation,
+                        titleVisibility: .visible
+                    ) {
+                        Button("Aprovar como Fundador", role: .destructive) {
+                            act { await viewModel.approve(request) }
+                        }
+                        Button("Cancelar", role: .cancel) { }
+                    } message: {
+                        Text("Só o novo Fundador poderá transferir a posse depois. Confira o comprovante antes de aprovar.")
+                    }
 
                     Button {
                         if showRejectFields {
@@ -208,6 +224,16 @@ private struct ReviewBootstrapSheet: View {
             }
             .disabled(isWorking)
             .navigationTitle("Revisar fundação")
+            // Idem: e aqui é pior, porque a falha da URL assinada do comprovante deixava
+            // um spinner girando para sempre com a mensagem presa atrás da folha.
+            .toast(
+                isPresented: Binding(
+                    get: { viewModel.errorMessage != nil },
+                    set: { if !$0 { viewModel.errorMessage = nil } }
+                ),
+                message: viewModel.errorMessage ?? "",
+                style: .error
+            )
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {

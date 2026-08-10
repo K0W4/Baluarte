@@ -2,10 +2,19 @@ import SwiftUI
 
 public struct ShimmerModifier: ViewModifier {
     let isLoading: Bool
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var isInitialState = true
-    
+
+    @ViewBuilder
     public func body(content: Content) -> some View {
-        if isLoading {
+        if isLoading && reduceMotion {
+            // Quatro faixas de luz varrendo a tela sem parar, em todo carregamento e em
+            // toda dispensa de folha, é exatamente o que "Reduzir Movimento" existe para
+            // desligar. O esqueleto continua; o brilho é que sai.
+            content
+                .redacted(reason: .placeholder)
+                .allowsHitTesting(false)
+        } else if isLoading {
             content
                 .redacted(reason: .placeholder)
                 .overlay(

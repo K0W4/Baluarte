@@ -57,6 +57,9 @@ public final class CreateTaskViewModel {
         } catch {
             if error is CancellationError { return }
             isFetchingCommittees = false
+            // Falha de rede virava "Nenhuma comissão disponível", e a tarefa nascia solta
+            // — pessoal do criador — em vez de pertencer à comissão a que se destinava.
+            errorMessage = AppError.from(error).userMessage
         }
     }
     

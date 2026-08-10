@@ -15,7 +15,7 @@ struct SetNewPasswordView: View {
 
     private enum Field { case password, confirmation }
 
-    private static let minLength = 8
+    private static let minLength = PasswordPolicy.minLength
 
     private var validationMessage: String? {
         if password.isEmpty { return nil }

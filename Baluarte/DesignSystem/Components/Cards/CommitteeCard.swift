@@ -63,18 +63,31 @@ public struct CommitteeCard: View {
                 } else {
                     ForEach(tasks.prefix(3)) { task in
                         HStack(alignment: .center, spacing: Spacing.sm) {
-                            Button(action: {
-                                HapticManager.shared.notification(type: .success)
-                                onTaskToggled?(task.id)
-                            }) {
+                            if let onTaskToggled {
+                                Button(action: {
+                                    onTaskToggled(task.id)
+                                    HapticManager.shared.notification(type: .success)
+                                }) {
+                                    // O frame e a forma precisam ficar DENTRO do label. Do
+                                    // lado de fora, eles só centralizavam o botão numa caixa
+                                    // de 44pt enquanto a região que responde ao dedo seguia
+                                    // sendo o glifo, de uns 20pt — o toque errava a bolinha,
+                                    // caía no gesto do card e navegava para a comissão.
+                                    Image(systemName: "circle")
+                                        .foregroundColor(Theme.textSecondary)
+                                        .frame(width: Spacing.minTouchTarget, height: Spacing.minTouchTarget)
+                                        .contentShape(Rectangle())
+                                }
+                                .buttonStyle(.plain)
+                                .accessibilityLabel("Concluir tarefa: \(task.title)")
+                            } else {
                                 Image(systemName: "circle")
                                     .foregroundColor(Theme.textSecondary)
-                                    .contentShape(Rectangle())
+                                    .frame(width: Spacing.minTouchTarget, height: Spacing.minTouchTarget)
+                                    .accessibilityHidden(true)
                             }
-                            .buttonStyle(.plain)
-                            .frame(width: 44, height: 44)
-                            .accessibilityLabel("Concluir tarefa: \(task.title)")
-                            
+
+
                             HStack(alignment: .center) {
                                 Text(task.title)
                                     .font(Typography.subheadline)
@@ -101,9 +114,12 @@ public struct CommitteeCard: View {
                 }
             }
         }
-        .accessibilityElement(children: .ignore)
+        // `.ignore` achatava o card num elemento só e apagava da árvore os botões de
+        // concluir tarefa — inclusive o rótulo "Concluir tarefa", que está escrito e
+        // traduzido nos três idiomas. Pela tela inicial, quem usa VoiceOver não conseguia
+        // concluir tarefa nenhuma nem descobrir quais eram.
+        .accessibilityElement(children: .contain)
         .accessibilityLabel("\(committee.name), \(tasks.count) tarefas pendentes, \(completedTasksCount) tarefas concluídas")
-        .accessibilityHint("Toque para ver detalhes da comissão")
         .padding(Spacing.md)
         .background(Theme.cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: Spacing.cornerRadius))

@@ -17,9 +17,17 @@ public struct MemberDetailView: View {
                 Section {
                     TextField("Nome Completo", text: $viewModel.fullName)
                     
-                    DatePicker("Data de Nascimento", selection: $viewModel.birthdate, displayedComponents: .date)
-                        .environment(\.locale, Locale(identifier: "pt_BR"))
-                        
+                    DatePicker(
+                        "Data de Nascimento",
+                        selection: $viewModel.birthdate,
+                        in: ...Date(),
+                        displayedComponents: .date
+                    )
+                    .onChange(of: viewModel.birthdate) { _, _ in
+                        viewModel.birthdateWasSet = true
+                    }
+
+
                     TextField("ID (Opcional)", text: $viewModel.cid)
                 } header: {
                     Text("Dados Pessoais")

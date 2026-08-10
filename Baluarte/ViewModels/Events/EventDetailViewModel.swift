@@ -129,7 +129,11 @@ public final class EventDetailViewModel {
             self.seniorMembers = attendees.filter { $0.isSenior }.sorted(by: { $0.fullName < $1.fullName })
             self.advisoryCouncil = attendees.filter { $0.isMason || $0.role == "Consultor" }.sorted(by: { $0.fullName < $1.fullName })
         } catch {
-            print("❌ Supabase Error (Event Members): \(error)")
+            if error is CancellationError { return }
+            // As três listas ficavam vazias e a seção de presenças nem era desenhada: a
+            // tela lia como "ninguém confirmou" — informação errada, dita com toda a
+            // confiança, sobre a reunião do Capítulo.
+            errorMessage = AppError.from(error).userMessage
         }
     }
 }

@@ -32,29 +32,29 @@ public final class AppleIntelligenceService: IntelligenceServiceProtocol {
                     continuation.finish()
                     return
                 } catch {
-                    print("Apple Intelligence unavailable or failed: \(error.localizedDescription). Falling back.")
+                    continuation.finish(throwing: IntelligenceUnavailableError())
                 }
+                #else
+                // Não existe caminho de reserva, e é de propósito. O que existia aqui
+                // transmitia quatro frases fixas token a token, com a mesma animação de
+                // digitação de uma geração real — uma delas afirmando que "a inteligência
+                // Apple avaliou seu cenário", sobre um modelo que não rodou, e outra
+                // vazando um trecho do prompt na tela. Um Capítulo tomava decisão de gestão
+                // em cima de texto inventado. Sem modelo, a tela diz que não há resumo.
+                _ = prompt
+                continuation.finish(throwing: IntelligenceUnavailableError())
                 #endif
-                
-                let fallbacks = [
-                    "A inteligência Apple avaliou seu cenário usando o Foundation Model nativo do iOS.",
-                    "Percebi que os eventos estão próximos e há tarefas críticas para o Capítulo.",
-                    "Foque na sua meta do semestre!",
-                    "(Fallback: o device avaliou o prompt: \(prompt.prefix(20))...)"
-                ]
-                
-                for sentence in fallbacks {
-                    let tokens = sentence.components(separatedBy: " ")
-                    for token in tokens {
-                        try? await Task.sleep(for: .milliseconds(50))
-                        continuation.yield(token + " ")
-                    }
-                    continuation.yield("\n\n")
-                    try? await Task.sleep(for: .milliseconds(300))
-                }
-                
-                continuation.finish()
             }
         }
+    }
+}
+
+/// O aparelho não tem Apple Intelligence disponível, ou o modelo recusou. É diferente de
+/// falha de rede: nenhuma quantidade de tentar de novo resolve.
+public struct IntelligenceUnavailableError: Error, LocalizedError {
+    public init() {}
+
+    public var errorDescription: String? {
+        String(localized: "O resumo inteligente precisa da Apple Intelligence, que não está disponível neste iPhone.")
     }
 }

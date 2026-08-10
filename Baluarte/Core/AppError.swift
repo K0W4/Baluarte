@@ -33,7 +33,19 @@ public enum AppError: Error, LocalizedError, Equatable {
     }
     
     public var errorDescription: String? { userMessage }
-    
+
+    /// Falhou por causa do caminho, não do conteúdo. Quem chama decide se vale preservar
+    /// o que já tinha (a sessão, a lista carregada) e pedir para tentar de novo, em vez de
+    /// tratar a falha como uma resposta negativa do servidor.
+    public var isTransient: Bool {
+        switch self {
+        case .networkUnavailable, .timeout, .serverError:
+            return true
+        case .authenticationRequired, .permissionDenied, .notFound, .validationFailed, .unknown:
+            return false
+        }
+    }
+
     public static func from(_ error: Error) -> AppError {
         if let appError = error as? AppError {
             return appError
