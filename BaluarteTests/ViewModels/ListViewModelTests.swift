@@ -281,7 +281,7 @@ struct ListViewModelTests {
         viewModel.currentMembershipId = me
         await viewModel.loadEvents()
 
-        let event = try? #require(viewModel.events.first)
+        let event = viewModel.events.first
         #expect(event.map { viewModel.isUserConfirmed(for: $0) } == true)
 
         viewModel.currentMembershipId = UUID()

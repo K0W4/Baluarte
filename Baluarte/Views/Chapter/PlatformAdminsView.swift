@@ -144,6 +144,8 @@ private struct PlatformAdminRow: View {
             }
         }
         .frame(minHeight: Spacing.minTouchTarget)
-        .accessibilityElement(children: .combine)
+        // `.contain`, não `.combine`: fundir os filhos num elemento só absorvia o botão de
+        // revogar, e a única operação destrutiva da tela ficava indisponível ao VoiceOver.
+        .accessibilityElement(children: .contain)
     }
 }

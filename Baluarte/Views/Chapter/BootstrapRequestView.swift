@@ -175,10 +175,7 @@ private struct SubmittedState: View {
             VStack(spacing: Spacing.lg) {
                 Spacer()
 
-                Image(systemName: "checkmark.seal.fill")
-                    .font(.system(size: 56))
-                    .foregroundStyle(Theme.accent)
-                    .accessibilityHidden(true)
+                HeroIcon("checkmark.seal.fill")
 
                 VStack(spacing: Spacing.xs) {
                     Text("Recebemos sua solicitação")

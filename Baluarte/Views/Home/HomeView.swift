@@ -283,20 +283,20 @@ private struct GoalsSection: View {
                                 onViewCompletedGoals()
                             } label: {
                                 VStack(spacing: Spacing.lg) {
-                                    ZStack {
-                                        Image(systemName: "checkmark.seal.fill")
-                                            .font(.system(size: 120, weight: .light))
-                                            .foregroundColor(Theme.success)
-                                    }
-                                    .frame(width: 120, height: 120)
-                                    
+                                    HeroIcon(
+                                        "checkmark.seal.fill",
+                                        size: Spacing.heroIconSize,
+                                        tint: Theme.success
+                                    )
+
                                     VStack(spacing: Spacing.xxs) {
                                         Text("Concluídas")
                                             .font(Typography.headline)
                                             .foregroundColor(Theme.textPrimary)
                                             .multilineTextAlignment(.center)
-                                            .lineLimit(2)
-                                            .frame(height: 48, alignment: .center)
+                                            // Sem altura travada: em tamanho acessível o
+                                            // rótulo era cortado no meio da segunda linha.
+                                            .frame(minHeight: Spacing.xxl, alignment: .center)
                                     }
                                 }
                                 .padding(.horizontal, Spacing.md)

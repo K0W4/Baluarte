@@ -122,8 +122,9 @@ struct InviteManagementViewModelTests {
 
         _ = await viewModel.create(createdBy: UUID())
 
-        let expiry = try? #require(service.lastCreatedExpiry)
-        #expect((expiry ?? Date.distantPast) > Date())
+        // `try? #require(...)` engole justamente a falha que o `#require` existe para
+        // provocar, então ele só rendia aviso. O que se testa é a data estar no futuro.
+        #expect((service.lastCreatedExpiry ?? .distantPast) > Date())
     }
 
     @Test("O convite criado entra no topo da lista")
