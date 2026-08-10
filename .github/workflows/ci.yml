@@ -1,8 +1,15 @@
 name: CI
 
-# Build, suíte e sondas de RLS. Até aqui as três coisas só rodavam na máquina de
-# quem estava desenvolvendo, e as políticas do banco só eram conferidas quando
-# alguém lembrava de rodar curl à mão -- que é a camada onde a falha é silenciosa.
+# Três verificações, três jobs, de propósito.
+#
+# Elas falham por motivos diferentes e custam tempos muito diferentes: as sondas de
+# RLS levam segundos e provam as policies do banco; os testes de unidade levam
+# minutos e provam a lógica; os de interface levam mais do que os dois somados e
+# provam as rotas e as affordances. Num job só, o log dizia "falhou" e alguém tinha de
+# procurar qual dos três.
+#
+# Os de interface rodam apenas em PR para `main`. Em `dev` o ciclo é curto e os
+# unitários pegam quase tudo; antes da versão que vai para a loja, vale esperar.
 
 on:
   # Só em pull request. Um gatilho de push dispara uma execução paralela, porque a
@@ -17,8 +24,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  ios:
-    name: Build e testes
+  unit:
+    name: Testes de unidade
     # iOS 26 precisa de Xcode 26. Se este runner não existir mais, ou se a imagem
     # mudar de Xcode padrão, é aqui que se ajusta -- e o passo abaixo imprime o que
     # está instalado justamente para o log dizer o motivo em vez de "falhou".
@@ -70,7 +77,8 @@ jobs:
 
       # DerivedData carrega os módulos já compilados. A chave inclui o hash das
       # fontes para não reusar objeto velho; o restore-key deixa o build incremental
-      # aproveitar o que não mudou.
+      # aproveitar o que não mudou. Os dois jobs de macOS compartilham a chave: o
+      # primeiro a terminar grava, o outro aproveita na execução seguinte.
       - name: Cache do build
         uses: actions/cache@v4
         with:
@@ -81,19 +89,16 @@ jobs:
       - name: Resolver dependências
         run: xcodebuild -resolvePackageDependencies -project Baluarte.xcodeproj
 
-      - name: Testes
+      - name: Testes de unidade
         run: |
           set -o pipefail
           # Idioma fixo, e de propósito não é o do código-fonte: um teste que compare
           # contra uma frase em português passa em pt-BR mesmo estando errado. Em
           # inglês ele quebra, que é o que queremos que aconteça aqui e não em produção.
-          # Os UITests voltaram ao PR. Estavam de fora porque testLaunchPerformance
-          # media lançamento várias vezes e dominava o job -- ele não existe mais, e o
-          # que ficou abre o app com serviços determinísticos, sem rede e sem sessão
-          # real, então não há o que ficar intermitente.
           xcodebuild -scheme Baluarte \
             -destination 'platform=iOS Simulator,name=iPhone 17' \
             -testLanguage en -testRegion US \
+            -skip-testing:BaluarteUITests \
             -resultBundlePath TestResults.xcresult \
             test
 
@@ -107,8 +112,77 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: xcresult
+          name: xcresult-unit
           path: TestResults.xcresult
+          retention-days: 7
+
+  ui:
+    name: Testes de interface
+    runs-on: macos-26
+    timeout-minutes: 60
+    # Só antes da loja. Eles abrem o app dezessete vezes num simulador, e isso custa
+    # mais do que todo o resto junto -- em `dev` o retorno não paga a espera.
+    if: github.event_name == 'workflow_dispatch' || github.base_ref == 'main'
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Recriar segredos locais
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${SUPABASE_URL:-}" ] || [ -z "${SUPABASE_ANON_KEY:-}" ]; then
+            echo "::error::Faltam os secrets SUPABASE_URL e SUPABASE_ANON_KEY."
+            exit 1
+          fi
+          cat > "Baluarte/Core/SupabaseSecrets.swift" <<SWIFT
+          import Foundation
+
+          enum SupabaseSecrets {
+              static let projectURL = "${SUPABASE_URL}"
+              static let anonKey = "${SUPABASE_ANON_KEY}"
+          }
+          SWIFT
+          cp Config.xcconfig.template Config.xcconfig
+          sed -i '' "s|SUPABASE_URL = .*|SUPABASE_URL = ${SUPABASE_URL}|" Config.xcconfig
+          sed -i '' "s|SUPABASE_ANON_KEY = .*|SUPABASE_ANON_KEY = ${SUPABASE_ANON_KEY}|" Config.xcconfig
+
+      - name: Cache das dependências
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/**/SourcePackages
+          key: spm-${{ runner.os }}-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: spm-${{ runner.os }}-
+
+      - name: Cache do build
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/Baluarte-*/Build
+          key: build-${{ runner.os }}-${{ hashFiles('Baluarte/**/*.swift', 'BaluarteWidgets/**/*.swift', '**/Package.resolved') }}
+          restore-keys: build-${{ runner.os }}-
+
+      - name: Resolver dependências
+        run: xcodebuild -resolvePackageDependencies -project Baluarte.xcodeproj
+
+      - name: Testes de interface
+        run: |
+          set -o pipefail
+          # O app abre com serviços determinísticos (`-uitest`), sem rede e sem sessão
+          # real: ver Baluarte/Core/UITestSupport.swift.
+          xcodebuild -scheme Baluarte \
+            -destination 'platform=iOS Simulator,name=iPhone 17' \
+            -testLanguage en -testRegion US \
+            -only-testing:BaluarteUITests \
+            -resultBundlePath UITestResults.xcresult \
+            test
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: xcresult-ui
+          path: UITestResults.xcresult
           retention-days: 7
 
   rls:
