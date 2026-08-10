@@ -27,23 +27,28 @@ struct RootView: View {
                 } else {
                     LoginView()
                         .transition(.opacity)
+                        .accessibilityIdentifier("root.login")
                 }
 
             case .chapterSelection:
                 ChapterSelectionView()
                     .transition(.opacity)
+                    .accessibilityIdentifier("root.chapterSelection")
 
             case .pendingApproval:
                 PendingApprovalView()
                     .transition(.opacity)
+                    .accessibilityIdentifier("root.pendingApproval")
 
             case .rejected:
                 RequestRejectedView()
                     .transition(.opacity)
+                    .accessibilityIdentifier("root.rejected")
 
             case .app:
                 ContentView()
                     .transition(.opacity)
+                    .accessibilityIdentifier("root.app")
             }
         }
         .animation(reduceMotion ? nil : .easeInOut, value: hasSeenOnboarding)

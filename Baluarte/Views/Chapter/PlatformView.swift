@@ -23,12 +23,14 @@ struct PlatformView: View {
                         title: String(localized: "Fundações pendentes"),
                         hint: String(localized: "Revisa quem pediu para ser o primeiro administrador de um Capítulo")
                     ) { showBootstrapQueue = true }
+                    .accessibilityIdentifier("platform.bootstrapQueue")
 
                     ProfileNavigationRow(
                         icon: "tray",
                         title: String(localized: "Capítulos solicitados"),
                         hint: String(localized: "Revisa pedidos de Capítulo que não está no catálogo")
                     ) { showChapterRequests = true }
+                    .accessibilityIdentifier("platform.chapterRequests")
                 } header: {
                     Text("Filas")
                 }
@@ -39,12 +41,14 @@ struct PlatformView: View {
                         title: String(localized: "Administradores de plataforma"),
                         hint: String(localized: "Concede e revoga quem pode aprovar fundações")
                     ) { showPlatformAdmins = true }
+                    .accessibilityIdentifier("platform.admins")
 
                     ProfileNavigationRow(
                         icon: "clock.arrow.circlepath",
                         title: String(localized: "Histórico da plataforma"),
                         hint: String(localized: "Mostra quem concedeu e quem revogou acesso de plataforma")
                     ) { showAccessLog = true }
+                    .accessibilityIdentifier("platform.accessLog")
                 } header: {
                     Text("Acesso")
                 } footer: {
