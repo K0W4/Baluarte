@@ -62,7 +62,7 @@ public struct CommitteeCard: View {
                     }
                 } else {
                     ForEach(tasks.prefix(3)) { task in
-                        HStack(alignment: .center, spacing: Spacing.sm) {
+                        HStack(alignment: .center, spacing: Spacing.xs) {
                             if let onTaskToggled {
                                 Button(action: {
                                     onTaskToggled(task.id)
@@ -73,17 +73,18 @@ public struct CommitteeCard: View {
                                     // de 44pt enquanto a região que responde ao dedo seguia
                                     // sendo o glifo, de uns 20pt — o toque errava a bolinha,
                                     // caía no gesto do card e navegava para a comissão.
-                                    // `.leading` e não o centro: o alvo continua com os 44pt
-                                    // que o pacote 14 conquistou, mas centralizar um glifo de
-                                    // ~20pt dentro dele empurrava a bolinha 12pt para dentro,
-                                    // desalinhada do ícone do próprio card logo acima.
+                                    // A bolinha ocupa a largura do próprio glifo e alinha na
+                                    // mesma coluna do ícone do card, com o mesmo respiro que
+                                    // separa aquele ícone do nome da comissão.
+                                    //
+                                    // Os 44pt ficam na **altura**, que é onde a linha da lista
+                                    // realmente precisa deles. Prendê-los também na largura é o
+                                    // que desalinhava: um frame de 44 centraliza um glifo de 22
+                                    // e sobram 11pt de cada lado, que nenhum espaçamento pequeno
+                                    // desfaz sem enfiar o título por baixo do botão.
                                     Image(systemName: "circle")
                                         .foregroundColor(Theme.textSecondary)
-                                        .frame(
-                                            width: Spacing.minTouchTarget,
-                                            height: Spacing.minTouchTarget,
-                                            alignment: .leading
-                                        )
+                                        .frame(height: Spacing.minTouchTarget)
                                         .contentShape(Rectangle())
                                 }
                                 .buttonStyle(.plain)
@@ -91,11 +92,7 @@ public struct CommitteeCard: View {
                             } else {
                                 Image(systemName: "circle")
                                     .foregroundColor(Theme.textSecondary)
-                                    .frame(
-                                        width: Spacing.minTouchTarget,
-                                        height: Spacing.minTouchTarget,
-                                        alignment: .leading
-                                    )
+                                    .frame(height: Spacing.minTouchTarget)
                                     .accessibilityHidden(true)
                             }
 
