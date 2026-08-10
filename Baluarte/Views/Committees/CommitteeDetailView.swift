@@ -5,6 +5,7 @@ public struct CommitteeDetailView: View {
     @State private var viewModel: CommitteeDetailViewModel
     @State private var showingDeleteAlert = false
     @State private var showingAddMember = false
+    @State private var showingDiscardAlert = false
     @State private var isEditing = false
     
     public init(committee: Committee, chapterId: UUID, currentMembershipId: UUID) {
@@ -50,15 +51,14 @@ public struct CommitteeDetailView: View {
                                 }
                                 .contentShape(Rectangle())
                                 .contextMenu {
-                                    Button {
-                                        viewModel.chairmanId = isChairman ? nil : member.id
-                                    } label: {
-                                        Label {
-                                            Text(isChairman ? "Remover Presidente" : "Definir como Presidente")
-                                                .foregroundColor(Theme.textPrimary)
-                                        } icon: {
-                                            Image(systemName: "crown")
-                                                .foregroundColor(Theme.accent)
+                                    if isEditing {
+                                        Button {
+                                            viewModel.chairmanId = isChairman ? nil : member.id
+                                        } label: {
+                                            Label(
+                                                isChairman ? "Remover Presidente" : "Definir como Presidente",
+                                                systemImage: "crown"
+                                            )
                                         }
                                     }
                                 }
@@ -69,26 +69,39 @@ public struct CommitteeDetailView: View {
                                     viewModel.removeMember(member.id)
                                 }
                             }
+                            // Fora do modo de edição não existe botão de salvar, então
+                            // remover aqui mudava só o estado local: a pessoa deslizava um
+                            // nome, a linha sumia, ela fechava a folha e nada tinha sido
+                            // gravado. E sem `.requires`, um membro comum também removia.
+                            .deleteDisabled(!isEditing)
                         }
                     }
                 } header: {
                     HStack {
                         Text("Membros e Presidente")
                         Spacer()
-                        Button {
-                            showingAddMember = true
-                        } label: {
-                            Image(systemName: "plus")
-                                .font(Typography.title2)
-                                .foregroundColor(Theme.accent)
-                                .padding(.trailing, 0) // Ensures it doesn't push too far left
+                        if isEditing {
+                            Button {
+                                showingAddMember = true
+                            } label: {
+                                Image(systemName: "plus")
+                                    .font(Typography.title2)
+                                    .foregroundColor(Theme.accent)
+                                    .frame(minWidth: Spacing.minTouchTarget, minHeight: Spacing.minTouchTarget)
+                                    .contentShape(Rectangle())
+                            }
+                            .buttonStyle(.plain)
+                            .accessibilityLabel("Adicionar membro à comissão")
+                            .requires(.manageCommittees)
                         }
-                        .buttonStyle(.plain)
-                        .requires(.manageCommittees)
                     }
                 } footer: {
                     if !viewModel.isFetchingMembers {
-                        Text("Pressione e segure um membro selecionado para defini-lo como Presidente (ícone da coroa).")
+                        if isEditing {
+                            Text("Toque e segure um membro para defini-lo como Presidente. É obrigatório ter um presidente para salvar.")
+                        } else {
+                            Text("Toque no lápis para adicionar ou remover membros e trocar o Presidente.")
+                        }
                     }
                 }
                 
@@ -120,12 +133,17 @@ public struct CommitteeDetailView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: {
-                        dismiss()
+                        if isEditing && viewModel.hasChanges {
+                            showingDiscardAlert = true
+                        } else {
+                            dismiss()
+                        }
                     }) {
                         Image(systemName: "xmark")
                             .font(.body.weight(.semibold))
                     }
                     .foregroundColor(Theme.accent)
+                    .accessibilityLabel("Fechar")
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -176,6 +194,15 @@ public struct CommitteeDetailView: View {
             }
             .sheet(isPresented: $showingAddMember) {
                 AddMemberToCommitteeView(viewModel: viewModel)
+            }
+            // A folha se fechava por arrasto e levava junto tudo que tinha sido montado,
+            // em silêncio — as telas irmãs de criação já protegiam esse mesmo gesto.
+            .interactiveDismissDisabled(isEditing && viewModel.hasChanges)
+            .alert("Descartar alterações?", isPresented: $showingDiscardAlert) {
+                Button("Continuar editando", role: .cancel) { }
+                Button("Descartar", role: .destructive) { dismiss() }
+            } message: {
+                Text("As mudanças nos membros e no Presidente ainda não foram salvas.")
             }
         }
         .task {

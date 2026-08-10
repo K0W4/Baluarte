@@ -246,6 +246,16 @@ private struct ReviewJoinRequestSheet: View {
             }
             .disabled(isWorking)
             .navigationTitle("Revisar solicitação")
+            // Idem: sem uma superfície própria, uma recusa do servidor ao aprovar — teto
+            // de dupla filiação, cadastro já reivindicado — era só uma vibração.
+            .toast(
+                isPresented: Binding(
+                    get: { viewModel.errorMessage != nil },
+                    set: { if !$0 { viewModel.errorMessage = nil } }
+                ),
+                message: viewModel.errorMessage ?? "",
+                style: .error
+            )
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {

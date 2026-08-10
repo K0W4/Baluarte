@@ -9,6 +9,7 @@ struct PlatformAdminsView: View {
 
     @State private var viewModel: PlatformAdminsViewModel?
     @State private var adminToRevoke: PlatformAdmin?
+    @State private var showGrantConfirmation = false
 
     var body: some View {
         NavigationStack {
@@ -46,10 +47,26 @@ struct PlatformAdminsView: View {
                     .autocorrectionDisabled()
                     .frame(minHeight: Spacing.minTouchTarget)
 
+                // Um dígito errado concedia a um desconhecido o poder de aprovar a fundação
+                // de qualquer Capítulo da plataforma, e só se descobria quem tinha
+                // recebido depois, quando a lista recarregava. Revogar, logo abaixo, já
+                // confirmava com o nome da pessoa.
                 Button("Conceder acesso") {
-                    Task { _ = await viewModel.grant() }
+                    showGrantConfirmation = true
                 }
                 .disabled(!viewModel.isValidCID || viewModel.isLoading)
+                .confirmationDialog(
+                    Text("Conceder administração de plataforma?"),
+                    isPresented: $showGrantConfirmation,
+                    titleVisibility: .visible
+                ) {
+                    Button("Conceder acesso", role: .destructive) {
+                        Task { _ = await viewModel.grant() }
+                    }
+                    Button("Cancelar", role: .cancel) { }
+                } message: {
+                    Text("O CID \(viewModel.cidToGrant) passa a aprovar a fundação de qualquer Capítulo. Confira o número com a pessoa antes de conceder.")
+                }
             } header: {
                 Text("Conceder")
             } footer: {

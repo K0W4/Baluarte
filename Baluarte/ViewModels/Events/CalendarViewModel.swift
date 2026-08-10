@@ -12,6 +12,10 @@ public final class CalendarViewModel {
     public var isLoading = false
     public var errorMessage: String?
 
+    /// Sucesso também era silencioso: a pessoa precisava sair do app e abrir o Calendário
+    /// para saber se funcionou.
+    public var didAddToNativeCalendar = false
+
     private let eventService: EventServiceProtocol
     public var currentMembershipId: UUID?
     public var currentChapterId: UUID?
@@ -78,21 +82,28 @@ public final class CalendarViewModel {
         } catch {
             if error is CancellationError { return }
             events[index].confirmedAttendees = originalAttendees
+            HapticManager.shared.notification(type: .error)
+            errorMessage = AppError.from(error).userMessage
         }
     }
 
     public func addToNativeCalendar(event: Event) async {
         do {
             let granted = try await EventKitManager.shared.requestAccess()
-            if granted {
-                let endDate = event.scheduledDate.addingTimeInterval(2 * 3600)
-                try EventKitManager.shared.addEventToCalendar(
-                    title: event.title,
-                    startDate: event.scheduledDate,
-                    endDate: endDate,
-                    notes: event.notes
-                )
+            guard granted else {
+                // Quem já negou o acesso uma vez tocava e nada acontecia, nenhuma vez,
+                // sem explicação — o `if granted` não tinha `else`.
+                errorMessage = String(localized: "O Baluarte não tem permissão para usar seu Calendário. Ajustes › Baluarte › Calendários.")
+                return
             }
+            let endDate = event.scheduledDate.addingTimeInterval(2 * 3600)
+            try EventKitManager.shared.addEventToCalendar(
+                title: event.title,
+                startDate: event.scheduledDate,
+                endDate: endDate,
+                notes: event.notes
+            )
+            didAddToNativeCalendar = true
         } catch {
             if error is CancellationError { return }
             errorMessage = String(localized: "Não foi possível adicionar ao calendário.")

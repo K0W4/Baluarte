@@ -245,6 +245,17 @@ private struct CreateInviteSheet: View {
             }
             .disabled(viewModel.isCreating)
             .navigationTitle("Gerar convite")
+            // O `.toast` da tela de trás desenha num ZStack da hierarquia dela, coberto
+            // por esta folha: a pessoa tocava no visto, o telefone vibrava, a folha não
+            // fechava, e a mensagem traduzida do servidor nunca era lida.
+            .toast(
+                isPresented: Binding(
+                    get: { viewModel.errorMessage != nil },
+                    set: { if !$0 { viewModel.errorMessage = nil } }
+                ),
+                message: viewModel.errorMessage ?? "",
+                style: .error
+            )
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {

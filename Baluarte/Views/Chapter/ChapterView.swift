@@ -43,17 +43,29 @@ struct ChapterView: View {
         }
         .navigationTitle("Capítulo")
         .navigationBarTitleDisplayMode(.inline)
-        .alert("Sair do capítulo", isPresented: $showLeaveAlert) {
+        .alert("Sair do Capítulo", isPresented: $showLeaveAlert) {
             Button("Cancelar", role: .cancel) { }
             Button("Sair", role: .destructive) {
                 Task {
-                    await authViewModel.leaveChapter()
-                    dismiss()
+                    // Fechar a tela seja qual for o desfecho dizia que a saída aconteceu
+                    // quando o servidor a tinha recusado — o último Fundador não sai, para
+                    // o Capítulo nunca ficar órfão.
+                    if await authViewModel.leaveChapter() {
+                        dismiss()
+                    }
                 }
             }
         } message: {
-            Text("Tem certeza que deseja sair do seu Capítulo atual? Você deixará de ver os eventos, metas e tarefas dele, mas poderá entrar em outro Capítulo quando quiser.")
+            Text("Tem certeza que deseja sair do seu Capítulo atual? Você deixará de ver os eventos, metas e tarefas dele. Para voltar você precisará de um convite ou da aprovação de um administrador do Capítulo.")
         }
+        .toast(
+            isPresented: Binding(
+                get: { authViewModel.errorMessage != nil },
+                set: { if !$0 { authViewModel.errorMessage = nil } }
+            ),
+            message: authViewModel.errorMessage ?? "",
+            style: .error
+        )
     }
 
     /// Cargo e nível de acesso são do vínculo, não da pessoa: mudam a cada gestão e

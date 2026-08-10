@@ -51,7 +51,7 @@ public struct CreateEventView: View {
                 }
                 
                 Section {
-                    TextField("Detalhes do evento...", text: $viewModel.notes, axis: .vertical)
+                    TextField("Detalhes do evento (opcional)", text: $viewModel.notes, axis: .vertical)
                         .focused($focusedField, equals: .notes)
                         .submitLabel(.done)
                         .onSubmit { focusedField = nil }

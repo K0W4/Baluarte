@@ -11,7 +11,11 @@ public final class MemberDetailViewModel {
     public var isMason: Bool
     public var cid: String
     public var birthdate: Date
-    
+
+    /// Falso enquanto o cadastro não tiver data de nascimento e ninguém tiver escolhido
+    /// uma. A View liga isto no `onChange` do `DatePicker`.
+    public var birthdateWasSet: Bool
+
     public var isLoading: Bool = false
     public var errorMessage: String? = nil
     
@@ -82,6 +86,13 @@ public final class MemberDetailViewModel {
         !(isActive && (isSenior || isMason))
     }
     
+    /// A data que sai daqui, ou `nil` enquanto ninguém tiver escolhido uma. O `DatePicker`
+    /// precisa de um valor não opcional para desenhar, e usar `?? Date()` como esse valor
+    /// fazia todo membro sem aniversário nascer "alterado" — porque o `Date()` do outro
+    /// lado da comparação era recalculado a cada leitura. Um toque em salvar gravava a
+    /// data de hoje como data de nascimento de quem nunca teve uma.
+    public var effectiveBirthdate: Date? { birthdateWasSet ? birthdate : nil }
+
     public var hasChanges: Bool {
         member.fullName != fullName ||
         (member.role ?? "Membro") != role ||
@@ -89,7 +100,7 @@ public final class MemberDetailViewModel {
         member.isSenior != isSenior ||
         member.isMason != isMason ||
         (member.cid ?? "") != cid ||
-        (member.birthdate ?? Date()) != birthdate
+        member.birthdate != effectiveBirthdate
     }
     
     public func updateRoleIfNeeded() {
@@ -115,6 +126,7 @@ public final class MemberDetailViewModel {
         self.isMason = member.isMason
         self.cid = member.cid ?? ""
         self.birthdate = member.birthdate ?? Date()
+        self.birthdateWasSet = member.birthdate != nil
     }
     
     public func saveChanges() async -> Bool {
@@ -130,7 +142,7 @@ public final class MemberDetailViewModel {
         updatedMember.isSenior = isSenior
         updatedMember.isMason = isMason
         updatedMember.cid = cid.isEmpty ? nil : cid
-        updatedMember.birthdate = birthdate
+        updatedMember.birthdate = effectiveBirthdate
         
         do {
             try await memberService.updateMember(updatedMember)

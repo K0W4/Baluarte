@@ -33,7 +33,9 @@ public struct GoalDetailView: View {
                     }
                     
                     DatePicker("Data Limite", selection: $viewModel.targetDate, displayedComponents: .date)
-                        .environment(\.locale, Locale(identifier: "pt_BR"))
+                        .onChange(of: viewModel.targetDate) { _, _ in
+                            viewModel.targetDateWasSet = true
+                        }
                 } header: {
                     Text("Informações Básicas")
                 }

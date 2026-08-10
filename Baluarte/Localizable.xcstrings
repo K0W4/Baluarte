@@ -11849,6 +11849,380 @@
           }
         }
       }
+    },
+    "Não foi possível identificar seu Capítulo. Puxe para atualizar.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We couldn't identify your Chapter. Pull to refresh."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No fue posible identificar tu Capítulo. Desliza para actualizar."
+          }
+        }
+      }
+    },
+    "O Baluarte não tem permissão para usar seu Calendário. Ajustes › Baluarte › Calendários.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Baluarte doesn't have permission to use your Calendar. Settings › Baluarte › Calendars."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Baluarte no tiene permiso para usar tu Calendario. Ajustes › Baluarte › Calendarios."
+          }
+        }
+      }
+    },
+    "O resumo inteligente precisa da Apple Intelligence, que não está disponível neste iPhone.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The smart summary needs Apple Intelligence, which isn't available on this iPhone."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El resumen inteligente necesita Apple Intelligence, que no está disponible en este iPhone."
+          }
+        }
+      }
+    },
+    "Digite seu nome completo": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter your full name"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escribe tu nombre completo"
+          }
+        }
+      }
+    },
+    "com eventos": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "has events"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "con eventos"
+          }
+        }
+      }
+    },
+    "hoje": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "today"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "hoy"
+          }
+        }
+      }
+    },
+    "Salvar perfil": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save profile"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guardar perfil"
+          }
+        }
+      }
+    },
+    "Gerar resumo novamente": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Generate summary again"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Generar resumen de nuevo"
+          }
+        }
+      }
+    },
+    "Adicionar membro à comissão": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add member to committee"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Añadir miembro al comité"
+          }
+        }
+      }
+    },
+    "Detalhes do evento (opcional)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Event details (optional)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Detalles del evento (opcional)"
+          }
+        }
+      }
+    },
+    "Tem certeza que deseja sair do seu Capítulo atual? Você deixará de ver os eventos, metas e tarefas dele. Para voltar você precisará de um convite ou da aprovação de um administrador do Capítulo.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Are you sure you want to leave your current Chapter? You'll stop seeing its events, goals and tasks. To come back you'll need an invite code or approval from a Chapter admin."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Seguro que quieres salir de tu Capítulo actual? Dejarás de ver sus eventos, metas y tareas. Para volver necesitarás un código de invitación o la aprobación de un administrador del Capítulo."
+          }
+        }
+      }
+    },
+    "Tornar %@ Fundador do Capítulo?": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Make %@ Founder of the Chapter?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Hacer a %@ Fundador del Capítulo?"
+          }
+        }
+      }
+    },
+    "Só o novo Fundador poderá transferir a posse depois. Confira o comprovante antes de aprovar.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only the new Founder will be able to transfer ownership afterwards. Check the proof before approving."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo el nuevo Fundador podrá transferir la propiedad después. Revisa el comprobante antes de aprobar."
+          }
+        }
+      }
+    },
+    "Cadastrar este Capítulo no catálogo?": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Register this Chapter in the catalogue?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Registrar este Capítulo en el catálogo?"
+          }
+        }
+      }
+    },
+    "%1$@, nº %2$lld · %3$@. O registro não pode ser corrigido pelo app depois — confira o número e a jurisdição.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, no. %2$lld · %3$@. The record can't be corrected from the app afterwards — check the number and the jurisdiction."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, n.º %2$lld · %3$@. El registro no se puede corregir desde la app después — revisa el número y la jurisdicción."
+          }
+        }
+      }
+    },
+    "Conceder administração de plataforma?": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grant platform administration?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Conceder administración de plataforma?"
+          }
+        }
+      }
+    },
+    "O CID %@ passa a aprovar a fundação de qualquer Capítulo. Confira o número com a pessoa antes de conceder.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CID %@ will be able to approve the founding of any Chapter. Check the number with the person before granting."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El CID %@ podrá aprobar la fundación de cualquier Capítulo. Confirma el número con la persona antes de conceder."
+          }
+        }
+      }
+    },
+    "Descartar alterações?": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Discard changes?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Descartar los cambios?"
+          }
+        }
+      }
+    },
+    "Continuar editando": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keep editing"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seguir editando"
+          }
+        }
+      }
+    },
+    "As mudanças nos membros e no Presidente ainda não foram salvas.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The changes to members and Chairman haven't been saved yet."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los cambios en los miembros y en el Presidente aún no se han guardado."
+          }
+        }
+      }
+    },
+    "Toque e segure um membro para defini-lo como Presidente. É obrigatório ter um presidente para salvar.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Touch and hold a member to make them Chairman. A chairman is required in order to save."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mantén pulsado un miembro para nombrarlo Presidente. Se requiere un presidente para poder guardar."
+          }
+        }
+      }
+    },
+    "Toque no lápis para adicionar ou remover membros e trocar o Presidente.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tap the pencil to add or remove members and change the Chairman."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca el lápiz para añadir o quitar miembros y cambiar el Presidente."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

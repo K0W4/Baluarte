@@ -251,8 +251,8 @@ public struct TasksView: View {
         } else {
             TaskCard(task: task) {
                 Task {
-                    await viewModel.toggleTaskCompletion(task: task)
-                    if !task.isCompleted {
+                    let succeeded = await viewModel.toggleTaskCompletion(task: task)
+                    if succeeded && !task.isCompleted {
                         showToast = true
                     }
                 }

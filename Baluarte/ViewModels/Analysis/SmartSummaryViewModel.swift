@@ -6,7 +6,11 @@ public final class SmartSummaryViewModel {
     public var generatedSummary: String = ""
     public var isGenerating: Bool = false
     public var errorMessage: String? = nil
-    
+
+    /// O aparelho não tem o modelo. É diferente de uma falha temporária: oferecer "tentar
+    /// de novo" aqui é convidar a pessoa a repetir algo que nunca vai funcionar.
+    public var isUnavailableOnThisDevice: Bool = false
+
     private let intelligenceService: IntelligenceServiceProtocol
     private let eventService: EventServiceProtocol
     private let taskService: TaskServiceProtocol
@@ -30,8 +34,9 @@ public final class SmartSummaryViewModel {
         
         self.isGenerating = true
         self.errorMessage = nil
+        self.isUnavailableOnThisDevice = false
         self.generatedSummary = ""
-        
+
         do {
             async let fetchEvents = eventService.fetchEvents(for: chapterId)
             async let fetchTasks = taskService.fetchTasks(forChapter: chapterId)
@@ -46,11 +51,15 @@ public final class SmartSummaryViewModel {
                 self.generatedSummary += token
             }
             
+        } catch is IntelligenceUnavailableError {
+            self.isUnavailableOnThisDevice = true
+            self.errorMessage = IntelligenceUnavailableError().errorDescription
         } catch {
-            self.errorMessage = String(localized: "Falha ao gerar o resumo inteligente. Verifique o modelo.")
-            print("Intelligence error: \(error)")
+            // "Verifique o modelo" era mensagem escrita para quem programou: um membro do
+            // Capítulo não sabe o que é o modelo, onde ele fica, nem como se verifica.
+            self.errorMessage = AppError.from(error).userMessage
         }
-        
+
         self.isGenerating = false
     }
 }

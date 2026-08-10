@@ -8,6 +8,7 @@ struct ChapterRequestsView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel = ChapterRequestsViewModel()
     @State private var requestToReject: PendingChapterRequest?
+    @State private var requestToApprove: PendingChapterRequest?
     @State private var rejectReason = ""
 
     var body: some View {
@@ -37,8 +38,12 @@ struct ChapterRequestsView: View {
                 Section {
                     ChapterRequestCard(request: request)
 
+                    // `chapter` é registro somente-leitura para o app: o que entra aqui não
+                    // pode ser corrigido nem apagado depois, só por migration. Um toque
+                    // acidental gravava um Capítulo no catálogo público com nome ou número
+                    // errado — enquanto recusar, que é reversível, já pedia confirmação.
                     Button("Aprovar e cadastrar") {
-                        Task { _ = await viewModel.approve(request) }
+                        requestToApprove = request
                     }
                     .disabled(viewModel.isLoading)
 
@@ -76,6 +81,28 @@ struct ChapterRequestsView: View {
             Button("Cancelar", role: .cancel) { requestToReject = nil }
         } message: {
             Text("Quem pediu recebe uma notificação. O motivo ajuda a pessoa a entender o que corrigir.")
+        }
+        .confirmationDialog(
+            Text("Cadastrar este Capítulo no catálogo?"),
+            isPresented: Binding(
+                get: { requestToApprove != nil },
+                set: { if !$0 { requestToApprove = nil } }
+            ),
+            titleVisibility: .visible
+        ) {
+            Button("Aprovar e cadastrar") {
+                if let request = requestToApprove {
+                    Task {
+                        _ = await viewModel.approve(request)
+                        requestToApprove = nil
+                    }
+                }
+            }
+            Button("Cancelar", role: .cancel) { requestToApprove = nil }
+        } message: {
+            if let request = requestToApprove {
+                Text("\(request.name), nº \(request.number) · \(request.uf). O registro não pode ser corrigido pelo app depois — confira o número e a jurisdição.")
+            }
         }
     }
 }

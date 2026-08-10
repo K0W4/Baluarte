@@ -83,6 +83,11 @@ public final class HomeViewModel {
             withAnimation {
                 tasks[index].isCompleted = originalState
             }
+            // Reverter sem dizer nada faz a pessoa acreditar que marcou. O háptico de
+            // sucesso já foi disparado acima; sem este par, a falha é indistinguível de
+            // um toque que não pegou.
+            HapticManager.shared.notification(type: .error)
+            errorMessage = AppError.from(error).userMessage
         }
     }
 
@@ -112,6 +117,8 @@ public final class HomeViewModel {
         } catch {
             if error is CancellationError { return }
             events[index].confirmedAttendees = originalAttendees
+            HapticManager.shared.notification(type: .error)
+            errorMessage = AppError.from(error).userMessage
         }
     }
 
@@ -119,9 +126,18 @@ public final class HomeViewModel {
         if showLoading { isLoading = true }
         errorMessage = nil
 
+        // O `isLoading` precisa cair por qualquer saída. Antes, o `guard` abaixo saía da
+        // função inteira antes de chegar no `isLoading = false` lá embaixo, e a primeira
+        // tela depois do login ficava em esqueleto para sempre — sem conteúdo, sem
+        // mensagem e sem botão, inclusive ao puxar para atualizar.
+        defer { if showLoading { isLoading = false } }
+
         do {
-            guard let currentMembershipId = currentMembershipId, let currentChapterId = currentChapterId else { return }
-            
+            guard let currentMembershipId = currentMembershipId, let currentChapterId = currentChapterId else {
+                errorMessage = String(localized: "Não foi possível identificar seu Capítulo. Puxe para atualizar.")
+                return
+            }
+
             async let fetchedEvents = eventService.fetchEvents(for: currentChapterId)
             async let fetchedGoals = goalService.fetchGoals(for: currentChapterId)
             async let fetchedCommittees = committeeService.fetchCommittees(for: currentChapterId)
@@ -136,17 +152,8 @@ public final class HomeViewModel {
             let allMembers = try await fetchedMembers
             currentUser = allMembers.first { $0.id == currentMembershipId }
         } catch {
-            if error is CancellationError {
-                withAnimation(.easeInOut(duration: 0.3)) { self.isLoading = false }
-                return 
-            }
+            if error is CancellationError { return }
             errorMessage = AppError.from(error).userMessage
-        }
-
-        if showLoading {
-            withAnimation(.easeInOut(duration: 0.3)) {
-                isLoading = false
-            }
         }
     }
 }

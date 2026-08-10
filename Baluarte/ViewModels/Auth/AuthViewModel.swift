@@ -22,6 +22,12 @@ public final class AuthViewModel {
     public var state: AuthState = .loading
     public var errorMessage: String?
 
+    /// Autenticar não é uma rota. `state = .loading` faz a `RootView` trocar de ramo e
+    /// destruir a tela que está no ar — junto com o banner de erro local, o botão em
+    /// carregamento e o que a pessoa acabou de digitar. Entrar e cadastrar mexem aqui;
+    /// só a checagem inicial da sessão mexe em `state`.
+    public private(set) var isAuthenticating = false
+
     /// Sobreposto a qualquer rota: quem chega por um link de recuperação pode estar
     /// deslogado, dentro do app, ou parado na fila de aprovação.
     public var isSettingNewPassword = false
@@ -302,10 +308,20 @@ public final class AuthViewModel {
             let session = try await authService.getCurrentSession()
             try await establishSession(for: session.user, fallbackName: nil)
         } catch {
+            // Não ter sessão e não conseguir falar com o servidor são coisas diferentes.
+            // `establishSession` busca perfil, vínculos e Capítulo por rede, então um
+            // timeout no metrô caía aqui e era lido como "você foi deslogado" — apagando
+            // de quebra o token do app group, que é o que alimenta o widget.
+            let appError = AppError.from(error)
             self.state = .unauthenticated
             self.memberships = []
             self.activeMembership = nil
-            sessionStore.clear()
+
+            if appError.isTransient {
+                self.errorMessage = appError.userMessage
+            } else {
+                sessionStore.clear()
+            }
         }
     }
 
@@ -313,7 +329,9 @@ public final class AuthViewModel {
 
     @MainActor
     public func signInWithApple(credentials: AppleCredentials) async {
-        self.state = .loading
+        self.isAuthenticating = true
+        defer { self.isAuthenticating = false }
+        self.errorMessage = nil
         do {
             let user = try await authService.signInWithApple(
                 idToken: credentials.idToken,
@@ -333,7 +351,9 @@ public final class AuthViewModel {
 
     @MainActor
     public func signInWithEmail(email: String, password: String) async {
-        self.state = .loading
+        self.isAuthenticating = true
+        defer { self.isAuthenticating = false }
+        self.errorMessage = nil
         do {
             let user = try await authService.signInWithEmail(email: email, password: password)
             try await establishSession(for: user, fallbackName: nil)
@@ -343,11 +363,13 @@ public final class AuthViewModel {
     }
 
     @MainActor
-    public func signUpWithEmail(email: String, password: String) async {
-        self.state = .loading
+    public func signUpWithEmail(email: String, password: String, fullName: String?) async {
+        self.isAuthenticating = true
+        defer { self.isAuthenticating = false }
+        self.errorMessage = nil
         do {
             let user = try await authService.signUpWithEmail(email: email, password: password)
-            try await establishSession(for: user, fallbackName: nil)
+            try await establishSession(for: user, fallbackName: fullName)
         } catch {
             failSession(with: error)
         }
@@ -472,11 +494,15 @@ public final class AuthViewModel {
         }
     }
 
+    /// `false` quando o servidor recusou — o último Fundador não sai, para o Capítulo
+    /// nunca ficar órfão. Quem chama precisa do retorno: fechar a tela seja qual for o
+    /// desfecho dizia que a saída aconteceu quando ela não aconteceu.
     @MainActor
-    public func leaveChapter() async {
+    @discardableResult
+    public func leaveChapter() async -> Bool {
         guard case let .authenticated(user, profile) = self.state,
               let profile,
-              let membership = activeMembership else { return }
+              let membership = activeMembership else { return false }
 
         errorMessage = nil
         do {
@@ -491,8 +517,10 @@ public final class AuthViewModel {
 
             let session = try await authService.getCurrentSession()
             syncSharedState(session: session)
+            return true
         } catch {
             errorMessage = AppError.from(error).userMessage
+            return false
         }
     }
 
@@ -541,15 +569,24 @@ public final class AuthViewModel {
     }
 
     @MainActor
-    public func deleteAccount() async {
-        guard currentUserId != nil else { return }
+    /// `true` quando a conta foi mesmo apagada. A limpeza da sessão só acontece nesse
+    /// caso: sair do ar seja qual for o desfecho fazia uma recusa do servidor parecer
+    /// sucesso, e a pessoa ia embora acreditando ter apagado uma conta que continua
+    /// inteira. Enquanto isso `state` não é tocado, senão a `ProfileView` — que é quem
+    /// mostra o erro — é destruída antes de mostrá-lo.
+    @discardableResult
+    public func deleteAccount() async -> Bool {
+        guard currentUserId != nil else { return false }
 
-        self.state = .loading
+        self.isAuthenticating = true
+        defer { self.isAuthenticating = false }
+        self.errorMessage = nil
         do {
             try await authService.deleteAccount()
             try await authService.signOut()
         } catch {
             self.errorMessage = AppError.from(error).userMessage
+            return false
         }
 
         self.state = .unauthenticated
@@ -557,5 +594,6 @@ public final class AuthViewModel {
         self.activeMembership = nil
         self.chaptersById = [:]
         sessionStore.clear()
+        return true
     }
 }

@@ -59,6 +59,10 @@ public final class CreateCommitteeViewModel {
         } catch {
             if error is CancellationError { return }
             isFetchingMembers = false
+            // Sem isto, a tela caía no `else` e afirmava "Nenhum membro disponível" — ou
+            // seja, dizia que o Capítulo não tem membros quando o que houve foi a rede
+            // cair. O administrador concluía que tinha perdido o roster.
+            errorMessage = AppError.from(error).userMessage
         }
     }
     
