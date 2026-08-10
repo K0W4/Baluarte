@@ -44,7 +44,10 @@ struct ContentView: View {
                 }
                 .tag(Tab.analysis)
         }
-        .tint(Theme.accent)
+        // O padrão do app é a variante legível, e não a de marca: assim um botão novo
+        // nasce passando o contraste, e o vermelho de preenchimento fica sendo a exceção
+        // que alguém escreve de propósito.
+        .tint(Theme.accentText)
         .environment(\.permissions, authViewModel.permissions)
     }
 }

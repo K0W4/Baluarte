@@ -196,7 +196,7 @@ struct EmailAuthView: View {
                 Button(action: sendReset) {
                     Text("Esqueci minha senha")
                         .font(Typography.callout)
-                        .foregroundColor(Theme.accent)
+                        .foregroundColor(Theme.accentText)
                         .frame(maxWidth: .infinity, minHeight: Spacing.minTouchTarget)
                         .contentShape(Rectangle())
                 }
@@ -213,7 +213,7 @@ struct EmailAuthView: View {
             }) {
                 Text(isSignUp ? "Já tem uma conta? Entre aqui." : "Não tem conta? Cadastre-se.")
                     .font(Typography.callout)
-                    .foregroundColor(Theme.accent)
+                    .foregroundColor(Theme.accentText)
                     .frame(maxWidth: .infinity, minHeight: Spacing.minTouchTarget)
                     .contentShape(Rectangle())
             }

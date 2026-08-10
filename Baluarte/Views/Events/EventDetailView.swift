@@ -40,21 +40,12 @@ public struct EventDetailView: View {
                 .disabled(!isEditing)
                 
                 Section {
-                    Button(action: {
+                    AttendanceButton(isConfirmed: viewModel.isUserConfirmed, title: viewModel.title) {
                         Task {
                             HapticManager.shared.impact(style: viewModel.isUserConfirmed ? .rigid : .medium)
                             await viewModel.toggleAttendance()
                         }
-                    }) {
-                        HStack(spacing: Spacing.xs) {
-                            Image(systemName: viewModel.isUserConfirmed ? "checkmark.circle.fill" : "person.crop.circle.badge.plus")
-                                .foregroundColor(viewModel.isUserConfirmed ? Theme.success : Theme.accent)
-                                .frame(width: 24, height: 24)
-                            Text(viewModel.isUserConfirmed ? "Presença confirmada" : "Confirmar presença")
-                                .foregroundColor(Theme.textPrimary)
-                        }
                     }
-                    .buttonStyle(PrimaryButtonStyle())
                 }
                 .listRowBackground(Color.clear)
                 .listRowInsets(EdgeInsets())
