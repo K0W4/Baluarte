@@ -73,9 +73,17 @@ public struct CommitteeCard: View {
                                     // de 44pt enquanto a região que responde ao dedo seguia
                                     // sendo o glifo, de uns 20pt — o toque errava a bolinha,
                                     // caía no gesto do card e navegava para a comissão.
+                                    // `.leading` e não o centro: o alvo continua com os 44pt
+                                    // que o pacote 14 conquistou, mas centralizar um glifo de
+                                    // ~20pt dentro dele empurrava a bolinha 12pt para dentro,
+                                    // desalinhada do ícone do próprio card logo acima.
                                     Image(systemName: "circle")
                                         .foregroundColor(Theme.textSecondary)
-                                        .frame(width: Spacing.minTouchTarget, height: Spacing.minTouchTarget)
+                                        .frame(
+                                            width: Spacing.minTouchTarget,
+                                            height: Spacing.minTouchTarget,
+                                            alignment: .leading
+                                        )
                                         .contentShape(Rectangle())
                                 }
                                 .buttonStyle(.plain)
@@ -83,7 +91,11 @@ public struct CommitteeCard: View {
                             } else {
                                 Image(systemName: "circle")
                                     .foregroundColor(Theme.textSecondary)
-                                    .frame(width: Spacing.minTouchTarget, height: Spacing.minTouchTarget)
+                                    .frame(
+                                        width: Spacing.minTouchTarget,
+                                        height: Spacing.minTouchTarget,
+                                        alignment: .leading
+                                    )
                                     .accessibilityHidden(true)
                             }
 
