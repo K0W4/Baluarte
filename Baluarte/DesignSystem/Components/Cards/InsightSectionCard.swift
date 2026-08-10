@@ -44,7 +44,7 @@ struct InsightSectionCard: View {
                     } label: {
                         Text(actionLabel)
                     }
-                    .buttonStyle(PrimaryButtonStyle())
+                    .buttonStyle(SecondaryButtonStyle())
                     .padding(.top, Spacing.xs)
                 }
             }
@@ -85,7 +85,7 @@ struct InsightSectionCard: View {
                     .foregroundColor(Theme.backgroundPrimary)
                     .padding(.horizontal, Spacing.xs)
                     .padding(.vertical, 2)
-                    .background(severityColor)
+                    .background(Theme.textPrimary)
                     .clipShape(Capsule())
 
                 Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
@@ -109,7 +109,13 @@ struct InsightSectionCard: View {
         }
     }
 
+    /// O ícone é onde a severidade cabe: a cápsula ao lado carrega o contador e precisa
+    /// do contraste alto, e pintá-la de laranja punha branco sobre laranja. Aqui o piso é
+    /// o de componente, 3:1, e `warning` passa nos dois modos.
     private var severityColor: Color {
-        return Theme.textPrimary
+        switch insight.severity {
+        case .actionRequired, .warning: return Theme.warning
+        case .info: return Theme.textSecondary
+        }
     }
 }

@@ -47,7 +47,6 @@ public struct TasksView: View {
                             .padding(.top, Spacing.screenEdgePadding)
                         }
                         .scrollIndicators(.hidden)
-                        .tint(Theme.accent)
         .refreshable { await viewModel.loadData() }
                     } else {
                         contentList
@@ -215,7 +214,6 @@ public struct TasksView: View {
         .scrollContentBackground(.hidden)
         .scrollIndicators(.hidden)
         .contentMargins(.bottom, 100, for: .scrollContent)
-        .tint(Theme.accent)
         .refreshable {
             await viewModel.loadData()
         }
@@ -269,7 +267,7 @@ public struct TasksView: View {
                 } label: {
                     Label("Excluir", systemImage: "trash")
                 }
-                .tint(.red)
+                .tint(Theme.destructive)
             }
             .listRowSeparator(.hidden)
             .listRowBackground(Color.clear)
@@ -315,7 +313,7 @@ private struct TaskProgressCard: View {
 
                     Capsule()
                         .frame(width: geometry.size.width * CGFloat(progress), height: 8)
-                        .foregroundColor(Theme.accent)
+                        .foregroundColor(Theme.success)
                 }
             }
             .frame(height: 8)

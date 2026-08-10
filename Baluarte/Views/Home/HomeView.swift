@@ -136,7 +136,6 @@ public struct HomeView: View {
                     .accessibilityIdentifier("home.profile")
                 }
             }
-            .tint(Theme.accent)
             .refreshable {
                 await viewModel.loadData()
             }

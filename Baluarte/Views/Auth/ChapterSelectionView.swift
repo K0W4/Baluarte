@@ -277,7 +277,7 @@ private struct StateChip: View {
         }) {
             Text(title)
                 .font(Typography.subheadline)
-                .foregroundColor(isSelected ? Theme.textPrimary : Theme.textSecondary)
+                .foregroundColor(isSelected ? Theme.onAccent : Theme.textSecondary)
                 .padding(.horizontal, Spacing.md)
                 .frame(minHeight: Spacing.minTouchTarget)
                 .background(isSelected ? Theme.accent : Theme.backgroundTertiary)
