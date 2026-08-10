@@ -129,7 +129,7 @@ public struct SmartSummaryCard: View {
             
             Text(verbatim: "...")
                 .font(Typography.subheadline)
-                .foregroundColor(Theme.accent)
+                .foregroundColor(Theme.accentText)
                 .contentTransition(.numericText())
                 .animation(.easeInOut(duration: 0.5).repeatForever(), value: viewModel.isGenerating)
         }
@@ -149,7 +149,7 @@ public struct SmartSummaryCard: View {
                 Button(action: { withAnimation { isExpanded.toggle() } }) {
                     Text(isExpanded ? "Ver menos" : "Ver mais")
                         .font(Typography.caption1)
-                        .foregroundColor(Theme.accent)
+                        .foregroundColor(Theme.accentText)
                 }
             }
         }
