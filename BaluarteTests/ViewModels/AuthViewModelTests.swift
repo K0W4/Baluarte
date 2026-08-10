@@ -10,21 +10,25 @@ import Supabase
 @MainActor
 struct AuthViewModelTests {
 
+    /// Os dublês nascem no corpo, não no valor padrão do parâmetro: o alvo declara
+    /// `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor`, e uma expressão padrão é avaliada em
+    /// contexto nonisolated — chamar ali um inicializador isolado ao MainActor rende um
+    /// aviso por parâmetro.
     private func makeViewModel(
-        auth: TestMockAuthService = TestMockAuthService(),
-        store: TestMockSessionStore = TestMockSessionStore(),
-        membership: TestMockMembershipService = TestMockMembershipService(),
-        joinRequest: TestMockJoinRequestService = TestMockJoinRequestService(),
-        profile: TestMockProfileService = TestMockProfileService(),
-        chapter: TestMockChapterService = TestMockChapterService()
+        auth: TestMockAuthService? = nil,
+        store: TestMockSessionStore? = nil,
+        membership: TestMockMembershipService? = nil,
+        joinRequest: TestMockJoinRequestService? = nil,
+        profile: TestMockProfileService? = nil,
+        chapter: TestMockChapterService? = nil
     ) -> AuthViewModel {
         AuthViewModel(
-            authService: auth,
-            profileService: profile,
-            membershipService: membership,
-            joinRequestService: joinRequest,
-            chapterService: chapter,
-            sessionStore: store
+            authService: auth ?? TestMockAuthService(),
+            profileService: profile ?? TestMockProfileService(),
+            membershipService: membership ?? TestMockMembershipService(),
+            joinRequestService: joinRequest ?? TestMockJoinRequestService(),
+            chapterService: chapter ?? TestMockChapterService(),
+            sessionStore: store ?? TestMockSessionStore()
         )
     }
 

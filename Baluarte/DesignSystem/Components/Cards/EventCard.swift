@@ -77,19 +77,13 @@ public struct EventCard: View {
                 }
             }
             
-            Button(action: {
+            // Preenchido é a ação a tomar; confirmado já é estado, e estado não grita.
+            // Além de devolver a hierarquia, isso tira o ícone verde de cima do vermelho —
+            // o par que some justamente para quem tem daltonismo vermelho-verde.
+            AttendanceButton(isConfirmed: isUserConfirmed, title: event.title) {
                 HapticManager.shared.impact(style: isUserConfirmed ? .rigid : .medium)
                 onConfirmAttendance?()
-            }) {
-                HStack(spacing: Spacing.xs) {
-                    Image(systemName: isUserConfirmed ? "checkmark.circle.fill" : "person.crop.circle.badge.plus")
-                        .foregroundColor(isUserConfirmed ? Theme.success : Theme.accent)
-                        .frame(width: 24, height: 24)
-                    Text(isUserConfirmed ? "Presença confirmada" : "Confirmar presença")
-                }
             }
-            .buttonStyle(PrimaryButtonStyle())
-            .accessibilityLabel(isUserConfirmed ? "Cancelar presença no evento \(event.title)" : "Confirmar presença no evento \(event.title)")
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(event.title), \(event.eventType), \(dateString), \(event.confirmedAttendees?.count ?? 0) presenças")
