@@ -145,6 +145,18 @@ probe_raise() {
   fi
 }
 
+# Quase toda sonda aqui prova uma recusa. Esta prova o contrário, e existe porque a
+# ausência dela escondeu um defeito por completo: `task.creator_id` apontava para
+# `member` em vez de `chapter_membership`, então quem entrou no Capítulo depois do
+# backfill -- id novo, que não coincide com nenhum `member.id` -- levava 23503 ao criar
+# tarefa. Nenhuma sonda de recusa jamais veria isso: recusar era o que todas esperavam.
+probe_allowed() {
+  local name="$1" token="$2" method="$3" path="$4" body="$5"
+  local code; code=$(request "$token" "$method" "$path" "$body")
+  if [ "${code:0:1}" = "2" ]; then pass "$name"
+  else flunk "$name" "esperava ser aceito, veio HTTP $code $(field code)"; fi
+}
+
 # Uma sonda que não pôde rodar não é uma sonda que passou. Contada à parte e
 # anunciada no fim, para a ausência de cobertura não desaparecer no verde.
 skip() { printf '\033[33m%s\033[0m\n' "pulada  $1"; dim "        $2"; SKIPPED=$((SKIPPED + 1)); }
@@ -563,6 +575,23 @@ print(d[0]["id"] if d else "")')"
   probe_denied "C não se insere em Capítulo por conta própria" "$TOKEN_C" POST \
     "/rest/v1/chapter_membership" \
     "{\"chapter_id\":\"$A_CHAPTER\",\"member_id\":\"$C_UID\",\"full_name\":\"Sonda RLS\",\"status\":\"active\"}"
+
+  # O ator de um Capítulo é o vínculo, não a pessoa, e C é justamente quem tem vínculo
+  # com id novo -- o caso que as FKs antigas recusavam. Cria e apaga: nada sobrevive.
+  C_MEMBERSHIP=$(curl -s \
+    "$URL/rest/v1/chapter_membership?select=id&member_id=eq.$C_UID&chapter_id=eq.$A_CHAPTER&limit=1" \
+    -H "apikey: $ANON" -H "Authorization: Bearer $TOKEN_C" \
+    | python3 -c 'import json,sys; d=json.load(sys.stdin); print(d[0]["id"] if d else "")')
+
+  if [ -z "$C_MEMBERSHIP" ]; then
+    skip "vínculo novo cria tarefa" "não foi possível ler o vínculo de C"
+  else
+    probe_allowed "vínculo novo cria tarefa" "$TOKEN_C" POST "/rest/v1/task" \
+      "{\"chapter_id\":\"$A_CHAPTER\",\"creator_id\":\"$C_MEMBERSHIP\",\"assignee_id\":\"$C_MEMBERSHIP\",\"title\":\"Sonda RLS\"}"
+    curl -s -X DELETE \
+      "$URL/rest/v1/task?chapter_id=eq.$A_CHAPTER&title=eq.Sonda%20RLS" \
+      -H "apikey: $ANON" -H "Authorization: Bearer $TOKEN_C" >/dev/null
+  fi
 fi
 
 echo

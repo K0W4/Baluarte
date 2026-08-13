@@ -72,7 +72,7 @@ struct InsightSectionCard: View {
             HStack(spacing: Spacing.sm) {
                 Image(systemName: insight.iconName)
                     .font(Typography.headline)
-                    .foregroundColor(severityColor)
+                    .foregroundColor(sectionIconColor)
 
                 Text(insight.title)
                     .font(Typography.headline)
@@ -109,13 +109,9 @@ struct InsightSectionCard: View {
         }
     }
 
-    /// O ícone é onde a severidade cabe: a cápsula ao lado carrega o contador e precisa
-    /// do contraste alto, e pintá-la de laranja punha branco sobre laranja. Aqui o piso é
-    /// o de componente, 3:1, e `warning` passa nos dois modos.
-    private var severityColor: Color {
-        switch insight.severity {
-        case .actionRequired, .warning: return Theme.warning
-        case .info: return Theme.textSecondary
-        }
-    }
+    /// O ícone da seção é marca, não semáforo. Tingi-lo por gravidade fazia a Análise
+    /// inteira mudar de cor conforme o Capítulo ia bem ou mal, e a gravidade já se lê no
+    /// texto do apontamento. A cápsula ao lado segue em `textPrimary`, porque carrega o
+    /// contador e precisa do contraste alto.
+    private var sectionIconColor: Color { Theme.accent }
 }

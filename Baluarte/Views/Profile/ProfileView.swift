@@ -33,11 +33,6 @@ struct ProfileView: View {
                                 value: birthdate.formatted(.dateTime.day().month(.twoDigits).year())
                             )
                         }
-                        ProfileInfoRow(
-                            icon: "envelope",
-                            title: String(localized: "E-mail"),
-                            value: user.email ?? String(localized: "Conta Apple")
-                        )
                     } header: {
                         Text("Informações")
                     }

@@ -313,7 +313,7 @@ private struct TaskProgressCard: View {
 
                     Capsule()
                         .frame(width: geometry.size.width * CGFloat(progress), height: 8)
-                        .foregroundColor(Theme.success)
+                        .foregroundColor(Theme.accent)
                 }
             }
             .frame(height: 8)
