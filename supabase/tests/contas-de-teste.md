@@ -53,6 +53,24 @@ A via normal não serve: `chapter` é registro somente-leitura para o app, e o c
 fundação (`join_request` com `kind = 'chapter_bootstrap'`) precisa de um `is_platform_admin`
 para aprovar — e hoje não existe nenhum. Então o Capítulo de teste nasce por SQL.
 
+### Ele nasce invisível
+
+O Capítulo entra com **`status = 'pending_review'`**, e isso não é um detalhe: é o que
+mantém as contas de sonda fora do produto. `search_chapters` filtra
+`where c.status <> 'pending_review'`, então o Capítulo de Teste **não aparece na busca**
+para ninguém — nem para você, nem para um Capítulo real procurando o seu.
+
+O mecanismo já existe e é o mesmo que esconde um Capítulo em análise: quem já tem vínculo
+continua enxergando o nome dele (`fetchChapter` é leitura direta por id), e é exatamente
+disso que as sondas precisam. Nenhuma delas consulta a busca, e nenhuma depende do status.
+
+O resultado é que as três contas existem no `auth.users`, porque precisam existir, e não
+aparecem em lugar nenhum do app:
+
+- **B** não tem vínculo com Capítulo algum — some por definição.
+- **A e C** só existem dentro do Capítulo de Teste, que a busca não devolve.
+- **Nenhuma** delas encosta no Capela Grande nº 656.
+
 Cole no **SQL Editor**, trocando só os três e-mails da primeira linha. O script busca os
 UUIDs sozinho, e é idempotente — rodar duas vezes não duplica nada.
 
@@ -69,8 +87,9 @@ with contas as (
 -- obviamente sintético.
 capitulo as (
   insert into public.chapter (name, number, uf, city, status, has_owner)
-  values ('Capítulo de Teste', 9999, 'RS', 'Porto Alegre', 'active', true)
-  on conflict (uf, number) do update set has_owner = true
+  values ('Capítulo de Teste', 9999, 'RS', 'Porto Alegre', 'pending_review', true)
+  on conflict (uf, number) do update
+    set has_owner = true, status = 'pending_review'
   returning id
 ),
 
@@ -122,6 +141,8 @@ order by cm.access_level desc;
 ```
 
 Tem de sair exatamente isto: **Sonda A · owner · active** e **Sonda C · member · active**.
+E, para confirmar que o Capítulo está invisível, `select * from public.search_chapters('teste', null)`
+não deve devolver nada.
 Se B aparecer, ele entrou por engano e precisa sair — `delete from public.chapter_membership
 where member_id = (select id from auth.users where email = '<e-mail de B>')`.
 
