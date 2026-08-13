@@ -146,6 +146,36 @@ não deve devolver nada.
 Se B aparecer, ele entrou por engano e precisa sair — `delete from public.chapter_membership
 where member_id = (select id from auth.users where email = '<e-mail de B>')`.
 
+## Passo 2b — a última sonda (opcional)
+
+Com A, B e C no lugar, 50 das 51 sondas rodam. A que sobra precisa de **uma tarefa ligada
+a uma comissão** no Capítulo de A, para provar que um membro de fora da comissão não a
+enxerga — e o Capítulo de teste nasce vazio. Ela se declara pulada com a razão: *"o
+Capítulo de A não tem nenhuma tarefa ligada a comissão"*.
+
+Para fechar as 51, rode também:
+
+```sql
+-- Uma comissão onde só A entra. C fica de fora, que é o ponto.
+insert into public.committee (chapter_id, name, chairman_id, member_ids)
+select c.id, 'Comissão de Sonda', cm.id, array[cm.id]
+from public.chapter c
+join public.chapter_membership cm
+  on cm.chapter_id = c.id and cm.access_level = 'owner'
+where c.uf = 'RS' and c.number = 9999
+  and not exists (select 1 from public.committee x where x.chapter_id = c.id);
+
+-- E uma tarefa dentro dela.
+insert into public.task (chapter_id, creator_id, assignee_id, committee_id, title)
+select c.id, cm.id, cm.id, com.id, 'Tarefa de sonda'
+from public.chapter c
+join public.chapter_membership cm
+  on cm.chapter_id = c.id and cm.access_level = 'owner'
+join public.committee com on com.chapter_id = c.id
+where c.uf = 'RS' and c.number = 9999
+  and not exists (select 1 from public.task t where t.committee_id = com.id);
+```
+
 ## Passo 3 — gravar os secrets
 
 Pelo site: **Settings → Secrets and variables → Actions → New repository secret**, seis
