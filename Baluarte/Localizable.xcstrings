@@ -3696,6 +3696,7 @@
       }
     },
     "Conta Apple" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
