@@ -412,3 +412,11 @@ enabled = true
 # declarative_schema_path = "./database"
 # JSON string passed through to pg-delta SQL formatting.
 # format_options = "{\"keywordCase\":\"upper\",\"indent\":2,\"maxWidth\":80,\"commaStyle\":\"trailing\"}"
+
+# A `send-push` é chamada pelo cron do Postgres, e não por uma pessoa: a verificação de
+# JWT do gateway não serve de porta aqui. Este projeto usa as chaves novas
+# (`sb_publishable_` / `sb_secret_`), que não são JWTs, então tanto a anon quanto a
+# service_role eram recusadas com 401 -- antes de a função sequer existir. A porta passou
+# a ser o `CRON_SECRET`, verificado dentro da própria função, que é nosso e não expira.
+[functions.send-push]
+verify_jwt = false

@@ -66,7 +66,26 @@ async function apnsToken(keyId: string, teamId: string, pem: string): Promise<st
   return value;
 }
 
-Deno.serve(async () => {
+Deno.serve(async (req) => {
+  // Quem chama isto é o cron, não uma pessoa -- então a porta não pode ser um JWT.
+  //
+  // O gateway do Supabase verifica JWT por padrão, e este projeto usa as chaves novas
+  // (`sb_publishable_` / `sb_secret_`), que **não são JWTs**: tanto a anon quanto a
+  // service_role foram recusadas com 401 antes de a função existir. O cron disparou de
+  // minuto em minuto por horas sem nunca entrar aqui, e `cron.job_run_details` mostrava
+  // "succeeded" o tempo todo, porque o que teve sucesso foi enfileirar a requisição.
+  //
+  // Com `verify_jwt = false` no config.toml, a porta passa a ser este segredo, que é
+  // nosso e não expira. Sem `CRON_SECRET` configurado a função recusa tudo: é melhor não
+  // enviar do que ficar aberta por esquecimento.
+  const cronSecret = Deno.env.get("CRON_SECRET");
+  if (!cronSecret) {
+    return Response.json({ error: "CRON_SECRET is not configured" }, { status: 500 });
+  }
+  if (req.headers.get("x-cron-secret") !== cronSecret) {
+    return Response.json({ error: "unauthorized" }, { status: 401 });
+  }
+
   const keyId = Deno.env.get("APNS_KEY_ID");
   const teamId = Deno.env.get("APNS_TEAM_ID");
   const bundleId = Deno.env.get("APNS_BUNDLE_ID");
