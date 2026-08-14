@@ -16,10 +16,18 @@ public struct EventDetailView: View {
                 Section {
                     TextField("Título do Evento", text: $viewModel.title)
                     
-                    Picker("Tipo", selection: $viewModel.eventType) {
-                        ForEach(viewModel.eventTypes, id: \.self) { type in
-                            Text(type).tag(type)
+                    // Em leitura, texto -- e não um `Picker` desligado. `.disabled` esmaece
+                    // o `Picker` e **não** o `DatePicker`, então no mesmo cartão o tipo do
+                    // evento saía a 1,72:1 contra o branco enquanto a data ficava a 21:1.
+                    // O tipo é dado real, e era o único campo que parecia ausente.
+                    if isEditing {
+                        Picker("Tipo", selection: $viewModel.eventType) {
+                            ForEach(viewModel.eventTypes, id: \.self) { type in
+                                Text(type).tag(type)
+                            }
                         }
+                    } else {
+                        LabeledContent("Tipo", value: viewModel.eventType)
                     }
                     
                     DatePicker("Data", selection: $viewModel.scheduledDate, displayedComponents: .date)
