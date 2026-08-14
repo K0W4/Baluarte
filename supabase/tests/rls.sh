@@ -28,7 +28,9 @@
 #   supabase/tests/rls.sh -v         mostra o corpo de cada resposta
 #
 # Nada aqui grava dado que sobreviva: as sondas ou são leitura, ou são escrita que
-# se espera ser recusada antes de tocar uma linha.
+# se espera ser recusada antes de tocar uma linha. A única exceção é
+# `probe_storage_allowed`, que precisa gravar para provar que o dono consegue --
+# e apaga o objeto em seguida, pelo mesmo token.
 #
 # Sobre o que cada sonda asserta:
 #
@@ -52,6 +54,11 @@
 #                 grava no bucket privado com um mime que ele aceita. Sem isso a
 #                 requisição morre em 415 antes de a policy ser consultada, e a
 #                 sonda ficaria verde sem ter provado nada.
+#   probe_storage_allowed
+#                 o par positivo da anterior. Sonda de recusa não distingue "a
+#                 policy barra quem devia" de "a policy barra todo mundo": é essa
+#                 diferença que deixou a fundação de Capítulo quebrada com a
+#                 matriz verde. Grava sob o próprio caminho e apaga depois.
 
 set -uo pipefail
 
@@ -190,6 +197,25 @@ probe_storage_write() {
   else
     flunk "$name" "esperava recusa, veio HTTP $code — E UM OBJETO FOI CRIADO EM $path"
   fi
+}
+
+# O par positivo da anterior, e a sonda que faltava: uma matriz só de recusas fica
+# verde mesmo quando a policy recusa TODO MUNDO, inclusive o dono da pasta -- que
+# foi exatamente o que aconteceu com o caminho em maiúsculas. Apaga o que gravou.
+probe_storage_allowed() {
+  local name="$1" token="$2" path="$3"
+  local code
+  code=$(printf '\xff\xd8\xff\xd9' | curl -s -o "$BODY" -w '%{http_code}' \
+           -X POST "$URL/storage/v1/object/bootstrap-proof/$path" \
+           -H "apikey: $ANON" -H "Authorization: Bearer $token" \
+           -H "Content-Type: image/jpeg" --data-binary @-)
+  if [ "${code:0:1}" = "2" ]; then
+    pass "$name"
+  else
+    flunk "$name" "esperava 2xx sob o próprio caminho, veio HTTP $code"
+  fi
+  curl -s -o /dev/null -X DELETE "$URL/storage/v1/object/bootstrap-proof/$path" \
+    -H "apikey: $ANON" -H "Authorization: Bearer $token"
 }
 
 # Confere 200 e que a PRIMEIRA linha devolvida é da ação esperada. Serve para a
@@ -423,6 +449,18 @@ echo "— Comprovantes de fundação são privados —"
 # nem administrador de plataforma, e esse terceiro ator não existe nesta matriz.
 probe_storage_write "B não grava sob o caminho de A" "$TOKEN_B" \
   "$A_UID/sonda-rls.jpg"
+
+# A outra metade, que faltava. A policy compara `text` com `text`, e o `=` do
+# Postgres distingue caso: `auth.uid()::text` sai em minúsculas, e o
+# `UUID.uuidString` do Swift sai em MAIÚSCULAS. O app montava o caminho com o
+# segundo, então `proof_insert_own` recusava o dono da própria pasta e fundar
+# Capítulo morria em 403 -- com a matriz inteira verde, porque só havia sonda de
+# recusa aqui. As duas abaixo prendem o caso das letras dos dois lados.
+probe_storage_allowed "A grava sob o próprio caminho, em minúsculas" "$TOKEN_A" \
+  "$A_UID/sonda-rls.jpg"
+
+probe_storage_write "e não grava o mesmo uid em MAIÚSCULAS" "$TOKEN_A" \
+  "$(printf '%s' "$A_UID" | tr '[:lower:]' '[:upper:]')/sonda-rls.jpg"
 
 echo
 echo "— Imutabilidade do Capítulo de um registro —"

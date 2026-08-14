@@ -73,8 +73,17 @@ public final class SupabaseJoinRequestService: JoinRequestServiceProtocol {
 
     /// Caminho `{auth.uid()}/{uuid}.jpg`: a primeira pasta é o dono, que é exatamente
     /// o que as policies do Storage conferem.
+    ///
+    /// `UUID.uuidString` sai em MAIÚSCULAS e `auth.uid()::text` sai em minúsculas —
+    /// e o `=` de `text` no Postgres distingue caso. Sem o `lowercased()` a policy
+    /// `proof_insert_own` recusava **todo** envio, inclusive o do próprio dono da
+    /// pasta, e a fundação de Capítulo morria em 403 antes de existir solicitação.
+    static func proofPath(memberId: UUID, fileId: UUID = UUID()) -> String {
+        "\(memberId.uuidString.lowercased())/\(fileId.uuidString.lowercased()).jpg"
+    }
+
     public func uploadProof(memberId: UUID, imageData: Data) async throws -> String {
-        let path = "\(memberId.uuidString)/\(UUID().uuidString).jpg"
+        let path = Self.proofPath(memberId: memberId)
 
         try await client.storage
             .from(Self.proofBucket)
