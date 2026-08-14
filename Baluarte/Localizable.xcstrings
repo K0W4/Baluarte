@@ -413,6 +413,18 @@
     },
     "%@, nº %lld · %@. O registro não pode ser corrigido pelo app depois — confira o número e a jurisdição.": {
       "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, no. %2$lld · %3$@. The registry cannot be corrected from the app afterwards — check the number and the jurisdiction."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, n.º %2$lld · %3$@. El registro no puede corregirse desde la app después — comprueba el número y la jurisdicción."
+          }
+        },
         "pt-BR": {
           "stringUnit": {
             "state": "new",
@@ -9319,6 +9331,22 @@
         }
       }
     },
+    "Quando alguém entrar no quadro, aparece aqui.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When someone joins the roster, they show up here."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuando alguien entre en el cuadro, aparecerá aquí."
+          }
+        }
+      }
+    },
     "Quando alguém não encontrar o Capítulo dele no catálogo, o pedido aparece aqui.": {
       "extractionState": "manual",
       "localizations": {
@@ -9370,6 +9398,86 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cuando alguien pida ser el primer administrador de un Capítulo, la solicitud aparecerá aquí con el comprobante."
+          }
+        }
+      }
+    },
+    "Quando houver tarefa para você, ela aparece aqui.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When there is a task for you, it shows up here."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuando haya una tarea para ti, aparecerá aquí."
+          }
+        }
+      }
+    },
+    "Quando o Capítulo agendar um evento, ele aparece aqui.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When the Chapter schedules an event, it shows up here."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuando el Capítulo programe un evento, aparecerá aquí."
+          }
+        }
+      }
+    },
+    "Quando o Capítulo criar uma comissão, ela aparece aqui.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When the Chapter creates a committee, it shows up here."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuando el Capítulo cree una comisión, aparecerá aquí."
+          }
+        }
+      }
+    },
+    "Quando o Capítulo definir uma meta, ela aparece aqui.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When the Chapter sets a goal, it shows up here."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuando el Capítulo defina una meta, aparecerá aquí."
+          }
+        }
+      }
+    },
+    "Quando um Capítulo for cadastrado, ele aparece aqui.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When a Chapter is registered, it shows up here."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuando se registre un Capítulo, aparecerá aquí."
           }
         }
       }

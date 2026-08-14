@@ -33,6 +33,9 @@ public enum CardType {
         }
     }
 
+    /// O texto de quem **pode** agir. Instruir a criar só faz sentido para quem tem o
+    /// botão logo abaixo; para os demais era o app mandando fazer o que ele mesmo acabara
+    /// de esconder.
     var subtitle: String {
         switch self {
         case .event: return String(localized: "Agende um evento e ele aparecerá aqui.")
@@ -41,6 +44,20 @@ public enum CardType {
         case .member: return String(localized: "Adicione um membro e ele aparecerá aqui.")
         case .task: return String(localized: "Crie uma tarefa e ela aparecerá aqui.")
         case .chapter: return String(localized: "Crie o primeiro Capítulo para começar.")
+        case .chapterRequests: return String(localized: "Quando alguém não encontrar o Capítulo dele no catálogo, o pedido aparece aqui.")
+        }
+    }
+
+    /// O mesmo vazio, dito para quem só assiste: descreve quando aquilo vai aparecer, em
+    /// vez de pedir uma ação que a pessoa não tem como executar.
+    var passiveSubtitle: String {
+        switch self {
+        case .event: return String(localized: "Quando o Capítulo agendar um evento, ele aparece aqui.")
+        case .goal: return String(localized: "Quando o Capítulo definir uma meta, ela aparece aqui.")
+        case .committee: return String(localized: "Quando o Capítulo criar uma comissão, ela aparece aqui.")
+        case .member: return String(localized: "Quando alguém entrar no quadro, aparece aqui.")
+        case .task: return String(localized: "Quando houver tarefa para você, ela aparece aqui.")
+        case .chapter: return String(localized: "Quando um Capítulo for cadastrado, ele aparece aqui.")
         case .chapterRequests: return String(localized: "Quando alguém não encontrar o Capítulo dele no catálogo, o pedido aparece aqui.")
         }
     }
@@ -67,6 +84,12 @@ public struct EmptyStateCard: View {
         self.action = action
     }
 
+    /// Quem decide o texto é a presença do botão, e não um parâmetro novo em cada
+    /// chamador: `action` já é nulo exatamente quando `.requires` tirou a permissão.
+    private var subtitle: String {
+        action == nil ? cardType.passiveSubtitle : cardType.subtitle
+    }
+
     public var body: some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
             VStack(alignment: .leading, spacing: Spacing.xs) {
@@ -80,7 +103,7 @@ public struct EmptyStateCard: View {
                         .foregroundStyle(Theme.textPrimary)
                 }
                 
-                Text(cardType.subtitle)
+                Text(subtitle)
                     .font(Typography.footnote)
                     .foregroundStyle(Theme.textSecondary)
             }
@@ -96,7 +119,7 @@ public struct EmptyStateCard: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(cardType.title). \(cardType.subtitle)")
+        .accessibilityLabel("\(cardType.title). \(subtitle)")
         .padding(Spacing.md)
         .background(Theme.cardBackground)
         .clipShape(.rect(cornerRadius: Spacing.cornerRadius))
