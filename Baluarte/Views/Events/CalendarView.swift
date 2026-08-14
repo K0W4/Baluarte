@@ -201,7 +201,11 @@ public struct CalendarView: View {
     private var eventsList: some View {
         VStack(alignment: .leading, spacing: Spacing.md) {
             SectionHeaderView(
-                title: "Eventos do Dia",
+                // `LocalizedStringKey` com interpolação gera a chave "Eventos de %@", que
+                // está no catálogo nos três idiomas. Formatar antes com `String(format:)`
+                // devolveria `String`, que este parâmetro não aceita -- e, se aceitasse,
+                // sairia sem tradução.
+                title: "Eventos de \(viewModel.selectedDate.formatted(.dateTime.day().month(.wide)))",
                 actionLabel: "Adicionar evento",
                 actionHint: "Toca duas vezes para adicionar evento no calendário",
                 action: createEventAction
@@ -242,12 +246,28 @@ public struct CalendarView: View {
         }
     }
     
+    /// A seleção acompanha o mês. Sem isso, "Eventos do Dia" continuava listando o dia
+    /// escolhido no mês anterior: navegando de agosto para maio, a lista seguia mostrando
+    /// um evento de 15 de agosto, sem nenhuma célula destacada na grade e sem o título
+    /// dizer de que dia falava.
+    ///
+    /// O dia escolhido é mantido quando existe no mês de destino -- ir de 15/ago para
+    /// setembro fica em 15/set -- e cai no último dia quando não existe, que é o caso de
+    /// 31 de janeiro indo para fevereiro.
     private func changeMonth(by value: Int) {
         HapticManager.shared.impact(style: .light)
         monthTransitionDirection = value > 0 ? .trailing : .leading
-        if let newMonth = calendar.date(byAdding: .month, value: value, to: viewModel.currentMonth) {
-            withAnimation(.easeInOut(duration: 0.3)) {
-                viewModel.currentMonth = newMonth
+        guard let newMonth = calendar.date(byAdding: .month, value: value, to: viewModel.currentMonth) else { return }
+
+        let desiredDay = calendar.component(.day, from: viewModel.selectedDate)
+        let lastDay = calendar.range(of: .day, in: .month, for: newMonth)?.count ?? desiredDay
+        var parts = calendar.dateComponents([.year, .month], from: newMonth)
+        parts.day = min(desiredDay, lastDay)
+
+        withAnimation(.easeInOut(duration: 0.3)) {
+            viewModel.currentMonth = newMonth
+            if let newSelection = calendar.date(from: parts) {
+                viewModel.selectedDate = newSelection
             }
         }
     }
