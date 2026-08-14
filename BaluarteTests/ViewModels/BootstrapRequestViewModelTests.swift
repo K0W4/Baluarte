@@ -168,3 +168,30 @@ struct BootstrapQueueViewModelTests {
         #expect(viewModel.errorMessage != nil)
     }
 }
+
+/// O caminho do comprovante é a única string do app que um `=` de `text` no
+/// Postgres compara com `auth.uid()::text`, e esse `=` distingue caso. Com o
+/// `UUID.uuidString` cru — MAIÚSCULO — a policy `proof_insert_own` recusava o
+/// dono da própria pasta, e fundar Capítulo terminava em 403.
+@Suite("Bootstrap proof path")
+struct BootstrapProofPathTests {
+
+    @Test("The path is lowercase on both segments")
+    func testPathIsLowercase() {
+        let member = UUID(uuidString: "E621E1F8-C36C-495A-93FC-0C247A3E6E5F") ?? UUID()
+        let file = UUID(uuidString: "2893B127-C24E-4BA0-B19F-AA15BD664D16") ?? UUID()
+
+        let path = SupabaseJoinRequestService.proofPath(memberId: member, fileId: file)
+
+        #expect(path == "e621e1f8-c36c-495a-93fc-0c247a3e6e5f/2893b127-c24e-4ba0-b19f-aa15bd664d16.jpg")
+    }
+
+    @Test("The first folder is the owner, which is what the policy checks")
+    func testFirstFolderIsTheOwner() {
+        let member = UUID()
+
+        let path = SupabaseJoinRequestService.proofPath(memberId: member)
+
+        #expect(path.split(separator: "/").first.map(String.init) == member.uuidString.lowercased())
+    }
+}
