@@ -5798,6 +5798,22 @@
         }
       }
     },
+    "Eventos de %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Events on %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eventos del %@"
+          }
+        }
+      }
+    },
     "Eventos do Dia": {
       "extractionState": "manual",
       "localizations": {
