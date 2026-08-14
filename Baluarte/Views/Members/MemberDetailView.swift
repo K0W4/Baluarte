@@ -69,10 +69,17 @@ public struct MemberDetailView: View {
                 .disabled(!isEditing)
                 
                 Section {
-                    Picker("Cargo", selection: $viewModel.role) {
-                        ForEach(viewModel.roles, id: \.self) { role in
-                            Text(ChapterRole.displayName(for: role)).tag(role)
+                    // Mesmo motivo do tipo do evento: `.disabled` esmaece o `Picker` e não
+                    // o `DatePicker`, então em leitura o cargo era o único campo do cartão
+                    // que parecia ausente. Em leitura o cargo é texto.
+                    if isEditing {
+                        Picker("Cargo", selection: $viewModel.role) {
+                            ForEach(viewModel.roles, id: \.self) { role in
+                                Text(ChapterRole.displayName(for: role)).tag(role)
+                            }
                         }
+                    } else {
+                        LabeledContent("Cargo", value: ChapterRole.displayName(for: viewModel.role))
                     }
                 } header: {
                     Text("Atuação no Capítulo")
