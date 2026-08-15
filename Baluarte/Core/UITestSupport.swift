@@ -88,10 +88,10 @@ public enum UITestFixtures {
 
     public static let epoch = Date(timeIntervalSince1970: 1_767_225_600)
 
-    public static func chapter(id: UUID, name: String, number: Int) -> Chapter {
+    public static func chapter(id: UUID, name: String, number: Int, hasOwner: Bool = true) -> Chapter {
         Chapter(
             id: id, name: name, number: number, uf: "RS", city: "Porto Alegre",
-            status: .active, hasOwner: true, createdAt: epoch
+            status: .active, hasOwner: hasOwner, createdAt: epoch
         )
     }
 
@@ -305,10 +305,15 @@ final class UITestChapterService: ChapterServiceProtocol {
         self.configuration = configuration
     }
 
+    /// O segundo nasce sem Fundador de propósito: é o único jeito de a busca exercitar
+    /// a etiqueta "Sem adm" e a bifurcação para a fundação sem uma sessão real.
     private var chapters: [Chapter] {
         [
             UITestFixtures.chapter(id: UITestFixtures.firstChapterId, name: UITestFixtures.firstChapterName, number: 656),
-            UITestFixtures.chapter(id: UITestFixtures.secondChapterId, name: UITestFixtures.secondChapterName, number: 42)
+            UITestFixtures.chapter(
+                id: UITestFixtures.secondChapterId, name: UITestFixtures.secondChapterName,
+                number: 42, hasOwner: false
+            )
         ]
     }
 

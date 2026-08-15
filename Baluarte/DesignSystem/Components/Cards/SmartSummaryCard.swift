@@ -112,7 +112,7 @@ public struct SmartSummaryCard: View {
                     Text("Gerar Resumo")
                 }
                 .font(Typography.headline)
-                .foregroundColor(Color.white)
+                .foregroundColor(Theme.onAccent)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, Spacing.sm)
                 .background(Theme.accent)
@@ -149,7 +149,7 @@ public struct SmartSummaryCard: View {
                 Button(action: { withAnimation { isExpanded.toggle() } }) {
                     Text(isExpanded ? "Ver menos" : "Ver mais")
                         .font(Typography.caption1)
-                        .foregroundColor(Theme.accentText)
+                        .foregroundColor(Theme.textSecondary)
                 }
             }
         }

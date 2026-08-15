@@ -10912,6 +10912,29 @@
         }
       }
     },
+    "Sem adm" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No admin"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin admin"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem adm"
+          }
+        }
+      }
+    },
     "Sem administrador" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -13080,6 +13103,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Você pode reduzir o próprio acesso, mas não aumentá-lo."
+          }
+        }
+      }
+    },
+    "Você precisa estar vinculado a um Capítulo." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You need to be linked to a Chapter."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Debes estar vinculado a un Capítulo."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você precisa estar vinculado a um Capítulo."
           }
         }
       }
