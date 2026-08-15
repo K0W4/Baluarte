@@ -16,25 +16,15 @@ struct ChapterSelectionView: View {
                 Theme.backgroundPrimary.ignoresSafeArea()
 
                 VStack(spacing: Spacing.lg) {
-                    VStack(alignment: .leading, spacing: Spacing.sm) {
-                        Text("Encontre seu Capítulo")
-                            .font(Typography.largeTitle)
-                            .foregroundColor(Theme.textPrimary)
-                            .accessibilityAddTraits(.isHeader)
-
-                        Text("Para aproveitar o Baluarte, você precisa estar vinculado a um Capítulo.")
-                            .font(Typography.body)
-                            .foregroundColor(Theme.textSecondary)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-
                     StateFilterRow(selected: $viewModel.selectedUF)
 
                     content
 
                     // O convite tem peso visual maior de propósito: é o caminho rápido,
-                    // e quem chega com um código não deveria ter que buscar antes.
-                    VStack(spacing: Spacing.sm) {
+                    // e quem chega com um código não deveria ter que buscar antes. O
+                    // segundo virou texto: dois botões de largura cheia empilhados
+                    // custavam mais altura do que a lista de Capítulos que eles cercam.
+                    VStack(spacing: Spacing.xs) {
                         Button(action: {
                             HapticManager.shared.impact(style: .light)
                             showRedeemInvite = true
@@ -48,13 +38,29 @@ struct ChapterSelectionView: View {
                             showRequestChapter = true
                         }) {
                             Text("Não encontrei meu Capítulo")
+                                .font(Typography.subheadline)
+                                .foregroundColor(Theme.accentText)
+                                .frame(maxWidth: .infinity, minHeight: Spacing.minTouchTarget)
                         }
-                        .buttonStyle(SecondaryButtonStyle())
+                        .buttonStyle(.plain)
                     }
                 }
                 .padding(Spacing.screenEdgePadding)
             }
-            .searchable(text: $searchText, prompt: "Nome, número ou cidade")
+            // Título e subtítulo passam a ser os da própria View: escritos à mão eles
+            // ocupavam altura fixa e nunca saíam do caminho, enquanto o título de
+            // navegação encolhe ao rolar. O subtítulo é mais curto do que a frase que
+            // substitui porque um subtítulo de navegação **não quebra linha** — é a
+            // mesma armadilha que trunca a saudação da tela inicial em espanhol.
+            .navigationTitle("Encontre seu Capítulo")
+            .navigationSubtitle("Você precisa estar vinculado a um Capítulo.")
+            // Sem o `placement` o iOS 26 ancora a busca no rodapé, embaixo dos botões.
+            // No topo ela fica onde é lida — antes das siglas, que são o filtro dela.
+            .searchable(
+                text: $searchText,
+                placement: .navigationBarDrawer(displayMode: .always),
+                prompt: "Nome, número ou cidade"
+            )
             .task(id: searchKey) {
                 guard !Task.isCancelled else { return }
                 if !searchText.isEmpty {
@@ -252,7 +258,7 @@ private struct StateFilterRow: View {
                     selected = nil
                 }
 
-                ForEach(BrazilianState.allCases) { state in
+                ForEach(BrazilianState.alphabetical) { state in
                     StateChip(title: state.rawValue, isSelected: selected == state) {
                         selected = selected == state ? nil : state
                     }

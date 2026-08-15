@@ -20,24 +20,28 @@ public struct ChapterCard: View {
 
     public var body: some View {
         HStack(alignment: .center, spacing: Spacing.md) {
+            // A etiqueta desceu para a linha de baixo: ao lado do nome ela disputava a
+            // largura com ele, e "Arquitetos do Oriente" virava "Arquitetos do Ori…".
+            // Aqui o nome usa a linha inteira, e a etiqueta divide espaço com um texto
+            // curto que pode truncar sem perder o que importa.
             VStack(alignment: .leading, spacing: Spacing.xxs) {
-                HStack(spacing: Spacing.xs) {
-                    Text(chapter.name)
-                        .font(Typography.headline)
-                        .foregroundColor(Theme.textPrimary)
-                        .lineLimit(1)
+                Text(chapter.name)
+                    .font(Typography.headline)
+                    .foregroundColor(Theme.textPrimary)
+                    .lineLimit(1)
 
+                HStack(spacing: Spacing.xs) {
                     if chapter.status == .dormant {
                         badge("Dormente", tint: Theme.textSecondary)
                     } else if !chapter.hasOwner {
-                        badge("Sem administrador", tint: Theme.accent)
+                        badge("Sem adm", tint: Theme.accentText)
                     }
-                }
 
-                Text(subtitle)
-                    .font(Typography.subheadline)
-                    .foregroundColor(Theme.textSecondary)
-                    .lineLimit(1)
+                    Text(subtitle)
+                        .font(Typography.subheadline)
+                        .foregroundColor(Theme.textSecondary)
+                        .lineLimit(1)
+                }
             }
 
             Spacer(minLength: Spacing.xs)
@@ -60,14 +64,18 @@ public struct ChapterCard: View {
         )
     }
 
+    /// Contorno, não preenchimento — e as duas razões apontam para o mesmo lugar. É um
+    /// estado, e a regra da casa é que preenchido é ação e contorno é estado. E o
+    /// preenchimento era o que reprovava o contraste: a cápsula clareava o fundo para
+    /// `#2C2C2E` e o texto da marca caía a **2,53:1** no escuro. Sobre o próprio cartão
+    /// o mesmo texto mede 5,2:1, acima do piso de 4,5:1 que um caption2 exige.
     private func badge(_ text: String, tint: Color) -> some View {
         Text(text)
             .font(Typography.caption2)
             .foregroundColor(tint)
             .padding(.horizontal, Spacing.xs)
             .padding(.vertical, 2)
-            .background(Theme.backgroundTertiary)
-            .clipShape(Capsule())
+            .overlay(Capsule().stroke(tint.opacity(0.4), lineWidth: 1))
     }
 
     private var subtitle: String {

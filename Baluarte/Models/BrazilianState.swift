@@ -9,6 +9,12 @@ public enum BrazilianState: String, CaseIterable, Identifiable, Sendable {
 
     public var id: String { rawValue }
 
+    /// `allCases` segue a ordem do IBGE, que é por região e não alfabética — AP antes
+    /// de AM, MT antes de MS, PR antes de PE. Na tela a fila de siglas é lida como
+    /// índice, e um índice fora de ordem obriga a varrer tudo para achar o próprio
+    /// estado. Ordenada pela sigla, que é o que a pessoa vê.
+    public static let alphabetical: [BrazilianState] = allCases.sorted { $0.rawValue < $1.rawValue }
+
     public var name: String {
         switch self {
         case .ac: return "Acre"
