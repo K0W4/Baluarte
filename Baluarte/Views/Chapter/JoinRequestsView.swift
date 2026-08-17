@@ -16,7 +16,7 @@ struct JoinRequestsView: View {
 
                 if viewModel.isLoading {
                     ProgressView().tint(Theme.accent)
-                } else if viewModel.requests.isEmpty {
+                } else if viewModel.requests.isEmpty && viewModel.errorMessage == nil {
                     EmptyQueueState()
                         .padding(Spacing.screenEdgePadding)
                 } else {
@@ -175,7 +175,7 @@ private struct ReviewJoinRequestSheet: View {
 
                     Picker("Cargo", selection: $viewModel.role) {
                         ForEach(JoinRequestsViewModel.memberRoles, id: \.self) { role in
-                            Text(role).tag(role)
+                            Text(ChapterRole.displayName(for: role)).tag(role)
                         }
                     }
                     .onChange(of: viewModel.role) { _, _ in
@@ -246,6 +246,16 @@ private struct ReviewJoinRequestSheet: View {
             }
             .disabled(isWorking)
             .navigationTitle("Revisar solicitação")
+            // Idem: sem uma superfície própria, uma recusa do servidor ao aprovar — teto
+            // de dupla filiação, cadastro já reivindicado — era só uma vibração.
+            .toast(
+                isPresented: Binding(
+                    get: { viewModel.errorMessage != nil },
+                    set: { if !$0 { viewModel.errorMessage = nil } }
+                ),
+                message: viewModel.errorMessage ?? "",
+                style: .error
+            )
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {

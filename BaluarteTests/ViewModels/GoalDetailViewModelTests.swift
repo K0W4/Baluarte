@@ -50,7 +50,7 @@ struct GoalDetailViewModelTests {
         let result = await viewModel.saveChanges()
         
         #expect(result == false)
-        #expect(viewModel.errorMessage == "A meta alvo deve ser maior que zero.")
+        #expect(viewModel.errorMessage == String(localized: "A meta alvo deve ser maior que zero."))
     }
     
     @Test("saveChanges with negative current value sets error")
@@ -61,7 +61,7 @@ struct GoalDetailViewModelTests {
         let result = await viewModel.saveChanges()
         
         #expect(result == false)
-        #expect(viewModel.errorMessage == "O valor atual não pode ser negativo.")
+        #expect(viewModel.errorMessage == String(localized: "O valor atual não pode ser negativo."))
     }
     
     @Test("saveChanges succeeds and updates internal goal")

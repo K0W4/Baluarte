@@ -107,9 +107,22 @@ struct AppErrorTests {
     }
 
     @Test func notFoundWithoutHintStaysGeneric() {
-        let error = PostgrestError(code: "P0002", message: "Solicitação não encontrada.")
+        for code in ["PT404", "P0002", "PGRST116"] {
+            let error = PostgrestError(code: code, message: "Solicitação não encontrada.")
+            #expect(AppError.from(error) == .notFound, "código \(code)")
+        }
+    }
 
-        #expect(AppError.from(error) == .notFound)
+    // PT404 é como um raise pede um status ao PostgREST. O hint tem de continuar
+    // vindo antes do código, senão a troca de errcode engoliria a mensagem.
+    @Test func knownHintStillWinsOverPT404() {
+        let error = PostgrestError(
+            hint: "baluarte.membership_not_found",
+            code: "PT404",
+            message: "Vínculo não encontrado."
+        )
+
+        #expect(AppError.from(error).userMessage == String(localized: "Vínculo não encontrado."))
     }
 
     // MARK: - O texto do banco não vaza para a tela
@@ -183,8 +196,10 @@ struct AppErrorTests {
             "owner_needs_transfer", "roster_entry_unavailable", "not_in_chapter",
             "last_owner_with_members", "invite_code_generation_failed", "invite_code_required",
             "invite_rate_limited", "invite_invalid", "already_member", "roster_entry_taken",
-            "membership_not_found", "membership_unclaimed", "cannot_change_own_access",
-            "owner_target_invalid", "already_owner",
+            "membership_not_found", "membership_unclaimed",             "owner_target_invalid", "already_owner",
+            "cannot_raise_own_access", "last_platform_admin", "member_not_found",
+            "cid_required", "cid_not_found", "cid_ambiguous",
+            "chapter_already_exists",
         ]
 
         for key in keys {

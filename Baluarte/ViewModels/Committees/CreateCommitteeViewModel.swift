@@ -10,14 +10,11 @@ public final class CreateCommitteeViewModel {
     public var isFetchingMembers: Bool = false
     public var errorMessage: String? = nil
     
-    public enum MemberFilter: String, CaseIterable {
-        case todos = "Todos"
-        case ativos = "Ativos"
-        case seniors = "Sêniors"
-        case macons = "Maçons"
-    }
-    
-    public var selectedFilter: MemberFilter = .todos
+    /// Reusa `MembersFilter` em vez de repetir os quatro casos: o enum que existia aqui
+    /// carregava os rótulos no próprio `rawValue`, e a View os desenhava com
+    /// `Text(filter.rawValue)` — inicializador que **não** localiza, então o segmentado
+    /// ficava em português nos três idiomas.
+    public var selectedFilter: MembersFilter = .todos
     
     public var filteredMembers: [Member] {
         switch selectedFilter {
@@ -59,6 +56,10 @@ public final class CreateCommitteeViewModel {
         } catch {
             if error is CancellationError { return }
             isFetchingMembers = false
+            // Sem isto, a tela caía no `else` e afirmava "Nenhum membro disponível" — ou
+            // seja, dizia que o Capítulo não tem membros quando o que houve foi a rede
+            // cair. O administrador concluía que tinha perdido o roster.
+            errorMessage = AppError.from(error).userMessage
         }
     }
     

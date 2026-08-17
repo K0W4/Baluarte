@@ -5,6 +5,7 @@ public struct MemberDetailView: View {
     @State private var viewModel: MemberDetailViewModel
     @State private var showingDeleteAlert = false
     @State private var showingTransferAlert = false
+    @State private var pendingAccessLevel: AccessLevel?
     @State private var isEditing = false
     
     public init(member: Member) {
@@ -17,9 +18,17 @@ public struct MemberDetailView: View {
                 Section {
                     TextField("Nome Completo", text: $viewModel.fullName)
                     
-                    DatePicker("Data de Nascimento", selection: $viewModel.birthdate, displayedComponents: .date)
-                        .environment(\.locale, Locale(identifier: "pt_BR"))
-                        
+                    DatePicker(
+                        "Data de Nascimento",
+                        selection: $viewModel.birthdate,
+                        in: ...Date(),
+                        displayedComponents: .date
+                    )
+                    .onChange(of: viewModel.birthdate) { _, _ in
+                        viewModel.birthdateWasSet = true
+                    }
+
+
                     TextField("ID (Opcional)", text: $viewModel.cid)
                 } header: {
                     Text("Dados Pessoais")
@@ -60,10 +69,17 @@ public struct MemberDetailView: View {
                 .disabled(!isEditing)
                 
                 Section {
-                    Picker("Cargo", selection: $viewModel.role) {
-                        ForEach(viewModel.roles, id: \.self) { role in
-                            Text(ChapterRole.displayName(for: role)).tag(role)
+                    // Mesmo motivo do tipo do evento: `.disabled` esmaece o `Picker` e não
+                    // o `DatePicker`, então em leitura o cargo era o único campo do cartão
+                    // que parecia ausente. Em leitura o cargo é texto.
+                    if isEditing {
+                        Picker("Cargo", selection: $viewModel.role) {
+                            ForEach(viewModel.roles, id: \.self) { role in
+                                Text(ChapterRole.displayName(for: role)).tag(role)
+                            }
                         }
+                    } else {
+                        LabeledContent("Cargo", value: ChapterRole.displayName(for: viewModel.role))
                     }
                 } header: {
                     Text("Atuação no Capítulo")
@@ -72,9 +88,13 @@ public struct MemberDetailView: View {
                 
                 if viewModel.canChangeAccessLevel {
                     Section {
+                        // O setter escrevia no servidor no instante do toque: um deslize
+                        // num picker de duas opções concedia o poder de criar e apagar
+                        // eventos, metas, comissões e o quadro inteiro, e de aprovar
+                        // entradas. Era a ação mais consequente da tela com o menor atrito.
                         Picker("Nível de acesso", selection: Binding(
                             get: { viewModel.accessLevel },
-                            set: { level in Task { _ = await viewModel.setAccessLevel(level) } }
+                            set: { pendingAccessLevel = $0 }
                         )) {
                             Text(AccessLevel.member.displayName).tag(AccessLevel.member)
                             Text(AccessLevel.admin.displayName).tag(AccessLevel.admin)
@@ -185,7 +205,9 @@ public struct MemberDetailView: View {
                     }
                 }
             } message: {
-                Text("Esta pessoa passa a ser o Fundador do Capítulo e você vira administrador. Só o novo Fundador poderá devolver a posse.")
+                // Nomear quem recebe: numa folha aberta a partir de uma lista de dezenas
+                // de nomes, quem abriu o cartão errado não tinha como perceber pelo alerta.
+                Text("\(viewModel.fullName) passa a ser o Fundador do Capítulo e você vira administrador. Só o novo Fundador poderá devolver a posse.")
             }
             .alert("Excluir membro", isPresented: $showingDeleteAlert) {
                 Button("Cancelar", role: .cancel) { showingDeleteAlert = false }
@@ -196,7 +218,29 @@ public struct MemberDetailView: View {
                     }
                 }
             } message: {
-                Text("Tem certeza que deseja excluir este membro? Esta ação não pode ser desfeita.")
+                Text("Excluir o cadastro de \(viewModel.fullName)? Esta ação não pode ser desfeita.")
+            }
+            .confirmationDialog(
+                Text(pendingAccessLevel == .admin ? "Tornar administrador?" : "Remover a administração?"),
+                isPresented: Binding(
+                    get: { pendingAccessLevel != nil },
+                    set: { if !$0 { pendingAccessLevel = nil } }
+                ),
+                titleVisibility: .visible
+            ) {
+                Button(pendingAccessLevel == .admin ? "Conceder administração" : "Remover administração") {
+                    if let nivel = pendingAccessLevel {
+                        Task { _ = await viewModel.setAccessLevel(nivel) }
+                    }
+                    pendingAccessLevel = nil
+                }
+                Button("Cancelar", role: .cancel) { pendingAccessLevel = nil }
+            } message: {
+                if pendingAccessLevel == .admin {
+                    Text("\(viewModel.fullName) poderá editar o quadro, criar eventos, metas e comissões, e aprovar quem pede para entrar.")
+                } else {
+                    Text("\(viewModel.fullName) deixa de administrar o Capítulo e passa a ver o app como qualquer membro.")
+                }
             }
             .overlay {
                 if viewModel.isLoading {

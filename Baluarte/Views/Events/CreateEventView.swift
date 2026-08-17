@@ -36,7 +36,6 @@ public struct CreateEventView: View {
                         Spacer()
                         DatePicker("", selection: $viewModel.scheduledDate, displayedComponents: .date)
                             .labelsHidden()
-                            .environment(\.locale, Locale(identifier: "pt_BR"))
                     }
                     
                     HStack {
@@ -44,14 +43,13 @@ public struct CreateEventView: View {
                         Spacer()
                         DatePicker("", selection: $viewModel.scheduledDate, displayedComponents: .hourAndMinute)
                             .labelsHidden()
-                            .environment(\.locale, Locale(identifier: "pt_BR"))
                     }
                 } header: {
                     Text("Informações Básicas")
                 }
                 
                 Section {
-                    TextField("Detalhes do evento...", text: $viewModel.notes, axis: .vertical)
+                    TextField("Detalhes do evento (opcional)", text: $viewModel.notes, axis: .vertical)
                         .focused($focusedField, equals: .notes)
                         .submitLabel(.done)
                         .onSubmit { focusedField = nil }

@@ -21,10 +21,7 @@ struct RedeemInviteView: View {
 
                 VStack(spacing: Spacing.lg) {
                     VStack(spacing: Spacing.sm) {
-                        Image(systemName: "ticket.fill")
-                            .font(.system(size: 44))
-                            .foregroundStyle(Theme.accent)
-                            .accessibilityHidden(true)
+                        HeroIcon("ticket.fill", size: 44)
 
                         Text("Digite o código do convite")
                             .font(Typography.title2)

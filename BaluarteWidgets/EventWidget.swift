@@ -13,32 +13,43 @@ struct EventProvider: AppIntentTimelineProvider {
     }
     
     func timeline(for configuration: ConfigurationAppIntent, in context: Context) async -> Timeline<EventEntry> {
+        let membershipId = configuration.chapter?.id.uuidString
         var nextEvent: Event? = nil
         var fetchError: String? = nil
-        var isConfirmed = false
+
         do {
-            let events = try await WidgetDataManager.shared.fetchUpcomingEvents()
-            nextEvent = events.first
-            if let attendees = nextEvent?.confirmedAttendees,
-               let membershipIdString = UserDefaults(suiteName: "group.com.kowa.baluarte")?.string(forKey: "currentMembershipId"),
-               let membershipUUID = UUID(uuidString: membershipIdString) {
-                isConfirmed = attendees.contains(membershipUUID)
-            }
+            nextEvent = try await WidgetDataManager.shared
+                .fetchUpcomingEvents(membershipId: membershipId).first
         } catch {
             fetchError = error.localizedDescription
-            print("Widget Error: \(error)")
-
-            nextEvent = WidgetDataManager.shared.cachedEvents()?.first
-            if let attendees = nextEvent?.confirmedAttendees,
-               let membershipIdString = UserDefaults(suiteName: "group.com.kowa.baluarte")?.string(forKey: "currentMembershipId"),
-               let membershipUUID = UUID(uuidString: membershipIdString) {
-                isConfirmed = attendees.contains(membershipUUID)
-            }
+            nextEvent = WidgetDataManager.shared.cachedEvents(membershipId: membershipId)?.first
         }
 
-        let entry = EventEntry(date: Date(), event: nextEvent, isUserConfirmed: isConfirmed, errorMessage: fetchError, configuration: configuration)
-        let nextUpdate = Calendar.current.date(byAdding: .minute, value: 15, to: Date())!
-        return Timeline(entries: [entry], policy: .after(nextUpdate))
+        let entry = EventEntry(
+            date: Date(),
+            event: nextEvent,
+            isUserConfirmed: isConfirmed(nextEvent, membershipId: membershipId),
+            errorMessage: fetchError,
+            configuration: configuration
+        )
+        return Timeline(entries: [entry], policy: .after(Self.nextRefresh))
+    }
+
+    /// A presença é do vínculo, então o widget do segundo Capítulo tem de conferir o
+    /// vínculo daquele Capítulo — não o que está aberto no app.
+    private func isConfirmed(_ event: Event?, membershipId: String?) -> Bool {
+        guard let attendees = event?.confirmedAttendees,
+              let resolved = WidgetDataManager.shared.resolve(membershipId: membershipId),
+              let membershipUUID = UUID(uuidString: resolved.membershipId)
+        else { return false }
+        return attendees.contains(membershipUUID)
+    }
+
+    /// Quinze minutos, e sem `!`: um cálculo de data que falha não vale derrubar a
+    /// extensão inteira, então a queda é para daqui a quinze minutos em segundos.
+    static var nextRefresh: Date {
+        Calendar.current.date(byAdding: .minute, value: 15, to: Date())
+            ?? Date().addingTimeInterval(15 * 60)
     }
 }
 
@@ -59,14 +70,19 @@ struct EventWidgetEntryView : View {
     var body: some View {
         VStack(alignment: .leading) {
             HStack(alignment: .center) {
-                Text("Próximo Evento")
+                // Com dupla filiação há dois widgets iguais na tela. Sem o nome do
+                // Capítulo escolhido, não há como saber qual é qual.
+                Text(entry.configuration.chapter?.name ?? String(localized: "Próximo Evento"))
                     .font(.subheadline)
                     .fontWeight(.bold)
                     .foregroundColor(.accent)
-                
+                    .lineLimit(1)
+
                 Spacer()
-                
-                if family == .systemMedium, let event = entry.event {
+
+                if entry.errorMessage != nil && entry.event != nil {
+                    StaleDataBadge()
+                } else if family == .systemMedium, let event = entry.event {
                     Text(formatDate(event.scheduledDate))
                         .font(.subheadline)
                         .foregroundColor(.secondary)
@@ -98,7 +114,10 @@ struct EventWidgetEntryView : View {
                 
                 HStack {
                     Spacer()
-                    Button(intent: ConfirmAttendanceIntent(eventId: event.id.uuidString)) {
+                    Button(intent: ConfirmAttendanceIntent(
+                        eventId: event.id.uuidString,
+                        membershipId: entry.configuration.chapter?.id.uuidString
+                    )) {
                         HStack(spacing: 4) {
                             Image(systemName: entry.isUserConfirmed ? "checkmark.circle.fill" : "person.crop.circle.badge.plus")
                                 .foregroundColor(entry.isUserConfirmed ? Color(UIColor.systemGreen) : .accent)
@@ -123,29 +142,61 @@ struct EventWidgetEntryView : View {
                     Spacer()
                 }
             } else {
-                HStack(spacing: 8) {
-                    if family == .systemMedium {
-                        Image(systemName: "calendar.badge.checkmark")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                    }
-                    
-                    Text("Nenhum evento marcado")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                // "Nenhum evento marcado" é mentira quando a busca falhou: o Capítulo
+                // pode ter dez eventos e o widget não ter conseguido lê-los.
+                WidgetPlaceholder(
+                    icon: entry.errorMessage == nil ? "calendar.badge.checkmark" : "exclamationmark.triangle",
+                    message: entry.errorMessage ?? String(localized: "Nenhum evento marcado"),
+                    showsIcon: family == .systemMedium
+                )
             }
         }
         .padding(2)
         .containerBackground(Color(UIColor.systemBackground), for: .widget)
     }
-    
+
     private func formatDate(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "pt_BR")
-        formatter.dateFormat = "dd/MM 'às' HH:mm"
-        return formatter.string(from: date)
+        // Sem `Locale(identifier: "pt_BR")` fixo: a data seguia em português mesmo com
+        // o aparelho em outro idioma.
+        date.formatted(.dateTime.day().month(.twoDigits).hour().minute())
+    }
+}
+
+/// Estado vazio e estado de falha usam a mesma forma de propósito: o que muda é o
+/// ícone e a frase, e o widget é pequeno demais para dois desenhos diferentes.
+struct WidgetPlaceholder: View {
+    let icon: String
+    let message: String
+    let showsIcon: Bool
+
+    var body: some View {
+        HStack(spacing: 8) {
+            if showsIcon {
+                Image(systemName: icon)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
+
+            Text(message)
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+                .lineLimit(3)
+                .multilineTextAlignment(.leading)
+                .minimumScaleFactor(0.8)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
+
+/// Quando há conteúdo em cache, a falha não pode tomar a tela — mas some sem aviso
+/// nenhum era o que fazia o widget mostrar o evento da semana passada como se fosse o
+/// próximo.
+struct StaleDataBadge: View {
+    var body: some View {
+        Label(String(localized: "Sem conexão"), systemImage: "wifi.slash")
+            .font(.caption2)
+            .foregroundColor(.secondary)
+            .accessibilityLabel(String(localized: "Mostrando dados salvos. Não foi possível atualizar."))
     }
 }
 

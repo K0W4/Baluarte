@@ -7,7 +7,7 @@ import Foundation
 // a análise compara. Traduzir o valor gravado quebraria as duas coisas, então o valor
 // viaja sempre em português e só a exibição muda de idioma.
 
-public enum ChapterRole {
+nonisolated public enum ChapterRole {
     public static let member = "Membro"
 
     public static let activeRoles = [

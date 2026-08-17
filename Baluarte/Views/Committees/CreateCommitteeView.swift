@@ -34,8 +34,8 @@ public struct CreateCommitteeView: View {
                         ProgressView("Carregando membros...")
                     } else if !viewModel.availableMembers.isEmpty {
                         Picker("Filtro", selection: $viewModel.selectedFilter) {
-                            ForEach(CreateCommitteeViewModel.MemberFilter.allCases, id: \.self) { filter in
-                                Text(filter.rawValue).tag(filter)
+                            ForEach(MembersFilter.allCases) { filter in
+                                Text(filter.displayName).tag(filter)
                             }
                         }
                         .pickerStyle(.segmented)

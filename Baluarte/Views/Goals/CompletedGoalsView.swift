@@ -23,7 +23,7 @@ public struct CompletedGoalsView: View {
         }
         
         let sortedKeys = dict.keys.sorted(by: >)
-        return sortedKeys.map { ($0, dict[$0]!) }
+        return sortedKeys.compactMap { key in dict[key].map { (key, $0) } }
     }
     
     private func formatSemesterKey(_ key: String) -> String {
@@ -41,7 +41,10 @@ public struct CompletedGoalsView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: Spacing.xl) {
                     if viewModel.completedGoals.isEmpty {
-                        EmptyStateCard(cardType: .goal) {}
+                        // Sem a closure vazia: ela não é `nil`, então o cartão desenhava um
+                        // botão "Definir meta" com estilo primário que não fazia nada — e o
+                        // VoiceOver o anunciava como acionável.
+                        EmptyStateCard(cardType: .goal)
                             .padding(.horizontal, Spacing.screenEdgePadding)
                             .padding(.top, Spacing.md)
                     } else {
@@ -84,6 +87,7 @@ public struct CompletedGoalsView: View {
                         Image(systemName: "xmark")
                             .foregroundColor(Theme.accent)
                     }
+                    .accessibilityLabel("Fechar")
                 }
             }
             .sheet(item: $selectedGoal, onDismiss: {

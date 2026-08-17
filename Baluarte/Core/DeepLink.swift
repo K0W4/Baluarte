@@ -5,8 +5,13 @@ import Foundation
 /// link is convenience, never the only way in.
 public enum DeepLink: Equatable, Sendable {
     case invite(code: String)
+    /// The whole URL, because the recovery tokens travel in the fragment and only
+    /// the Supabase client knows how to read them.
+    case passwordRecovery(url: URL)
 
     public static let scheme = "baluarte"
+
+    public static let passwordRecoveryURL = URL(string: "\(scheme)://password-recovery")
 
     public init?(url: URL) {
         guard url.scheme?.lowercased() == Self.scheme else { return nil }
@@ -15,6 +20,11 @@ public enum DeepLink: Equatable, Sendable {
         // messaging apps rewrite links in ways nobody controls.
         var parts = url.pathComponents.filter { $0 != "/" }
         if let host = url.host, !host.isEmpty { parts.insert(host, at: 0) }
+
+        if parts.first?.lowercased() == "password-recovery" {
+            self = .passwordRecovery(url: url)
+            return
+        }
 
         guard parts.first?.lowercased() == "invite", parts.count >= 2 else { return nil }
 

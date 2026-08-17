@@ -44,7 +44,7 @@ struct InsightSectionCard: View {
                     } label: {
                         Text(actionLabel)
                     }
-                    .buttonStyle(PrimaryButtonStyle())
+                    .buttonStyle(SecondaryButtonStyle())
                     .padding(.top, Spacing.xs)
                 }
             }
@@ -57,7 +57,10 @@ struct InsightSectionCard: View {
             RoundedRectangle(cornerRadius: Spacing.cornerRadius)
                 .stroke(Theme.border, lineWidth: 1)
         )
-        .accessibilityElement(children: .combine)
+        // O card contém dois botões — recolher e a ação sugerida pela análise. Com
+        // `.combine` os dois sumiam da árvore e sobrava um bloco de texto longo: a ação
+        // que é o ponto inteiro do card ficava inalcançável.
+        .accessibilityElement(children: .contain)
     }
 
     private var headerRow: some View {
@@ -69,7 +72,7 @@ struct InsightSectionCard: View {
             HStack(spacing: Spacing.sm) {
                 Image(systemName: insight.iconName)
                     .font(Typography.headline)
-                    .foregroundColor(severityColor)
+                    .foregroundColor(sectionIconColor)
 
                 Text(insight.title)
                     .font(Typography.headline)
@@ -82,7 +85,7 @@ struct InsightSectionCard: View {
                     .foregroundColor(Theme.backgroundPrimary)
                     .padding(.horizontal, Spacing.xs)
                     .padding(.vertical, 2)
-                    .background(severityColor)
+                    .background(Theme.textPrimary)
                     .clipShape(Capsule())
 
                 Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
@@ -106,7 +109,9 @@ struct InsightSectionCard: View {
         }
     }
 
-    private var severityColor: Color {
-        return Theme.textPrimary
-    }
+    /// O ícone da seção é marca, não semáforo. Tingi-lo por gravidade fazia a Análise
+    /// inteira mudar de cor conforme o Capítulo ia bem ou mal, e a gravidade já se lê no
+    /// texto do apontamento. A cápsula ao lado segue em `textPrimary`, porque carrega o
+    /// contador e precisa do contraste alto.
+    private var sectionIconColor: Color { Theme.accent }
 }

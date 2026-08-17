@@ -15,12 +15,37 @@ struct WidgetDataManager {
 
     /// The chapter-scoped actor id. Task ownership and attendance are recorded against
     /// the membership, not the account.
-    private var membershipId: String? {
+    private var activeMembershipId: String? {
         sharedDefaults?.string(forKey: "currentMembershipId")
     }
 
-    private var chapterId: String? {
+    private var activeChapterId: String? {
         sharedDefaults?.string(forKey: "currentChapterId")
+    }
+
+    /// O que o widget escolheu, ou o Capítulo aberto no app quando não escolheu nada.
+    /// Os dois ids andam juntos: pegar o Capítulo de um e o vínculo do outro mostraria
+    /// as tarefas de ninguém.
+    func resolve(membershipId: String?) -> (chapterId: String, membershipId: String)? {
+        guard let membershipId else {
+            guard let chapterId = activeChapterId, let membership = activeMembershipId else { return nil }
+            return (chapterId, membership)
+        }
+
+        guard let chapter = sharedChapters().first(where: { $0.membershipId.uuidString == membershipId })
+        else {
+            // O vínculo escolhido sumiu — a pessoa saiu daquele Capítulo. Cair no ativo
+            // é melhor do que o widget parar de funcionar até alguém reconfigurá-lo.
+            guard let chapterId = activeChapterId, let membership = activeMembershipId else { return nil }
+            return (chapterId, membership)
+        }
+
+        return (chapter.chapterId.uuidString, chapter.membershipId.uuidString)
+    }
+
+    private func sharedChapters() -> [WidgetChapter] {
+        guard let data = sharedDefaults?.data(forKey: "widgetChapters") else { return [] }
+        return (try? JSONDecoder().decode([WidgetChapter].self, from: data)) ?? []
     }
 
     // MARK: - Keychain
@@ -131,13 +156,56 @@ struct WidgetDataManager {
     enum WidgetError: LocalizedError {
         case notAuthenticated
         case noChapter
+        /// A recusa do servidor, já traduzida. Sem este caso todo 403 do PostgREST
+        /// chegava à pessoa como `POST Failed: 403`.
+        case refused(String)
 
         var errorDescription: String? {
             switch self {
-            case .notAuthenticated: return "Sessão expirada. Abra o app para entrar novamente."
-            case .noChapter: return "Nenhum Capítulo selecionado."
+            case .notAuthenticated:
+                return String(localized: "Sessão expirada. Abra o app para entrar novamente.")
+            case .noChapter:
+                return String(localized: "Nenhum Capítulo selecionado.")
+            case let .refused(message):
+                return message
             }
         }
+    }
+
+    /// O envelope de erro do PostgREST. `hint` é o que interessa: o servidor não sabe o
+    /// idioma de quem chamou, então cada `raise` carrega `baluarte.<chave>` e a
+    /// tradução acontece no cliente — a mesma regra que vale no app, com o mesmo
+    /// `ServerMessage`.
+    private struct ServerFailure: Decodable {
+        let message: String?
+        let hint: String?
+        let code: String?
+    }
+
+    /// Traduz o corpo da recusa. A ordem é a mesma de `AppError.from`: o hint antes do
+    /// código, porque um 42501 que nomeia o motivo real diz mais do que "sem permissão".
+    private func refusal(status: Int, body: Data) -> WidgetError {
+        let failure = try? JSONDecoder().decode(ServerFailure.self, from: body)
+
+        if let message = ServerMessage.localized(hint: failure?.hint) {
+            return .refused(message)
+        }
+
+        if status == 401 {
+            return .notAuthenticated
+        }
+
+        if status == 403 {
+            return .refused(String(localized: "Você não tem permissão para realizar esta ação."))
+        }
+
+        // A frase do servidor é portuguesa e escrita para o log, mas dizer "não foi
+        // possível concluir" quando existe um motivo nomeado é pior do que mostrá-lo.
+        if let message = failure?.message, !message.isEmpty, failure?.code == "23514" {
+            return .refused(message)
+        }
+
+        return .refused(String(localized: "Não foi possível concluir. Tente de novo em instantes."))
     }
 
     // MARK: - Cache
@@ -165,29 +233,26 @@ struct WidgetDataManager {
         return decoder
     }
 
-    private func cacheEvents(_ events: [Event]) {
-        guard let chapterId = self.chapterId,
-              let data = try? getCacheEncoder().encode(events) else { return }
+    private func cacheEvents(_ events: [Event], chapterId: String) {
+        guard let data = try? getCacheEncoder().encode(events) else { return }
         sharedDefaults?.set(data, forKey: cachedEventsKey(chapterId))
     }
 
-    func cachedEvents() -> [Event]? {
-        guard let chapterId = self.chapterId,
-              let data = sharedDefaults?.data(forKey: cachedEventsKey(chapterId)) else { return nil }
+    func cachedEvents(membershipId: String?) -> [Event]? {
+        guard let resolved = resolve(membershipId: membershipId),
+              let data = sharedDefaults?.data(forKey: cachedEventsKey(resolved.chapterId)) else { return nil }
         return try? getCacheDecoder().decode([Event].self, from: data)
     }
 
-    private func cacheTasks(_ tasks: [ChapterTask]) {
-        guard let chapterId = self.chapterId,
-              let membershipId = self.membershipId,
-              let data = try? getCacheEncoder().encode(tasks) else { return }
+    private func cacheTasks(_ tasks: [ChapterTask], chapterId: String, membershipId: String) {
+        guard let data = try? getCacheEncoder().encode(tasks) else { return }
         sharedDefaults?.set(data, forKey: cachedTasksKey(chapterId, membershipId))
     }
 
-    func cachedTasks() -> [ChapterTask]? {
-        guard let chapterId = self.chapterId,
-              let membershipId = self.membershipId,
-              let data = sharedDefaults?.data(forKey: cachedTasksKey(chapterId, membershipId)) else { return nil }
+    func cachedTasks(membershipId: String?) -> [ChapterTask]? {
+        guard let resolved = resolve(membershipId: membershipId),
+              let data = sharedDefaults?.data(forKey: cachedTasksKey(resolved.chapterId, resolved.membershipId))
+        else { return nil }
         return try? getCacheDecoder().decode([ChapterTask].self, from: data)
     }
 
@@ -231,9 +296,7 @@ struct WidgetDataManager {
 
         let (data, response) = try await URLSession.shared.data(for: request)
         guard let http = response as? HTTPURLResponse, (200...299).contains(http.statusCode) else {
-            let statusCode = (response as? HTTPURLResponse)?.statusCode ?? -1
-            throw NSError(domain: "Widget", code: statusCode,
-                          userInfo: [NSLocalizedDescriptionKey: "HTTP Error: \(statusCode)"])
+            throw refusal(status: (response as? HTTPURLResponse)?.statusCode ?? -1, body: data)
         }
         return data
     }
@@ -248,55 +311,61 @@ struct WidgetDataManager {
         request.allHTTPHeaderFields = try await authorizedHeaders()
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
 
-        let (_, response) = try await URLSession.shared.data(for: request)
+        // O corpo é lido mesmo quando não se usa a resposta: é ele que carrega o motivo
+        // da recusa, e descartá-lo era o que transformava uma regra de negócio nomeada
+        // em `PATCH Failed: 400`.
+        let (data, response) = try await URLSession.shared.data(for: request)
         guard let http = response as? HTTPURLResponse, (200...299).contains(http.statusCode) else {
-            let statusCode = (response as? HTTPURLResponse)?.statusCode ?? -1
-            throw NSError(domain: "Widget", code: statusCode,
-                          userInfo: [NSLocalizedDescriptionKey: "\(method) Failed: \(statusCode)"])
+            throw refusal(status: (response as? HTTPURLResponse)?.statusCode ?? -1, body: data)
         }
     }
 
-    func fetchUpcomingEvents() async throws -> [Event] {
-        guard let chapterId = self.chapterId else { throw WidgetError.noChapter }
+    func fetchUpcomingEvents(membershipId: String? = nil) async throws -> [Event] {
+        guard let resolved = resolve(membershipId: membershipId) else { throw WidgetError.noChapter }
 
-        let data = try await get(path: "/rest/v1/event?chapter_id=eq.\(chapterId)&select=*")
+        let data = try await get(path: "/rest/v1/event?chapter_id=eq.\(resolved.chapterId)&select=*")
 
         var events = try getSupabaseDecoder().decode([Event].self, from: data)
         let today = Calendar.current.startOfDay(for: Date())
         events = events.filter { Calendar.current.startOfDay(for: $0.scheduledDate) >= today }
         events.sort { $0.scheduledDate < $1.scheduledDate }
 
-        cacheEvents(events)
+        cacheEvents(events, chapterId: resolved.chapterId)
         return events
     }
 
-    func fetchPendingTasks() async throws -> [ChapterTask] {
-        guard let chapterId = self.chapterId else { throw WidgetError.noChapter }
-        guard let membershipId = self.membershipId else { throw WidgetError.notAuthenticated }
+    func fetchPendingTasks(membershipId: String? = nil) async throws -> [ChapterTask] {
+        guard let resolved = resolve(membershipId: membershipId) else { throw WidgetError.noChapter }
 
-        let data = try await get(path: "/rest/v1/task?chapter_id=eq.\(chapterId)&select=*")
+        let data = try await get(path: "/rest/v1/task?chapter_id=eq.\(resolved.chapterId)&select=*")
         let allTasks = try getSupabaseDecoder().decode([ChapterTask].self, from: data)
 
+        let mine = resolved.membershipId.lowercased()
         let myTasks = allTasks.filter { task in
             !task.isCompleted &&
-            (task.assigneeId?.uuidString.lowercased() == membershipId.lowercased() ||
-             task.creatorId.uuidString.lowercased() == membershipId.lowercased())
+            (task.assigneeId?.uuidString.lowercased() == mine ||
+             task.creatorId.uuidString.lowercased() == mine)
         }
 
-        cacheTasks(myTasks)
+        cacheTasks(myTasks, chapterId: resolved.chapterId, membershipId: resolved.membershipId)
         return myTasks
     }
 
     /// Attendance is written by `set_event_attendance`, which derives the membership
     /// from the caller's JWT. A plain PATCH here could rewrite the whole array.
-    func confirmAttendance(eventId: String) async throws {
-        guard let membershipId = self.membershipId, let membershipUUID = UUID(uuidString: membershipId) else {
+    func confirmAttendance(eventId: String, membershipId: String? = nil) async throws {
+        guard let resolved = resolve(membershipId: membershipId),
+              let membershipUUID = UUID(uuidString: resolved.membershipId) else {
             throw WidgetError.notAuthenticated
         }
 
         let data = try await get(path: "/rest/v1/event?id=eq.\(eventId)&select=*")
         let events = try getSupabaseDecoder().decode([Event].self, from: data)
-        guard let event = events.first else { return }
+        // Sob RLS, um evento que a pessoa não pode ler devolve coleção vazia e não erro.
+        // Sair calado aqui era indistinguível de ter dado certo.
+        guard let event = events.first else {
+            throw WidgetError.refused(String(localized: "Evento não encontrado."))
+        }
 
         let isConfirmed = event.confirmedAttendees?.contains(membershipUUID) ?? false
 
@@ -310,7 +379,9 @@ struct WidgetDataManager {
     func toggleTaskCompletion(taskId: String) async throws {
         let data = try await get(path: "/rest/v1/task?id=eq.\(taskId)&select=*")
         let tasks = try getSupabaseDecoder().decode([ChapterTask].self, from: data)
-        guard let task = tasks.first else { return }
+        guard let task = tasks.first else {
+            throw WidgetError.refused(String(localized: "Tarefa não encontrada."))
+        }
 
         try await send(
             method: "PATCH",

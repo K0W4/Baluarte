@@ -120,7 +120,11 @@ public final class TasksViewModel {
 
     // MARK: - Actions
 
-    public func toggleTaskCompletion(task: ChapterTask) async {
+    /// `true` quando o servidor aceitou. Quem chama precisa do retorno: o toast de sucesso
+    /// era decidido pela cópia capturada antes do toggle, então uma recusa do servidor
+    /// revertia o círculo e ainda exibia "Tarefa atualizada com sucesso!".
+    @discardableResult
+    public func toggleTaskCompletion(task: ChapterTask) async -> Bool {
         do {
             if let index = allTasks.firstIndex(where: { $0.id == task.id }) {
                 withAnimation {
@@ -134,13 +138,17 @@ public final class TasksViewModel {
             }
 
             try await taskService.toggleTaskCompletion(taskId: task.id, isCompleted: !task.isCompleted)
+            return true
         } catch {
-            if error is CancellationError { return }
+            if error is CancellationError { return false }
             if let index = allTasks.firstIndex(where: { $0.id == task.id }) {
                 withAnimation {
                     allTasks[index].isCompleted.toggle()
                 }
             }
+            HapticManager.shared.notification(type: .error)
+            errorMessage = AppError.from(error).userMessage
+            return false
         }
     }
 
@@ -162,6 +170,10 @@ public final class TasksViewModel {
             withAnimation {
                 allTasks = originalTasks
             }
+            // A linha sumia, voltava com animação, e nada explicava. A pessoa não sabia se
+            // travou, se alguém recriou a tarefa, ou se ela tinha errado o toque.
+            HapticManager.shared.notification(type: .error)
+            errorMessage = AppError.from(error).userMessage
         }
     }
 }

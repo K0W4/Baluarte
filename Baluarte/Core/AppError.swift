@@ -33,7 +33,19 @@ public enum AppError: Error, LocalizedError, Equatable {
     }
     
     public var errorDescription: String? { userMessage }
-    
+
+    /// Falhou por causa do caminho, não do conteúdo. Quem chama decide se vale preservar
+    /// o que já tinha (a sessão, a lista carregada) e pedir para tentar de novo, em vez de
+    /// tratar a falha como uma resposta negativa do servidor.
+    public var isTransient: Bool {
+        switch self {
+        case .networkUnavailable, .timeout, .serverError:
+            return true
+        case .authenticationRequired, .permissionDenied, .notFound, .validationFailed, .unknown:
+            return false
+        }
+    }
+
     public static func from(_ error: Error) -> AppError {
         if let appError = error as? AppError {
             return appError
@@ -56,7 +68,10 @@ public enum AppError: Error, LocalizedError, Equatable {
             switch postgrestError.code {
             case "42501":
                 return .permissionDenied
-            case "PGRST116", "P0002":
+            // PT404 is how a raise asks PostgREST for a status: PTxyz becomes HTTP xyz.
+            // P0002 stays because it is what older deployments answered, and it costs
+            // nothing to keep reading it.
+            case "PGRST116", "PT404", "P0002":
                 return .notFound
             case "23514":
                 // Fallback for any raise the hints migration did not reach: the Portuguese

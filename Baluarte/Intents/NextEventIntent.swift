@@ -20,10 +20,9 @@ public struct NextEventIntent: AppIntent {
             return .result(dialog: "Não há próximos eventos agendados para o Capítulo.")
         }
         
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "pt_BR")
-        formatter.dateFormat = "EEEE, dd 'de' MMMM 'às' HH:mm"
-        let dateStr = formatter.string(from: nextEvent.scheduledDate)
+        let dateStr = nextEvent.scheduledDate.formatted(
+            .dateTime.weekday(.wide).day().month(.wide).hour().minute()
+        )
         
         let dialogStr = "O próximo evento é \(nextEvent.title) e acontecerá \(dateStr)."
         

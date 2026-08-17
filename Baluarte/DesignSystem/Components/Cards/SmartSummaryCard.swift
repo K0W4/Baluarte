@@ -1,6 +1,7 @@
 import SwiftUI
 
 public struct SmartSummaryCard: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var viewModel = SmartSummaryViewModel()
     @State private var isExpanded = false
     let chapterId: UUID
@@ -36,9 +37,10 @@ public struct SmartSummaryCard: View {
     private var headerSection: some View {
         HStack(spacing: Spacing.xs) {
             Image(systemName: "sparkles")
-                .font(.system(size: 20))
+                .font(Typography.title3)
                 .foregroundStyle(Theme.accent)
-                .symbolEffect(.pulse, options: .repeating, isActive: viewModel.isGenerating)
+                .symbolEffect(.pulse, options: .repeating, isActive: viewModel.isGenerating && !reduceMotion)
+                .accessibilityHidden(true)
             
             Text("Resumo Inteligente")
                 .font(Typography.headline)
@@ -55,9 +57,12 @@ public struct SmartSummaryCard: View {
                     Task { await viewModel.generateSummary(chapterId: chapterId) }
                 }) {
                     Image(systemName: "arrow.triangle.2.circlepath")
-                        .font(.system(size: 14, weight: .bold))
+                        .font(Typography.headline)
                         .foregroundColor(Theme.accent)
+                        .frame(minWidth: Spacing.minTouchTarget, minHeight: Spacing.minTouchTarget)
+                        .contentShape(Rectangle())
                 }
+                .accessibilityLabel("Gerar resumo novamente")
             }
         }
     }
@@ -66,15 +71,23 @@ public struct SmartSummaryCard: View {
     private var contentSection: some View {
         if let error = viewModel.errorMessage {
             VStack(alignment: .leading, spacing: Spacing.xs) {
-                Label(error, systemImage: "exclamationmark.triangle.fill")
-                    .font(Typography.subheadline)
-                    .foregroundColor(Theme.destructive)
-                
-                Button("Tentar Novamente") {
-                    Task { await viewModel.generateSummary(chapterId: chapterId) }
+                Label(
+                    error,
+                    systemImage: viewModel.isUnavailableOnThisDevice ? "sparkles.slash" : "exclamationmark.triangle.fill"
+                )
+                .font(Typography.subheadline)
+                .foregroundColor(viewModel.isUnavailableOnThisDevice ? Theme.textSecondary : Theme.destructive)
+
+                // Sem o modelo no aparelho, tentar de novo nunca vai dar certo — oferecer
+                // o botão é convidar a repetir uma coisa que não muda de resultado.
+                if !viewModel.isUnavailableOnThisDevice {
+                    Button("Tentar Novamente") {
+                        Task { await viewModel.generateSummary(chapterId: chapterId) }
+                    }
+                    .font(Typography.caption1.weight(.bold))
+                    .foregroundColor(Theme.textPrimary)
+                    .frame(minHeight: Spacing.minTouchTarget)
                 }
-                .font(Typography.caption1.weight(.bold))
-                .foregroundColor(Theme.accent)
             }
         } else if viewModel.generatedSummary.isEmpty && !viewModel.isGenerating {
             emptyStateSection
@@ -99,7 +112,7 @@ public struct SmartSummaryCard: View {
                     Text("Gerar Resumo")
                 }
                 .font(Typography.headline)
-                .foregroundColor(Color.white)
+                .foregroundColor(Theme.onAccent)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, Spacing.sm)
                 .background(Theme.accent)
@@ -116,7 +129,7 @@ public struct SmartSummaryCard: View {
             
             Text(verbatim: "...")
                 .font(Typography.subheadline)
-                .foregroundColor(Theme.accent)
+                .foregroundColor(Theme.accentText)
                 .contentTransition(.numericText())
                 .animation(.easeInOut(duration: 0.5).repeatForever(), value: viewModel.isGenerating)
         }
@@ -136,7 +149,7 @@ public struct SmartSummaryCard: View {
                 Button(action: { withAnimation { isExpanded.toggle() } }) {
                     Text(isExpanded ? "Ver menos" : "Ver mais")
                         .font(Typography.caption1)
-                        .foregroundColor(Theme.accent)
+                        .foregroundColor(Theme.textSecondary)
                 }
             }
         }

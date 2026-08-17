@@ -2,13 +2,16 @@ import SwiftUI
 
 public struct ProgressRingCard: View {
     let goal: Goal
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var animatedProgress: Double = 0
     @State private var showShadowDot: Bool = false
     @State private var isAnimating: Bool = false
-    
+
     private let lineWidth: CGFloat = 16
-    private let size: CGFloat = 120
-    
+    /// O anel acompanha o texto: dentro dele há dois `Text` que escalam com Dynamic Type,
+    /// e com o círculo travado em 120pt a porcentagem transbordava em tamanho acessível.
+    @ScaledMetric(relativeTo: .largeTitle) private var size: CGFloat = 120
+
     public init(goal: Goal) {
         self.goal = goal
     }
@@ -99,8 +102,7 @@ public struct ProgressRingCard: View {
                     .font(Typography.headline)
                     .foregroundColor(Theme.textPrimary)
                     .multilineTextAlignment(.center)
-                    .lineLimit(2)
-                    .frame(height: 48, alignment: .center)
+                    .frame(minHeight: Spacing.xxl, alignment: .center)
             }
         }
         .padding(.horizontal, Spacing.md)
@@ -114,7 +116,10 @@ public struct ProgressRingCard: View {
                 .stroke(Theme.border, lineWidth: 1)
         )
         .onAppear {
-            withAnimation(.spring(response: 1, dampingFraction: 0.9, blendDuration: 0.5)) {
+            // Vários anéis crescendo e pulando ao mesmo tempo é desconforto real para quem
+            // tem sensibilidade vestibular — e o app já respeita a preferência em outros
+            // componentes, o que torna a omissão aqui uma inconsistência.
+            withAnimation(reduceMotion ? nil : .spring(response: 1, dampingFraction: 0.9, blendDuration: 0.5)) {
                 animatedProgress = goal.progressPercentage
             } completion: {
                 if goal.progressPercentage > 1.0 {
@@ -123,7 +128,7 @@ public struct ProgressRingCard: View {
                     }
                 }
             }
-            if goal.progressPercentage >= 1.0 {
+            if goal.progressPercentage >= 1.0 && !reduceMotion {
                 isAnimating = true
                 withAnimation(.spring(response: 0.4, dampingFraction: 0.4)) {
                     isAnimating = false
@@ -132,7 +137,7 @@ public struct ProgressRingCard: View {
         }
         .onChange(of: goal.progressPercentage) { _, newValue in
             showShadowDot = false
-            withAnimation(.spring(response: 1, dampingFraction: 0.9, blendDuration: 0.5)) {
+            withAnimation(reduceMotion ? nil : .spring(response: 1, dampingFraction: 0.9, blendDuration: 0.5)) {
                 animatedProgress = newValue
             } completion: {
                 if newValue > 1 {
@@ -141,7 +146,7 @@ public struct ProgressRingCard: View {
                     }
                 }
             }
-            if newValue >= 1.0 {
+            if newValue >= 1.0 && !reduceMotion {
                 isAnimating = true
                 withAnimation(.spring(response: 0.4, dampingFraction: 0.4)) {
                     isAnimating = false

@@ -110,16 +110,32 @@ public struct HomeView: View {
             .navigationTitle(viewModel.greetingTitle)
             .toolbarTitleDisplayMode(.inlineLarge)
             .toolbar {
+                // Duas portas, e não uma dentro da outra: o Capítulo é o que a maior
+                // parte do uso administrativo procura, e ficava a três toques de
+                // distância dentro de "Meu perfil".
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink(destination: ChapterView()) {
+                        Image(systemName: "building.columns.fill")
+                            .foregroundColor(Theme.accent)
+                            .accessibilityLabel("Meu Capítulo")
+                    }
+                    .accessibilityIdentifier("home.chapter")
+                }
+
+                // Sem o espaçador os dois caem na mesma cápsula e leem como um
+                // controle só. São dois destinos diferentes, e é isso que este
+                // pacote existe para separar.
+                ToolbarSpacer(.fixed, placement: .navigationBarTrailing)
+
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink(destination: ProfileView()) {
                         Image(systemName: "person.fill")
                             .foregroundColor(Theme.accent)
                             .accessibilityLabel("Meu perfil")
                     }
-
+                    .accessibilityIdentifier("home.profile")
                 }
             }
-            .tint(Theme.accent)
             .refreshable {
                 await viewModel.loadData()
             }
@@ -266,20 +282,20 @@ private struct GoalsSection: View {
                                 onViewCompletedGoals()
                             } label: {
                                 VStack(spacing: Spacing.lg) {
-                                    ZStack {
-                                        Image(systemName: "checkmark.seal.fill")
-                                            .font(.system(size: 120, weight: .light))
-                                            .foregroundColor(Theme.success)
-                                    }
-                                    .frame(width: 120, height: 120)
-                                    
+                                    HeroIcon(
+                                        "checkmark.seal.fill",
+                                        size: Spacing.heroIconSize,
+                                        tint: Theme.success
+                                    )
+
                                     VStack(spacing: Spacing.xxs) {
                                         Text("Concluídas")
                                             .font(Typography.headline)
                                             .foregroundColor(Theme.textPrimary)
                                             .multilineTextAlignment(.center)
-                                            .lineLimit(2)
-                                            .frame(height: 48, alignment: .center)
+                                            // Sem altura travada: em tamanho acessível o
+                                            // rótulo era cortado no meio da segunda linha.
+                                            .frame(minHeight: Spacing.xxl, alignment: .center)
                                     }
                                 }
                                 .padding(.horizontal, Spacing.md)

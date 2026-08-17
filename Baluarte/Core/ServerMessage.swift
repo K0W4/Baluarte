@@ -69,6 +69,20 @@ enum ServerMessage {
             return String(localized: "A propriedade só pode ser transferida para alguém ativo e com conta no app.")
         case "already_owner":
             return String(localized: "Você já é o Fundador deste Capítulo.")
+        case "cannot_raise_own_access":
+            return String(localized: "Você pode reduzir o próprio acesso, mas não aumentá-lo.")
+        case "last_platform_admin":
+            return String(localized: "Você é o único administrador de plataforma. Conceda a outra pessoa antes de sair.")
+        case "member_not_found":
+            return String(localized: "Pessoa não encontrada.")
+        case "cid_required":
+            return String(localized: "Informe o CID de quem vai receber o acesso.")
+        case "cid_not_found":
+            return String(localized: "Ninguém com este CID tem conta no app.")
+        case "chapter_already_exists":
+            return String(localized: "Já existe um Capítulo com este número neste estado.")
+        case "cid_ambiguous":
+            return String(localized: "Há mais de uma conta com este CID. Resolva a duplicidade antes de conceder.")
         default:
             return nil
         }

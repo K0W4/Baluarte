@@ -40,7 +40,7 @@ struct CreateGoalViewModelTests {
         let result = await viewModel.saveGoal()
         
         #expect(result == false)
-        #expect(viewModel.errorMessage == "A meta alvo deve ser maior que zero.")
+        #expect(viewModel.errorMessage == String(localized: "A meta alvo deve ser maior que zero."))
     }
     
     @Test("saveGoal succeeds")

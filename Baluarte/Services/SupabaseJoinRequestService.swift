@@ -73,8 +73,17 @@ public final class SupabaseJoinRequestService: JoinRequestServiceProtocol {
 
     /// Caminho `{auth.uid()}/{uuid}.jpg`: a primeira pasta é o dono, que é exatamente
     /// o que as policies do Storage conferem.
+    ///
+    /// `UUID.uuidString` sai em MAIÚSCULAS e `auth.uid()::text` sai em minúsculas —
+    /// e o `=` de `text` no Postgres distingue caso. Sem o `lowercased()` a policy
+    /// `proof_insert_own` recusava **todo** envio, inclusive o do próprio dono da
+    /// pasta, e a fundação de Capítulo morria em 403 antes de existir solicitação.
+    static func proofPath(memberId: UUID, fileId: UUID = UUID()) -> String {
+        "\(memberId.uuidString.lowercased())/\(fileId.uuidString.lowercased()).jpg"
+    }
+
     public func uploadProof(memberId: UUID, imageData: Data) async throws -> String {
-        let path = "\(memberId.uuidString)/\(UUID().uuidString).jpg"
+        let path = Self.proofPath(memberId: memberId)
 
         try await client.storage
             .from(Self.proofBucket)
@@ -158,7 +167,15 @@ public final class SupabaseJoinRequestService: JoinRequestServiceProtocol {
     public func fetchPendingRequests(for chapterId: UUID) async throws -> [PendingJoinRequest] {
         let rows: [PendingRow] = try await client
             .from("join_request")
-            .select("*, member(full_name)")
+            // `join_request` referencia `member` duas vezes -- `member_id`, quem pediu, e
+            // `reviewed_by`, quem respondeu. Um embed por nome de tabela é ambíguo entre as
+            // duas, e o PostgREST responde **300 Multiple Choices**, que o `AppError` não
+            // mapeia e vira "o servidor está temporariamente indisponível". Efeito: a fila
+            // de entrada nunca carregava, e a tela ainda afirmava não haver ninguém.
+            //
+            // Desambiguar pela coluna, e não pelo nome da constraint, é o que sobrevive a
+            // um rename; o `member:` na frente preserva a chave que o `PendingRow` decodifica.
+            .select("*, member:member_id(full_name)")
             .eq("chapter_id", value: chapterId)
             .eq("status", value: JoinRequestStatus.pending.rawValue)
             .order("created_at", ascending: true)

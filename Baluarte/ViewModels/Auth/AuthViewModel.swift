@@ -22,18 +22,66 @@ public final class AuthViewModel {
     public var state: AuthState = .loading
     public var errorMessage: String?
 
+    /// Autenticar não é uma rota. `state = .loading` faz a `RootView` trocar de ramo e
+    /// destruir a tela que está no ar — junto com o banner de erro local, o botão em
+    /// carregamento e o que a pessoa acabou de digitar. Entrar e cadastrar mexem aqui;
+    /// só a checagem inicial da sessão mexe em `state`.
+    public private(set) var isAuthenticating = false
+
+    /// Sobreposto a qualquer rota: quem chega por um link de recuperação pode estar
+    /// deslogado, dentro do app, ou parado na fila de aprovação.
+    public var isSettingNewPassword = false
+
     public private(set) var memberships: [ChapterMembership] = []
     public private(set) var activeMembership: ChapterMembership?
     public private(set) var pendingRequest: JoinRequest?
     public private(set) var pendingRequestChapter: Chapter?
     public private(set) var activeChapter: Chapter?
+
+    /// Todo Capítulo em que a pessoa tem vínculo, não só o aberto. O widget precisa dos
+    /// dois para deixar escolher, e a troca de Capítulo no perfil listava dois vínculos
+    /// sem dizer o nome de nenhum.
+    public private(set) var chaptersById: [UUID: Chapter] = [:]
     public private(set) var rejectedRequest: JoinRequest?
     public private(set) var rejectedRequestChapter: Chapter?
 
     /// A code captured from a shared link before the person is ready to redeem it.
     public var pendingInviteCode: String?
 
-    public var activeChapterName: String { activeChapter?.name ?? "seu Capítulo" }
+    public var activeChapterName: String { activeChapter?.name ?? String(localized: "seu Capítulo") }
+
+    /// Os Capítulos de que a pessoa é Fundadora. Excluir a conta com um destes em aberto
+    /// deixaria o Capítulo órfão — `leave_chapter` recusa o último Fundador exatamente por
+    /// isso, e a exclusão de conta precisa dizer a mesma coisa antes, não depois.
+    public var ownedChapterNames: [String] {
+        memberships
+            .filter { $0.accessLevel == .owner }
+            .compactMap { chaptersById[$0.chapterId]?.name }
+            .sorted()
+    }
+
+    /// Os nomes de todos os Capítulos de que a pessoa sai ao excluir a conta.
+    public var allChapterNames: [String] {
+        memberships.compactMap { chaptersById[$0.chapterId]?.name }.sorted()
+    }
+
+    public func chapterName(for membership: ChapterMembership) -> String? {
+        chaptersById[membership.chapterId]?.name
+    }
+
+    /// O que atravessa o app group. Um vínculo cujo Capítulo não pôde ser resolvido
+    /// fica de fora em vez de entrar sem nome: uma opção em branco no seletor é pior do
+    /// que uma opção a menos.
+    public var sharedChapters: [WidgetChapter] {
+        memberships.compactMap { membership in
+            guard let chapter = chaptersById[membership.chapterId] else { return nil }
+            return WidgetChapter(
+                membershipId: membership.id,
+                chapterId: membership.chapterId,
+                name: chapter.name
+            )
+        }
+    }
 
     public var currentChapterId: UUID? { activeMembership?.chapterId }
 
@@ -77,6 +125,7 @@ public final class AuthViewModel {
     private let membershipService: MembershipServiceProtocol
     private let joinRequestService: JoinRequestServiceProtocol
     private let chapterService: ChapterServiceProtocol
+    private let sessionStore: SessionStoreProtocol
 
     private var authStateTask: Task<Void, Never>?
 
@@ -85,13 +134,15 @@ public final class AuthViewModel {
         profileService: ProfileServiceProtocol = Services.profile,
         membershipService: MembershipServiceProtocol = Services.membership,
         joinRequestService: JoinRequestServiceProtocol = Services.joinRequest,
-        chapterService: ChapterServiceProtocol = Services.chapter
+        chapterService: ChapterServiceProtocol = Services.chapter,
+        sessionStore: SessionStoreProtocol = Services.sessionStore
     ) {
         self.authService = authService
         self.profileService = profileService
         self.membershipService = membershipService
         self.joinRequestService = joinRequestService
         self.chapterService = chapterService
+        self.sessionStore = sessionStore
         Task {
             await checkSession()
         }
@@ -109,16 +160,18 @@ public final class AuthViewModel {
     @MainActor
     private func syncSharedState(session: Session?) {
         guard let session else {
-            UserDefaultsManager.shared.clearSession()
+            sessionStore.clear()
             return
         }
 
-        UserDefaultsManager.shared.currentUserId = currentUserId
-        UserDefaultsManager.shared.currentChapterId = currentChapterId
-        UserDefaultsManager.shared.currentMembershipId = currentMembershipId
-        UserDefaultsManager.shared.accessToken = session.accessToken
-        UserDefaultsManager.shared.refreshToken = session.refreshToken
-        WidgetManager.shared.reloadTimelines()
+        sessionStore.save(
+            userId: currentUserId,
+            chapterId: currentChapterId,
+            membershipId: currentMembershipId,
+            chapters: sharedChapters,
+            accessToken: session.accessToken,
+            refreshToken: session.refreshToken
+        )
     }
 
     /// Supabase refreshes the access token on its own schedule. Without this the widget
@@ -126,16 +179,21 @@ public final class AuthViewModel {
     private func observeAuthStateChanges() {
         // @MainActor explícito: `syncSharedState` já é isolado nele, e deixar a
         // isolação implícita fazia o compilador apontar um `await` sem efeito.
+        // O stream é capturado antes da Task: a propriedade cria um novo a cada
+        // acesso, e lê-la de dentro exigiria `self` antes do `guard let self`.
+        let changes = authService.authStateChanges
         authStateTask = Task { @MainActor [weak self] in
-            for await (event, session) in SupabaseManager.shared.client.auth.authStateChanges {
+            for await (event, session) in changes {
                 guard let self else { return }
                 switch event {
                 case .tokenRefreshed, .signedIn, .initialSession:
                     if let session {
                         self.syncSharedState(session: session)
                     }
+                case .passwordRecovery:
+                    self.isSettingNewPassword = true
                 case .signedOut:
-                    UserDefaultsManager.shared.clearSession()
+                    self.sessionStore.clear()
                 default:
                     break
                 }
@@ -157,11 +215,15 @@ public final class AuthViewModel {
             self.pendingRequestChapter = nil
             self.rejectedRequest = nil
             self.rejectedRequestChapter = nil
-            self.activeChapter = try await chapterService.fetchChapter(id: activeMembership.chapterId)
+
+            let active = try await chapterService.fetchChapter(id: activeMembership.chapterId)
+            self.activeChapter = active
+            self.chaptersById = await resolveChapters(for: fetched, startingFrom: active)
             return
         }
 
         self.activeChapter = nil
+        self.chaptersById = [:]
 
         // Sem vínculo, a pessoa está escolhendo um Capítulo, esperando resposta, ou
         // acabou de ser recusada. Qual dos três decide a rota inteira — e a recusa é o
@@ -187,6 +249,26 @@ public final class AuthViewModel {
         } else {
             nil
         }
+    }
+
+    /// O Capítulo aberto já veio, e falhar nele derruba a sessão — é o nome que a tela
+    /// inteira usa. Os outros são `try?`: perder o nome do segundo Capítulo custa uma
+    /// opção no seletor, e não vale trocar o login de alguém por isso.
+    @MainActor
+    private func resolveChapters(
+        for memberships: [ChapterMembership],
+        startingFrom active: Chapter?
+    ) async -> [UUID: Chapter] {
+        var resolved: [UUID: Chapter] = [:]
+        if let active { resolved[active.id] = active }
+
+        for membership in memberships where resolved[membership.chapterId] == nil {
+            if let chapter = try? await chapterService.fetchChapter(id: membership.chapterId) {
+                resolved[chapter.id] = chapter
+            }
+        }
+
+        return resolved
     }
 
     @MainActor
@@ -231,7 +313,8 @@ public final class AuthViewModel {
         self.state = .unauthenticated
         self.memberships = []
         self.activeMembership = nil
-        UserDefaultsManager.shared.clearSession()
+        self.chaptersById = [:]
+        sessionStore.clear()
     }
 
     @MainActor
@@ -240,10 +323,20 @@ public final class AuthViewModel {
             let session = try await authService.getCurrentSession()
             try await establishSession(for: session.user, fallbackName: nil)
         } catch {
+            // Não ter sessão e não conseguir falar com o servidor são coisas diferentes.
+            // `establishSession` busca perfil, vínculos e Capítulo por rede, então um
+            // timeout no metrô caía aqui e era lido como "você foi deslogado" — apagando
+            // de quebra o token do app group, que é o que alimenta o widget.
+            let appError = AppError.from(error)
             self.state = .unauthenticated
             self.memberships = []
             self.activeMembership = nil
-            UserDefaultsManager.shared.clearSession()
+
+            if appError.isTransient {
+                self.errorMessage = appError.userMessage
+            } else {
+                sessionStore.clear()
+            }
         }
     }
 
@@ -251,7 +344,9 @@ public final class AuthViewModel {
 
     @MainActor
     public func signInWithApple(credentials: AppleCredentials) async {
-        self.state = .loading
+        self.isAuthenticating = true
+        defer { self.isAuthenticating = false }
+        self.errorMessage = nil
         do {
             let user = try await authService.signInWithApple(
                 idToken: credentials.idToken,
@@ -271,7 +366,9 @@ public final class AuthViewModel {
 
     @MainActor
     public func signInWithEmail(email: String, password: String) async {
-        self.state = .loading
+        self.isAuthenticating = true
+        defer { self.isAuthenticating = false }
+        self.errorMessage = nil
         do {
             let user = try await authService.signInWithEmail(email: email, password: password)
             try await establishSession(for: user, fallbackName: nil)
@@ -281,17 +378,44 @@ public final class AuthViewModel {
     }
 
     @MainActor
-    public func signUpWithEmail(email: String, password: String) async {
-        self.state = .loading
+    public func signUpWithEmail(email: String, password: String, fullName: String?) async {
+        self.isAuthenticating = true
+        defer { self.isAuthenticating = false }
+        self.errorMessage = nil
         do {
             let user = try await authService.signUpWithEmail(email: email, password: password)
-            try await establishSession(for: user, fallbackName: nil)
+            try await establishSession(for: user, fallbackName: fullName)
         } catch {
             failSession(with: error)
         }
     }
 
     @MainActor
+    public func beginPasswordRecovery(from url: URL) async {
+        errorMessage = nil
+        do {
+            try await authService.completePasswordRecovery(from: url)
+            isSettingNewPassword = true
+        } catch {
+            // O link expira e só pode ser usado uma vez. Dizer isso é mais útil do
+            // que a mensagem do servidor, que fala de token.
+            errorMessage = String(localized: "Este link de recuperação expirou ou já foi usado. Peça um novo.")
+        }
+    }
+
+    @MainActor
+    public func setNewPassword(_ newPassword: String) async -> Bool {
+        errorMessage = nil
+        do {
+            try await authService.updatePassword(newPassword)
+            isSettingNewPassword = false
+            return true
+        } catch {
+            errorMessage = AppError.from(error).userMessage
+            return false
+        }
+    }
+
     public func sendPasswordReset(to email: String) async -> Bool {
         errorMessage = nil
         do {
@@ -373,7 +497,10 @@ public final class AuthViewModel {
 
             self.activeMembership = membership
             self.state = .authenticated(user, updatedProfile)
-            self.activeChapter = try await chapterService.fetchChapter(id: membership.chapterId)
+
+            let chapter = try await chapterService.fetchChapter(id: membership.chapterId)
+            self.activeChapter = chapter
+            if let chapter { self.chaptersById[chapter.id] = chapter }
 
             let session = try await authService.getCurrentSession()
             syncSharedState(session: session)
@@ -382,11 +509,15 @@ public final class AuthViewModel {
         }
     }
 
+    /// `false` quando o servidor recusou — o último Fundador não sai, para o Capítulo
+    /// nunca ficar órfão. Quem chama precisa do retorno: fechar a tela seja qual for o
+    /// desfecho dizia que a saída aconteceu quando ela não aconteceu.
     @MainActor
-    public func leaveChapter() async {
+    @discardableResult
+    public func leaveChapter() async -> Bool {
         guard case let .authenticated(user, profile) = self.state,
               let profile,
-              let membership = activeMembership else { return }
+              let membership = activeMembership else { return false }
 
         errorMessage = nil
         do {
@@ -401,8 +532,10 @@ public final class AuthViewModel {
 
             let session = try await authService.getCurrentSession()
             syncSharedState(session: session)
+            return true
         } catch {
             errorMessage = AppError.from(error).userMessage
+            return false
         }
     }
 
@@ -446,24 +579,36 @@ public final class AuthViewModel {
         self.state = .unauthenticated
         self.memberships = []
         self.activeMembership = nil
-        UserDefaultsManager.shared.clearSession()
+        self.chaptersById = [:]
+        sessionStore.clear()
     }
 
     @MainActor
-    public func deleteAccount() async {
-        guard currentUserId != nil else { return }
+    /// `true` quando a conta foi mesmo apagada. A limpeza da sessão só acontece nesse
+    /// caso: sair do ar seja qual for o desfecho fazia uma recusa do servidor parecer
+    /// sucesso, e a pessoa ia embora acreditando ter apagado uma conta que continua
+    /// inteira. Enquanto isso `state` não é tocado, senão a `ProfileView` — que é quem
+    /// mostra o erro — é destruída antes de mostrá-lo.
+    @discardableResult
+    public func deleteAccount() async -> Bool {
+        guard currentUserId != nil else { return false }
 
-        self.state = .loading
+        self.isAuthenticating = true
+        defer { self.isAuthenticating = false }
+        self.errorMessage = nil
         do {
             try await authService.deleteAccount()
             try await authService.signOut()
         } catch {
             self.errorMessage = AppError.from(error).userMessage
+            return false
         }
 
         self.state = .unauthenticated
         self.memberships = []
         self.activeMembership = nil
-        UserDefaultsManager.shared.clearSession()
+        self.chaptersById = [:]
+        sessionStore.clear()
+        return true
     }
 }

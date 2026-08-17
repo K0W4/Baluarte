@@ -62,19 +62,41 @@ public struct CommitteeCard: View {
                     }
                 } else {
                     ForEach(tasks.prefix(3)) { task in
-                        HStack(alignment: .center, spacing: Spacing.sm) {
-                            Button(action: {
-                                HapticManager.shared.notification(type: .success)
-                                onTaskToggled?(task.id)
-                            }) {
+                        HStack(alignment: .center, spacing: Spacing.xs) {
+                            if let onTaskToggled {
+                                Button(action: {
+                                    onTaskToggled(task.id)
+                                    HapticManager.shared.notification(type: .success)
+                                }) {
+                                    // O frame e a forma precisam ficar DENTRO do label. Do
+                                    // lado de fora, eles só centralizavam o botão numa caixa
+                                    // de 44pt enquanto a região que responde ao dedo seguia
+                                    // sendo o glifo, de uns 20pt — o toque errava a bolinha,
+                                    // caía no gesto do card e navegava para a comissão.
+                                    // A bolinha ocupa a largura do próprio glifo e alinha na
+                                    // mesma coluna do ícone do card, com o mesmo respiro que
+                                    // separa aquele ícone do nome da comissão.
+                                    //
+                                    // Os 44pt ficam na **altura**, que é onde a linha da lista
+                                    // realmente precisa deles. Prendê-los também na largura é o
+                                    // que desalinhava: um frame de 44 centraliza um glifo de 22
+                                    // e sobram 11pt de cada lado, que nenhum espaçamento pequeno
+                                    // desfaz sem enfiar o título por baixo do botão.
+                                    Image(systemName: "circle")
+                                        .foregroundColor(Theme.textSecondary)
+                                        .frame(height: Spacing.minTouchTarget)
+                                        .contentShape(Rectangle())
+                                }
+                                .buttonStyle(.plain)
+                                .accessibilityLabel("Concluir tarefa: \(task.title)")
+                            } else {
                                 Image(systemName: "circle")
                                     .foregroundColor(Theme.textSecondary)
-                                    .contentShape(Rectangle())
+                                    .frame(height: Spacing.minTouchTarget)
+                                    .accessibilityHidden(true)
                             }
-                            .buttonStyle(.plain)
-                            .frame(width: 44, height: 44)
-                            .accessibilityLabel("Concluir tarefa: \(task.title)")
-                            
+
+
                             HStack(alignment: .center) {
                                 Text(task.title)
                                     .font(Typography.subheadline)
@@ -86,7 +108,7 @@ public struct CommitteeCard: View {
                                 if let due = task.dueDate {
                                     Text(dueDateString(from: due))
                                         .font(Typography.caption1)
-                                        .foregroundColor(due < Date() ? Theme.destructive : Theme.textSecondary)
+                                        .foregroundColor(Theme.textSecondary)
                                 }
                             }
                         }
@@ -101,9 +123,12 @@ public struct CommitteeCard: View {
                 }
             }
         }
-        .accessibilityElement(children: .ignore)
+        // `.ignore` achatava o card num elemento só e apagava da árvore os botões de
+        // concluir tarefa — inclusive o rótulo "Concluir tarefa", que está escrito e
+        // traduzido nos três idiomas. Pela tela inicial, quem usa VoiceOver não conseguia
+        // concluir tarefa nenhuma nem descobrir quais eram.
+        .accessibilityElement(children: .contain)
         .accessibilityLabel("\(committee.name), \(tasks.count) tarefas pendentes, \(completedTasksCount) tarefas concluídas")
-        .accessibilityHint("Toque para ver detalhes da comissão")
         .padding(Spacing.md)
         .background(Theme.cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: Spacing.cornerRadius))
@@ -113,15 +138,11 @@ public struct CommitteeCard: View {
         )
     }
     
-    private static let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "pt_BR")
-        formatter.dateFormat = "dd/MM"
-        return formatter
-    }()
-    
+    /// Sem `DateFormatter` e sem locale travado: `dd/MM` fixava a ordem dia-mês, então
+    /// quem usa o app em inglês lia "08/12" e entendia 8 de dezembro numa tarefa que vence
+    /// em 12 de agosto. Ambiguidade silenciosa num prazo só aparece quando já passou.
     private func dueDateString(from date: Date) -> String {
-        Self.dateFormatter.string(from: date)
+        date.formatted(.dateTime.day().month())
     }
 }
 

@@ -8,13 +8,16 @@ struct EmailAuthView: View {
     @State private var email = ""
     @State private var password = ""
     @State private var confirmPassword = ""
+    @State private var fullName = ""
     @State private var isLoading = false
     @State private var resetConfirmation: String?
 
-    enum FocusField { case email, password, confirmPassword }
+    enum FocusField { case fullName, email, password, confirmPassword }
     @FocusState private var focusedField: FocusField?
 
-    private static let minPasswordLength = 6
+    /// O mesmo piso da redefinição de senha. Eram 6 aqui e 8 lá, então quem criava a conta
+    /// com 6 caracteres descobria a regra nova só ao clicar no link de recuperação.
+    private static let minPasswordLength = PasswordPolicy.minLength
 
     private var trimmedEmail: String {
         email.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -32,7 +35,10 @@ struct EmailAuthView: View {
 
     private var passwordWarning: String? {
         guard isSignUp, !password.isEmpty, password.count < Self.minPasswordLength else { return nil }
-        return "A senha precisa ter ao menos \(Self.minPasswordLength) caracteres."
+        return String(
+            format: String(localized: "A senha precisa ter ao menos %lld caracteres."),
+            Self.minPasswordLength
+        )
     }
 
     private var confirmWarning: String? {
@@ -40,10 +46,16 @@ struct EmailAuthView: View {
         return String(localized: "As senhas não coincidem.")
     }
 
+    private var trimmedFullName: String {
+        fullName.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
     private var canSubmit: Bool {
         guard isEmailValid, !password.isEmpty, !isLoading else { return false }
         guard isSignUp else { return true }
-        return password.count >= Self.minPasswordLength && password == confirmPassword
+        return !trimmedFullName.isEmpty
+            && password.count >= Self.minPasswordLength
+            && password == confirmPassword
     }
 
     var body: some View {
@@ -122,6 +134,21 @@ struct EmailAuthView: View {
 
     private var fields: some View {
         VStack(spacing: Spacing.lg) {
+            if isSignUp {
+                // Sem este campo o cadastro por e-mail criava o perfil com o nome de
+                // reserva "Membro DeMolay", e a pessoa chegava assim na lista de membros e
+                // no pedido de entrada que o administrador vai julgar. Só o caminho da
+                // Apple entregava um nome de verdade.
+                FormFieldContainer(title: "Nome Completo", warning: nil) {
+                    TextField("Digite seu nome completo", text: $fullName)
+                        .focused($focusedField, equals: .fullName)
+                        .submitLabel(.next)
+                        .onSubmit { focusedField = .email }
+                        .textContentType(.name)
+                        .textInputAutocapitalization(.words)
+                }
+            }
+
             FormFieldContainer(title: "E-mail", warning: emailWarning) {
                 TextField("Digite seu e-mail", text: $email)
                     .focused($focusedField, equals: .email)
@@ -169,7 +196,7 @@ struct EmailAuthView: View {
                 Button(action: sendReset) {
                     Text("Esqueci minha senha")
                         .font(Typography.callout)
-                        .foregroundColor(Theme.accent)
+                        .foregroundColor(Theme.accentText)
                         .frame(maxWidth: .infinity, minHeight: Spacing.minTouchTarget)
                         .contentShape(Rectangle())
                 }
@@ -186,7 +213,7 @@ struct EmailAuthView: View {
             }) {
                 Text(isSignUp ? "Já tem uma conta? Entre aqui." : "Não tem conta? Cadastre-se.")
                     .font(Typography.callout)
-                    .foregroundColor(Theme.accent)
+                    .foregroundColor(Theme.accentText)
                     .frame(maxWidth: .infinity, minHeight: Spacing.minTouchTarget)
                     .contentShape(Rectangle())
             }
@@ -200,7 +227,11 @@ struct EmailAuthView: View {
             authViewModel.errorMessage = nil
             resetConfirmation = nil
             if isSignUp {
-                await authViewModel.signUpWithEmail(email: trimmedEmail, password: password)
+                await authViewModel.signUpWithEmail(
+                    email: trimmedEmail,
+                    password: password,
+                    fullName: trimmedFullName
+                )
             } else {
                 await authViewModel.signInWithEmail(email: trimmedEmail, password: password)
             }

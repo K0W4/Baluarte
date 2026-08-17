@@ -59,4 +59,27 @@ public final class ChapterService: ChapterServiceProtocol {
 
         try await client.from("chapter_request").insert(payload).execute()
     }
+
+    private struct ReviewParams: Encodable {
+        let p_request_id: UUID
+        let p_approved: Bool
+        let p_reason: String?
+    }
+
+    /// Função e não policy, pela mesma razão de `platform_admins()`: quem revisa
+    /// precisa da lista de pedidos, não de leitura da tabela de pessoas.
+    public func pendingChapterRequests() async throws -> [PendingChapterRequest] {
+        try await client.rpc("pending_chapter_requests").execute().value
+    }
+
+    /// `chapter` não tem grant de insert para `authenticated` -- um Capítulo é
+    /// conferido contra o registro oficial da Ordem, nunca criado de dentro do app.
+    /// Só a função no servidor escreve ali.
+    public func reviewChapterRequest(id: UUID, approved: Bool, reason: String?) async throws {
+        try await client
+            .rpc("review_chapter_request", params: ReviewParams(
+                p_request_id: id, p_approved: approved, p_reason: reason
+            ))
+            .execute()
+    }
 }

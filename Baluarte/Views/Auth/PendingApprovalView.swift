@@ -22,10 +22,7 @@ struct PendingApprovalView: View {
                 VStack(spacing: Spacing.lg) {
                     Spacer()
 
-                    Image(systemName: "hourglass.circle.fill")
-                        .font(.system(size: 64))
-                        .foregroundStyle(Theme.accent)
-                        .accessibilityHidden(true)
+                    HeroIcon("hourglass.circle.fill", size: 64)
 
                     VStack(spacing: Spacing.sm) {
                         Text("Aguardando aprovação")

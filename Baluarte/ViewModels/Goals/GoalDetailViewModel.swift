@@ -8,8 +8,15 @@ public final class GoalDetailViewModel {
     public var currentValue: String
     public var targetValue: String
     public var targetDate: Date
+
+    /// Falso enquanto a meta não tiver prazo e ninguém tiver escolhido um. Sem isto,
+    /// `(goal.targetDate ?? Date()) != targetDate` era sempre verdadeiro para meta sem
+    /// prazo — a tela nascia "alterada" e um toque em salvar gravava como prazo o
+    /// instante em que a folha foi aberta, deixando a meta vencida no mesmo segundo.
+    public var targetDateWasSet: Bool
+
     public var isCompleted: Bool
-    
+
     public var isLoading: Bool = false
     public var errorMessage: String? = nil
     
@@ -39,8 +46,11 @@ public final class GoalDetailViewModel {
         return goal.title != title ||
                normalizedCurrent != currentString ||
                normalizedTarget != targetString ||
-               (goal.targetDate ?? Date()) != targetDate
+               goal.targetDate != effectiveTargetDate
     }
+
+    /// O prazo que sai daqui, ou `nil` enquanto ninguém tiver escolhido um.
+    public var effectiveTargetDate: Date? { targetDateWasSet ? targetDate : nil }
     
     public init(goal: Goal, goalService: GoalServiceProtocol = Services.goal) {
         self.goal = goal
@@ -56,6 +66,7 @@ public final class GoalDetailViewModel {
         self.targetValue = formatter.string(from: NSNumber(value: goal.targetValue)) ?? String(goal.targetValue)
         
         self.targetDate = goal.targetDate ?? Date()
+        self.targetDateWasSet = goal.targetDate != nil
         self.isCompleted = goal.isCompleted
     }
     
@@ -82,7 +93,7 @@ public final class GoalDetailViewModel {
         updatedGoal.title = title.trimmingCharacters(in: .whitespacesAndNewlines)
         updatedGoal.currentValue = current
         updatedGoal.targetValue = target
-        updatedGoal.targetDate = targetDate
+        updatedGoal.targetDate = effectiveTargetDate
         
         do {
             try await goalService.updateGoal(updatedGoal)
@@ -91,25 +102,27 @@ public final class GoalDetailViewModel {
             return true
         } catch {
             if error is CancellationError { return false }
-            print("❌ Supabase Error: \(error)")
             errorMessage = AppError.from(error).userMessage
             isLoading = false
             return false
         }
     }
     
-    public func completeGoal() async -> Bool {
+    /// Concluir e reabrir são a mesma escrita, e existir nas duas direções é o ponto: sem
+    /// reabrir, um toque acidental encerrava uma meta do semestre e a única saída era
+    /// apagá-la e recriar do zero, perdendo o histórico.
+    public func completeGoal(_ completed: Bool = true) async -> Bool {
         isLoading = true
         errorMessage = nil
-        
+
         var updatedGoal = goal
-        updatedGoal.isCompleted = true
-        updatedGoal.completedAt = Date()
-        
+        updatedGoal.isCompleted = completed
+        updatedGoal.completedAt = completed ? Date() : nil
+
         do {
             try await goalService.updateGoal(updatedGoal)
             self.goal = updatedGoal
-            self.isCompleted = true
+            self.isCompleted = completed
             isLoading = false
             return true
         } catch {
